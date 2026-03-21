@@ -408,7 +408,7 @@ body {
       <div class="admin-nav-item" data-panel="career">Career</div>
     </div>
     <div class="admin-sidebar-foot">
-      <a class="goto-site" href="/zancoffee/index.html" target="_blank">↗ 홈페이지 보기</a>
+      <a class="goto-site" href="./index.html" target="_blank">↗ 홈페이지 보기</a>
       <button class="logout-btn" id="logoutBtn">로그아웃</button>
     </div>
   </div>
@@ -650,7 +650,9 @@ body {
       }).join('') + '</select></div>' +
       '<div class="form-group"><label class="form-label">제목</label><input class="form-input" id="f-title" value="' + (item.title||'') + '" placeholder="글 제목"></div>' +
       '<div class="form-group"><label class="form-label">한 줄 요약</label><input class="form-input" id="f-sub" value="' + (item.sub||'') + '" placeholder="요약 / 2026.03"></div>' +
-      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://images.unsplash.com/..."><div class="form-hint">Unsplash 등 이미지 직접 링크</div></div>';
+      '<div class="form-group"><label class="form-label">작성일</label><input class="form-input" id="f-date" value="' + (item.date||'') + '" placeholder="2026.03.10"></div>' +
+      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://images.unsplash.com/..."><div class="form-hint">Unsplash 등 이미지 직접 링크</div></div>' +
+      '<div class="form-group"><label class="form-label">본문 (마크다운)</label><textarea class="form-textarea" id="f-body" style="height:200px;font-family:IBM Plex Mono,monospace;font-size:12px;" placeholder="## 소제목&#10;&#10;본문 텍스트를 입력하세요.&#10;&#10;- 리스트&#10;- 아이템">' + (item.body||'') + '</textarea><div class="form-hint">## 소제목 / - 리스트 / **굵게** 지원</div></div>';
   }
 
   function addBlog() {
@@ -658,7 +660,7 @@ body {
       var title = document.getElementById('f-title').value.trim();
       if (!title) { showToast('제목을 입력해주세요'); return; }
       var data = getData('blog');
-      data.unshift({ id: nextId(data), cat: document.getElementById('f-cat').value, title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value });
+      data.unshift({ id: nextId(data), cat: document.getElementById('f-cat').value, title: title, sub: document.getElementById('f-sub').value, date: document.getElementById('f-date').value, img: document.getElementById('f-img').value, body: document.getElementById('f-body').value });
       save('blog', data);
       renderBlog();
       closeModal();
@@ -676,7 +678,9 @@ body {
       item.cat   = document.getElementById('f-cat').value;
       item.title = title;
       item.sub   = document.getElementById('f-sub').value;
+      item.date  = document.getElementById('f-date').value;
       item.img   = document.getElementById('f-img').value;
+      item.body  = document.getElementById('f-body').value;
       save('blog', data);
       renderBlog();
       closeModal();
@@ -790,7 +794,8 @@ body {
     item = item || {};
     return '<div class="form-group"><label class="form-label">활동명</label><input class="form-input" id="f-title" value="' + (item.title||'') + '" placeholder="커피 스터디"></div>' +
       '<div class="form-group"><label class="form-label">설명</label><input class="form-input" id="f-sub" value="' + (item.sub||'') + '" placeholder="Science / 추출 · 로스팅"></div>' +
-      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://..."></div>';
+      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://..."></div>' +
+      '<div class="form-group"><label class="form-label">상세 내용</label><textarea class="form-textarea" id="f-body" style="height:140px;">' + (item.body||'') + '</textarea><div class="form-hint">카드 클릭 시 패널에 표시되는 내용</div></div>';
   }
 
   function addZan() {
@@ -798,7 +803,7 @@ body {
       var title = document.getElementById('f-title').value.trim();
       if (!title) { showToast('활동명을 입력해주세요'); return; }
       var data = getData('zan');
-      data.push({ id: nextId(data), title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value });
+      data.push({ id: nextId(data), title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value, body: document.getElementById('f-body').value });
       save('zan', data);
       renderZan();
       closeModal();
@@ -816,6 +821,7 @@ body {
       item.title = title;
       item.sub = document.getElementById('f-sub').value;
       item.img = document.getElementById('f-img').value;
+      item.body = document.getElementById('f-body').value;
       save('zan', data);
       renderZan();
       closeModal();
