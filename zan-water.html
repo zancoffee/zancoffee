@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAN — Water Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=IBM+Plex+Mono:wght@300;400&family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f5f2ed;
+  --bg2:       #eeebe4;
+  --line:      #d8d3c8;
+  --line2:     #c8c2b5;
+  --ink:       #1a1814;
+  --ink2:      #3a3630;
+  --muted:     #7a7468;
+  --dim:       #b0aa9e;
+  --accent:    #1a1814;
+  --good:      #3a6b4a;
+  --warn:      #8a6520;
+  --bad:       #8a3020;
+  --good-bg:   #edf4ef;
+  --warn-bg:   #f6f0e4;
+  --bad-bg:    #f5ecea;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.4;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-mark {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+h1 i {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+}
+
+/* ── BODY LAYOUT ── */
+.body-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 720px) {
+  .body-grid { grid-template-columns: 1fr; }
+}
+
+/* ── LEFT: INPUTS ── */
+.col-inputs {
+  border-right: 1px solid var(--line);
+  padding: 40px 32px 40px 0;
+}
+
+.section-label {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.param-block {
+  margin-bottom: 28px;
+}
+
+.param-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.param-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.param-unit {
+  font-size: 10px;
+  color: var(--dim);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 5px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  flex: 1;
+  height: 1px;
+  background: var(--line2);
+  outline: none;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--ink);
+  transition: transform 0.15s;
+}
+
+input[type=range]:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+.param-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--ink);
+  min-width: 52px;
+  text-align: right;
+  transition: opacity 0.2s;
+}
+
+.param-hint {
+  font-size: 10px;
+  color: var(--dim);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+}
+
+/* status strip */
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+  margin-top: 32px;
+}
+
+.status-cell {
+  padding: 12px 14px;
+  border-right: 1px solid var(--line);
+  text-align: center;
+}
+
+.status-cell:last-child { border-right: none; }
+
+.status-cell-label {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.status-cell-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  transition: color 0.3s;
+}
+
+/* ── RIGHT: RESULTS ── */
+.col-results {
+  padding: 40px 0 40px 36px;
+}
+
+/* diagnosis */
+.diagnosis-card {
+  margin-bottom: 36px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.diag-eyebrow {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.diag-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 10px;
+  transition: color 0.4s;
+  letter-spacing: 0.01em;
+}
+
+.diag-body {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.85;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  max-width: 440px;
+}
+
+/* radar */
+.radar-section {
+  margin-bottom: 32px;
+}
+
+.block-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.block-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+canvas#radar {
+  display: block;
+  margin: 0 auto;
+}
+
+/* flavor bars */
+.flavor-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.flavor-name {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  width: 52px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.flavor-track {
+  flex: 1;
+  height: 2px;
+  background: var(--line);
+  position: relative;
+}
+
+.flavor-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.55s cubic-bezier(0.4,0,0.2,1);
+  position: relative;
+}
+
+.flavor-fill::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.flavor-num {
+  font-size: 11px;
+  color: var(--dim);
+  width: 24px;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  flex-shrink: 0;
+}
+
+/* ── BOTTOM PANELS ── */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 720px) {
+  .bottom-row { grid-template-columns: 1fr; }
+}
+
+.bottom-col {
+  padding: 36px 0;
+}
+
+.bottom-col:first-child {
+  border-right: 1px solid var(--line);
+  padding-right: 32px;
+}
+
+.bottom-col:last-child {
+  padding-left: 32px;
+}
+
+/* mineral table */
+.mineral-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 8px;
+}
+
+.mineral-row:last-child { border-bottom: none; }
+
+.mineral-ion {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink);
+  flex-shrink: 0;
+  min-width: 110px;
+}
+
+.mineral-role {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  flex: 1;
+  text-align: center;
+}
+
+.tag {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-family: 'IBM Plex Mono', monospace;
+  flex-shrink: 0;
+}
+
+.tag-good { color: var(--good); background: var(--good-bg); }
+.tag-warn { color: var(--warn); background: var(--warn-bg); }
+.tag-bad  { color: var(--bad);  background: var(--bad-bg);  }
+
+/* recipe advice */
+.advice-row {
+  display: flex;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: flex-start;
+}
+
+.advice-row:last-child { border-bottom: none; }
+
+.advice-idx {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--dim);
+  flex-shrink: 0;
+  padding-top: 2px;
+  width: 18px;
+}
+
+.advice-text {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+/* ── REFERENCES ── */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 28px 0 48px;
+}
+
+.ref-label {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.ref-item {
+  font-size: 10px;
+  color: var(--dim);
+  line-height: 1.9;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 300;
+  padding-left: 14px;
+  border-left: 1px solid var(--line2);
+  margin-bottom: 3px;
+}
+
+/* fade-in on load */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+header { animation: fadeUp 0.6s ease both; }
+.col-inputs  { animation: fadeUp 0.7s 0.1s ease both; }
+.col-results { animation: fadeUp 0.7s 0.2s ease both; }
+.bottom-row  { animation: fadeUp 0.7s 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="site-mark">ZAN · Water Analysis</div>
+    <h1>추출수 성분<br><i>향미 예측</i></h1>
+    <div class="header-sub">TDS · GH · KH · pH — realtime flavor modeling</div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body-grid">
+
+    <!-- LEFT: inputs -->
+    <div class="col-inputs">
+      <div class="section-label">Parameters</div>
+
+      <!-- TDS -->
+      <div class="param-block">
+        <div class="param-head">
+          <span class="param-name">TDS</span>
+          <span class="param-unit">mg/L (ppm)</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="tds" min="0" max="500" value="90" step="1" oninput="updateAll()">
+          <span class="param-val" id="tds-v">90</span>
+        </div>
+        <div class="param-hint">SCA 권장 75–250 · 최적 ~150</div>
+      </div>
+
+      <!-- GH -->
+      <div class="param-block">
+        <div class="param-head">
+          <span class="param-name">GH · 총경도</span>
+          <span class="param-unit">ppm as CaCO₃</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="gh" min="0" max="300" value="68" step="1" oninput="updateAll()">
+          <span class="param-val" id="gh-v">68</span>
+        </div>
+        <div class="param-hint">Ca²⁺ + Mg²⁺ 합산 · SCA 권장 17–85</div>
+      </div>
+
+      <!-- KH -->
+      <div class="param-block">
+        <div class="param-head">
+          <span class="param-name">KH · 알칼리도</span>
+          <span class="param-unit">ppm as CaCO₃</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="kh" min="0" max="250" value="40" step="1" oninput="updateAll()">
+          <span class="param-val" id="kh-v">40</span>
+        </div>
+        <div class="param-hint">산미 완충 · SCA 권장 40 · 상한 75</div>
+      </div>
+
+      <!-- pH -->
+      <div class="param-block">
+        <div class="param-head">
+          <span class="param-name">pH</span>
+          <span class="param-unit"></span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="ph" min="5.0" max="9.5" value="7.0" step="0.1" oninput="updateAll()">
+          <span class="param-val" id="ph-v">7.0</span>
+        </div>
+        <div class="param-hint">SCA 권장 6.5–7.5 · 산성 → 산미 강조</div>
+      </div>
+
+      <!-- status strip -->
+      <div class="status-strip">
+        <div class="status-cell">
+          <div class="status-cell-label">추출 효율</div>
+          <div class="status-cell-val" id="s-ext">—</div>
+        </div>
+        <div class="status-cell">
+          <div class="status-cell-label">산미 완충</div>
+          <div class="status-cell-val" id="s-buf">—</div>
+        </div>
+        <div class="status-cell">
+          <div class="status-cell-label">수질 등급</div>
+          <div class="status-cell-val" id="s-grade">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div class="col-results">
+
+      <!-- diagnosis -->
+      <div class="diagnosis-card">
+        <div class="diag-eyebrow">Water Diagnosis</div>
+        <div class="diag-title" id="d-title">—</div>
+        <div class="diag-body" id="d-body">슬라이더를 조정하면 진단이 표시됩니다.</div>
+      </div>
+
+      <!-- radar -->
+      <div class="radar-section">
+        <div class="block-label">Flavor Radar</div>
+        <canvas id="radar" width="240" height="240"></canvas>
+      </div>
+
+      <!-- bars -->
+      <div>
+        <div class="block-label" style="margin-top:24px;">Intensity</div>
+        <div id="flavor-bars"></div>
+      </div>
+
+    </div>
+  </div><!-- /body-grid -->
+
+  <!-- BOTTOM -->
+  <div class="bottom-row">
+
+    <div class="bottom-col">
+      <div class="section-label">수질 분석</div>
+      <div id="mineral-table"></div>
+    </div>
+
+    <div class="bottom-col">
+      <div class="section-label">레시피 보정 가이드</div>
+      <div id="recipe-advice"></div>
+    </div>
+
+  </div>
+
+  <!-- REFERENCES -->
+  <footer>
+    <div class="ref-label">Scientific References</div>
+    <div class="ref-item">Hendon et al. (2014) — Nature: Role of water chemistry in coffee extraction</div>
+    <div class="ref-item">SCA Water Quality Report (2018) — Technical Standards Committee</div>
+    <div class="ref-item">Batali et al. (2020) — J. Food Sci.: Water hardness & espresso flavor</div>
+    <div class="ref-item">Rao, S. (2014) — The Coffee Roaster's Companion: Water Chemistry</div>
+  </footer>
+
+</div><!-- /wrap -->
+
+<script>
+// ─────────────────────────────────────────────
+// FLAVOR MODEL
+// TDS, GH, KH, pH → 7 flavor axes
+// Based on Hendon 2014, SCA 2018, Batali 2020
+// ─────────────────────────────────────────────
+
+function vals() {
+  return {
+    tds: +document.getElementById('tds').value,
+    gh:  +document.getElementById('gh').value,
+    kh:  +document.getElementById('kh').value,
+    ph:  +document.getElementById('ph').value,
+  };
+}
+
+function clamp(v, lo=0, hi=100) { return Math.max(lo, Math.min(hi, v)); }
+
+// GH를 Mg²⁺ / Ca²⁺ 추정으로 분해 (경험적 비율)
+// 한국 수돗물 평균: Ca:Mg ≈ 3:1 (경도 기준)
+function splitGH(gh) {
+  const mg_ppm = gh * 0.243 * 0.4;  // CaCO3 → ion, Mg 비중 ~40%
+  const ca_ppm = gh * 0.401 * 0.6;  // CaCO3 → ion, Ca 비중 ~60%
+  return { mg: mg_ppm, ca: ca_ppm };
+}
+
+function computeFlavors(v) {
+  const { mg, ca } = splitGH(v.gh);
+
+  // ── 산미 ──
+  // KH ↓ → 산 완충 약 → 산미 선명
+  // pH ↓ → 산미 직접 강화
+  // Mg → 밝은 향미 산 추출 강화 (Hendon 2014)
+  let acidity = 50;
+  acidity += (40 - v.kh) * 0.30;
+  acidity += (7.0 - v.ph) * 16;
+  acidity += (mg - 4) * 0.9;
+  acidity -= (ca - 15) * 0.1;
+  acidity = clamp(acidity);
+
+  // ── 단맛 ──
+  // GH 적정 범위(50–100) 내 단맛 상승
+  // TDS 적당히 높을수록 단맛 질감
+  let sweetness = 42;
+  sweetness += (v.gh > 30 && v.gh < 120 ? (v.gh - 30) * 0.22 : 0);
+  sweetness += (v.tds > 60 && v.tds < 200 ? (v.tds - 60) * 0.07 : 0);
+  sweetness += (mg - 3) * 0.4;
+  sweetness -= (v.kh - 60) * 0.12;
+  sweetness = clamp(sweetness);
+
+  // ── 쓴맛 ──
+  // KH 높음 → 산 중화 → 상대적 쓴맛 부각
+  // pH 높음 → 쓴맛 화합물 용출 증가
+  // TDS 과다
+  let bitterness = 28;
+  bitterness += (v.kh - 40) * 0.28;
+  bitterness += (v.ph - 7.0) * 9;
+  bitterness += (v.tds - 150) * 0.05;
+  bitterness += (ca - 25) * 0.2;
+  bitterness = clamp(bitterness);
+
+  // ── 바디 ──
+  // GH, TDS → 구조감
+  let body = 38;
+  body += (v.gh - 40) * 0.18;
+  body += (v.tds - 75) * 0.09;
+  body = clamp(body);
+
+  // ── 아로마 ──
+  // Mg가 향미 화합물(카르복실산) 결합에 핵심 (Hendon 2014)
+  // KH 낮을수록 아로마 선명도 향상
+  let aroma = 38;
+  aroma += (mg - 3) * 1.6;
+  aroma -= (v.kh - 40) * 0.1;
+  aroma += (v.tds > 50 && v.tds < 200 ? (v.tds - 50) * 0.09 : 0);
+  aroma = clamp(aroma);
+
+  // ── 깔끔함 ──
+  // TDS 낮을수록, pH 중성일수록, KH 적정일수록
+  let clean = 65;
+  clean -= (v.tds - 150) * 0.07;
+  clean -= Math.abs(v.ph - 7.0) * 6;
+  clean -= (v.kh - 75) * 0.12;
+  clean = clamp(clean);
+
+  // ── 밸런스 (균형도) ──
+  // SCA 범위 내일수록 높음
+  let balance = 50;
+  balance += (v.tds >= 75 && v.tds <= 250 ? 12 : -10);
+  balance += (v.kh >= 30 && v.kh <= 75  ? 10 : -8);
+  balance += (v.ph >= 6.5 && v.ph <= 7.5 ? 10 : -10);
+  balance += (v.gh >= 17 && v.gh <= 85   ? 8  : -5);
+  balance = clamp(balance);
+
+  return { acidity, sweetness, bitterness, body, aroma, clean, balance };
+}
+
+function computeMeta(v) {
+  const { mg } = splitGH(v.gh);
+  let ext = 55;
+  ext += (mg - 3) * 1.0;
+  ext += (v.tds >= 75 && v.tds <= 200 ? 12 : 0);
+  ext -= (v.kh > 75 ? (v.kh - 75) * 0.2 : 0);
+  ext = Math.round(clamp(ext));
+
+  let buf = '적정';
+  if (v.kh < 20) buf = '약함';
+  else if (v.kh > 80) buf = '과다';
+
+  const issues = [];
+  if (v.tds < 20)       issues.push('TDS 극히 낮음');
+  if (v.tds > 300)      issues.push('TDS 과다');
+  if (v.kh > 85)        issues.push('KH 과다');
+  if (v.ph < 6.0)       issues.push('pH 너무 낮음');
+  if (v.ph > 8.5)       issues.push('pH 너무 높음');
+  if (v.gh > 200)       issues.push('경도 과다');
+
+  const grade = issues.length === 0 && ext >= 65 ? 'A'
+              : issues.length <= 1 && ext >= 52  ? 'B'
+              : issues.length <= 2               ? 'C' : 'D';
+
+  return { ext, buf, grade };
+}
+
+function getDiag(v) {
+  const { mg } = splitGH(v.gh);
+
+  if (v.tds < 15) return {
+    title: '거의 증류수 수준',
+    body:  'TDS가 극히 낮아 미네랄이 부재합니다. 향미 화합물을 추출하는 이온이 없어 납작하고 빈 컵이 됩니다. 미네랄 리미네랄라이제이션이 필수입니다.',
+    color: 'var(--bad)'
+  };
+
+  if (v.kh > 90) return {
+    title: '알칼리도 과다 — 산미 소멸',
+    body:  `KH(${v.kh} ppm)가 SCA 상한(75 ppm)을 초과합니다. 커피의 유기산이 탄산염에 중화되어 산미가 사라지고 쓴맛만 남는 플랫한 추출이 됩니다. RO 혼합 또는 증류수 희석이 필요합니다.`,
+    color: 'var(--bad)'
+  };
+
+  if (mg > 8 && v.kh < 55 && v.tds > 50 && v.tds < 200 && v.ph >= 6.5 && v.ph <= 7.5) return {
+    title: '스페셜티 최적 프로파일',
+    body:  `Mg²⁺(추정 ${mg.toFixed(1)} mg/L)가 충분하고 KH·pH·TDS 모두 SCA 권장 범위 내입니다. Hendon et al. (2014)에 따르면 Mg²⁺는 카르복실산 계열 향미 화합물과 선택적으로 결합해 아로마 강도를 극대화합니다. 현재 수질은 산미와 아로마가 선명한 추출에 유리합니다.`,
+    color: 'var(--good)'
+  };
+
+  if (v.ph < 6.5) return {
+    title: '저 pH — 샤프한 산미 프로파일',
+    body:  `pH(${v.ph})가 낮아 산미가 직접적으로 강조됩니다. KH가 낮으면 산을 완충하지 못해 더욱 날카로운 신맛이 납니다. 에티오피아 내추럴·케냐 SL28 등 산미 중심 원두와 시너지가 크지만, 균형이 깨질 수 있어 주의가 필요합니다.`,
+    color: 'var(--warn)'
+  };
+
+  if (v.ph > 7.5) return {
+    title: '고 pH — 산미 억제·쓴맛 부각',
+    body:  `pH(${v.ph})가 높습니다. 알칼리 환경에서는 커피의 산미 화합물이 이온화되어 인지 강도가 낮아지고, 상대적으로 쓴맛 화합물이 부각됩니다. 다크 로스트에는 어울릴 수 있으나 라이트·미디엄 로스트의 개성이 소실됩니다.`,
+    color: 'var(--warn)'
+  };
+
+  if (v.tds > 250) return {
+    title: 'TDS 과다 — 추출 간섭',
+    body:  `TDS(${v.tds} mg/L)가 높아 이온 농도가 커피 추출을 방해합니다. 과도한 미네랄은 커피 화합물과 경쟁하여 추출 수율을 낮추고 탁한 텍스처를 만듭니다. 증류수 또는 RO수와 혼합해 희석을 권장합니다.`,
+    color: 'var(--warn)'
+  };
+
+  if (v.gh < 17) return {
+    title: '경도 부족 — 아로마 손실',
+    body:  `GH(${v.gh} ppm)가 SCA 최저 권장치(17 ppm)를 하회합니다. Ca²⁺·Mg²⁺ 부족으로 향미 화합물 추출이 저해됩니다. 미네랄 첨가 또는 리미네랄라이제이션이 효과적입니다.`,
+    color: 'var(--warn)'
+  };
+
+  return {
+    title: '균형 잡힌 수질',
+    body:  `TDS·GH·KH·pH 모두 SCA 권장 범위 내입니다. Mg²⁺를 소폭 높이면(GH ↑ 또는 Mg 직접 첨가) 아로마 추출을 추가로 강화할 수 있습니다. 현재 수질은 대부분의 싱글 오리진에 안정적으로 작동합니다.`,
+    color: 'var(--ink)'
+  };
+}
+
+// ─── RADAR ───────────────────────────────────
+function drawRadar(f) {
+  const c = document.getElementById('radar');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  const cx = W/2, cy = H/2, r = 88;
+  ctx.clearRect(0, 0, W, H);
+
+  const labels = ['산미','단맛','쓴맛','바디','아로마','깔끔함','밸런스'];
+  const vals2  = [f.acidity, f.sweetness, f.bitterness, f.body, f.aroma, f.clean, f.balance];
+  const n = labels.length;
+
+  const col = {
+    grid: '#d8d3c8',
+    spoke: '#c8c2b5',
+    fill: 'rgba(26,24,20,0.07)',
+    stroke: 'rgba(26,24,20,0.6)',
+    dot: '#1a1814',
+    label: '#7a7468',
+  };
+
+  // rings
+  [0.25,0.5,0.75,1].forEach(scale => {
+    ctx.beginPath();
+    for (let i=0;i<n;i++) {
+      const a = (i/n)*Math.PI*2 - Math.PI/2;
+      const x = cx + Math.cos(a)*r*scale;
+      const y = cy + Math.sin(a)*r*scale;
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = col.grid;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // spokes
+  for (let i=0;i<n;i++) {
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(a)*r, cy+Math.sin(a)*r);
+    ctx.strokeStyle = col.spoke;
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // polygon
+  ctx.beginPath();
+  for (let i=0;i<n;i++) {
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    const d = vals2[i]/100;
+    const x = cx + Math.cos(a)*r*d;
+    const y = cy + Math.sin(a)*r*d;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = col.fill;
+  ctx.fill();
+  ctx.strokeStyle = col.stroke;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // dots
+  for (let i=0;i<n;i++) {
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    const d = vals2[i]/100;
+    const x = cx + Math.cos(a)*r*d;
+    const y = cy + Math.sin(a)*r*d;
+    ctx.beginPath();
+    ctx.arc(x,y,2.5,0,Math.PI*2);
+    ctx.fillStyle = col.dot;
+    ctx.fill();
+  }
+
+  // labels
+  ctx.font = '11px "Noto Sans KR", sans-serif';
+  ctx.fillStyle = col.label;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  for (let i=0;i<n;i++) {
+    const a = (i/n)*Math.PI*2 - Math.PI/2;
+    const lx = cx + Math.cos(a)*(r+17);
+    const ly = cy + Math.sin(a)*(r+17);
+    ctx.fillText(labels[i], lx, ly);
+  }
+}
+
+// ─── BARS ────────────────────────────────────
+const FLAVOR_DEFS = [
+  {key:'acidity',  label:'산미'},
+  {key:'sweetness',label:'단맛'},
+  {key:'bitterness',label:'쓴맛'},
+  {key:'body',     label:'바디'},
+  {key:'aroma',    label:'아로마'},
+  {key:'clean',    label:'깔끔함'},
+  {key:'balance',  label:'밸런스'},
+];
+
+function renderBars(f) {
+  document.getElementById('flavor-bars').innerHTML = FLAVOR_DEFS.map(d => `
+    <div class="flavor-row">
+      <div class="flavor-name">${d.label}</div>
+      <div class="flavor-track">
+        <div class="flavor-fill" style="width:${f[d.key]}%"></div>
+      </div>
+      <div class="flavor-num">${Math.round(f[d.key])}</div>
+    </div>
+  `).join('');
+}
+
+// ─── MINERAL TABLE ───────────────────────────
+function renderMinerals(v) {
+  const { mg, ca } = splitGH(v.gh);
+  const rows = [
+    {
+      ion: `Mg²⁺  ~${mg.toFixed(1)} mg/L`,
+      role: '향미 화합물 결합 · 아로마 강화',
+      tag: mg < 3 ? 'bad' : mg <= 12 ? 'good' : 'warn',
+      label: mg < 3 ? '부족' : mg <= 12 ? '적정' : '과다'
+    },
+    {
+      ion: `Ca²⁺  ~${ca.toFixed(1)} mg/L`,
+      role: '추출 보조 · 과다 시 쓴맛',
+      tag: ca > 80 ? 'bad' : ca >= 8 ? 'good' : 'warn',
+      label: ca > 80 ? '과다' : ca >= 8 ? '적정' : '부족'
+    },
+    {
+      ion: `KH  ${v.kh} ppm`,
+      role: '산미 완충 · 균형의 핵심',
+      tag: v.kh > 80 ? 'bad' : v.kh >= 25 ? 'good' : 'warn',
+      label: v.kh > 80 ? '과다' : v.kh >= 25 ? '적정' : '낮음'
+    },
+    {
+      ion: `TDS  ${v.tds} mg/L`,
+      role: '전체 용존 이온 농도',
+      tag: v.tds > 300 ? 'bad' : v.tds >= 75 ? 'good' : 'warn',
+      label: v.tds > 300 ? '과다' : v.tds >= 75 ? '적정' : '낮음'
+    },
+    {
+      ion: `pH  ${v.ph}`,
+      role: '산도 · 추출 환경',
+      tag: (v.ph < 6.0 || v.ph > 8.0) ? 'bad' : (v.ph >= 6.5 && v.ph <= 7.5) ? 'good' : 'warn',
+      label: v.ph < 6.0 ? '너무낮음' : v.ph > 8.0 ? '너무높음' : (v.ph >= 6.5 && v.ph <= 7.5) ? '적정' : '주의'
+    },
+  ];
+
+  document.getElementById('mineral-table').innerHTML = rows.map(r => `
+    <div class="mineral-row">
+      <div class="mineral-ion">${r.ion}</div>
+      <div class="mineral-role">${r.role}</div>
+      <div class="tag tag-${r.tag}">${r.label}</div>
+    </div>
+  `).join('');
+}
+
+// ─── RECIPE ADVICE ───────────────────────────
+function renderAdvice(v) {
+  const { mg } = splitGH(v.gh);
+  const advices = [];
+
+  // 수온
+  if (v.kh > 65) advices.push('수온 89–91°C — 과알칼리 보완, 과추출 방지');
+  else if (v.ph < 6.8) advices.push('수온 93–95°C — 낮은 pH 보완, 바디 강화');
+  else advices.push('수온 92–93°C — SCA 표준 적용');
+
+  // 그라인드
+  if (v.kh > 70) advices.push('그라인드 굵게 조정 — 과알칼리로 인한 쓴맛 완화');
+  else if (mg < 3) advices.push('그라인드 가늘게 조정 — Mg 부족 시 접촉 면적으로 보완');
+  else advices.push('표준 그라인드 유지 — 수질이 추출 변수를 지지');
+
+  // 브루잉 비율
+  if (v.tds < 50) advices.push('브루잉 비율 ↑ 또는 리미네랄라이제이션 권장');
+  else if (v.tds > 280) advices.push('희석수 혼합 또는 비율 조정 (TDS 150 목표)');
+  else advices.push('표준 브루잉 비율 유지 (필터 1:15–17 / 에스프레소 1:2)');
+
+  // 원두
+  if (mg > 7 && v.ph < 7.2 && v.kh < 55)
+    advices.push('원두 추천 — 에티오피아·케냐 : 산미·아로마 시너지 극대');
+  else if (v.kh > 60)
+    advices.push('원두 추천 — 브라질·과테말라 : 알칼리 환경에 내성 있는 구조');
+  else
+    advices.push('원두 추천 — 콜롬비아·코스타리카 : 균형 프로파일 호환');
+
+  document.getElementById('recipe-advice').innerHTML = advices.map((a,i) => `
+    <div class="advice-row">
+      <div class="advice-idx">0${i+1}</div>
+      <div class="advice-text">${a}</div>
+    </div>
+  `).join('');
+}
+
+// ─── MAIN UPDATE ─────────────────────────────
+function updateAll() {
+  ['tds','gh','kh','ph'].forEach(id => {
+    document.getElementById(id+'-v').textContent = document.getElementById(id).value;
+  });
+
+  const v = vals();
+  const f = computeFlavors(v);
+  const meta = computeMeta(v);
+  const diag = getDiag(v);
+
+  // status
+  document.getElementById('s-ext').textContent   = meta.ext + '%';
+  document.getElementById('s-buf').textContent   = meta.buf;
+  const gEl = document.getElementById('s-grade');
+  gEl.textContent = meta.grade;
+  gEl.style.color = meta.grade==='A' ? 'var(--good)' :
+                    meta.grade==='B' ? 'var(--ink2)' :
+                    meta.grade==='C' ? 'var(--warn)' : 'var(--bad)';
+
+  // diagnosis
+  const dTitle = document.getElementById('d-title');
+  dTitle.textContent = diag.title;
+  dTitle.style.color = diag.color;
+  document.getElementById('d-body').textContent = diag.body;
+
+  drawRadar(f);
+  renderBars(f);
+  renderMinerals(v);
+  renderAdvice(v);
+}
+
+updateAll();
+</script>
+</body>
+</html>
