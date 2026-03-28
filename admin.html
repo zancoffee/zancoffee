@@ -10,8 +10,8 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 300;
-  background: #0f0f0f;
-  color: #e0e0e0;
+  background: #f5f2ed;
+  color: #1a1814;
   min-height: 100vh;
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -25,11 +25,12 @@ body {
   min-height: 100vh;
   flex-direction: column;
   gap: 32px;
+  background: #f5f2ed;
 }
 .login-title {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
-  color: #555;
+  color: #9a9488;
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -40,9 +41,9 @@ body {
   width: 280px;
 }
 .login-box input {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  color: #e0e0e0;
+  background: #fff;
+  border: 1px solid #dcd8d0;
+  color: #1a1814;
   padding: 12px 16px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 13px;
@@ -50,10 +51,10 @@ body {
   transition: border-color 0.15s;
   letter-spacing: 0.08em;
 }
-.login-box input:focus { border-color: #555; }
+.login-box input:focus { border-color: #9a9488; }
 .login-btn {
-  background: #e0e0e0;
-  color: #0f0f0f;
+  background: #1a1814;
+  color: #f5f2ed;
   border: none;
   padding: 12px;
   font-family: 'IBM Plex Mono', monospace;
@@ -64,11 +65,11 @@ body {
   cursor: pointer;
   transition: background 0.15s;
 }
-.login-btn:hover { background: #fff; }
+.login-btn:hover { background: #3a3630; }
 .login-err {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  color: #c0392b;
+  color: #b04030;
   text-align: center;
   letter-spacing: 0.06em;
 }
@@ -83,8 +84,8 @@ body {
   position: fixed;
   top: 0; left: 0;
   height: 100vh;
-  background: #0a0a0a;
-  border-right: 1px solid #1e1e1e;
+  background: #edeae3;
+  border-right: 1px solid #dcd8d0;
   display: flex;
   flex-direction: column;
   padding: 36px 24px;
@@ -92,7 +93,7 @@ body {
 .admin-logo {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  color: #555;
+  color: #b0aa9e;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -100,30 +101,30 @@ body {
 .admin-logo-name {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 18px;
-  color: #e0e0e0;
+  color: #1a1814;
   letter-spacing: 0.04em;
   margin-bottom: 40px;
 }
-.admin-logo-name span { color: #444; }
+.admin-logo-name span { color: #c8c2b5; }
 .admin-nav { display: flex; flex-direction: column; gap: 2px; }
 .admin-nav-item {
   font-size: 12px;
-  color: #444;
+  color: #b0aa9e;
   padding: 6px 0;
   cursor: pointer;
   transition: color 0.15s;
   letter-spacing: 0.02em;
   user-select: none;
 }
-.admin-nav-item:hover { color: #aaa; }
-.admin-nav-item.on { color: #e0e0e0; font-weight: 500; }
+.admin-nav-item:hover { color: #5a5448; }
+.admin-nav-item.on { color: #1a1814; font-weight: 500; }
 
 .admin-nav-item::before {
   content: '— ';
-  color: #2a2a2a;
+  color: #d8d3c8;
   font-family: 'IBM Plex Mono', monospace;
 }
-.admin-nav-item.on::before { color: #555; }
+.admin-nav-item.on::before { color: #9a9488; }
 
 .admin-sidebar-foot {
   margin-top: auto;
@@ -134,16 +135,16 @@ body {
 .goto-site {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: #333;
+  color: #b0aa9e;
   text-decoration: none;
   letter-spacing: 0.08em;
   transition: color 0.15s;
 }
-.goto-site:hover { color: #888; }
+.goto-site:hover { color: #5a5448; }
 .logout-btn {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: #333;
+  color: #b0aa9e;
   background: none;
   border: none;
   cursor: pointer;
@@ -152,13 +153,14 @@ body {
   transition: color 0.15s;
   padding: 0;
 }
-.logout-btn:hover { color: #c0392b; }
+.logout-btn:hover { color: #b04030; }
 
 /* ADMIN CONTENT */
 .admin-content {
   margin-left: 200px;
   flex: 1;
   padding: 48px 56px;
+  background: #f5f2ed;
 }
 
 /* PANEL */
@@ -171,12 +173,12 @@ body {
   justify-content: space-between;
   margin-bottom: 40px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #1e1e1e;
+  border-bottom: 1px solid #dcd8d0;
 }
 .panel-title {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  color: #444;
+  color: #b0aa9e;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-bottom: 6px;
@@ -184,12 +186,12 @@ body {
 .panel-heading {
   font-size: 22px;
   font-weight: 400;
-  color: #e0e0e0;
+  color: #1a1814;
   letter-spacing: -0.01em;
 }
 .add-btn {
-  background: #e0e0e0;
-  color: #0f0f0f;
+  background: #1a1814;
+  color: #f5f2ed;
   border: none;
   padding: 10px 20px;
   font-family: 'IBM Plex Mono', monospace;
@@ -200,13 +202,13 @@ body {
   transition: background 0.15s;
   white-space: nowrap;
 }
-.add-btn:hover { background: #fff; }
+.add-btn:hover { background: #3a3630; }
 
 /* ITEM LIST */
 .item-list { display: flex; flex-direction: column; gap: 1px; }
 .item-row {
-  background: #141414;
-  border: 1px solid #1e1e1e;
+  background: #fff;
+  border: 1px solid #dcd8d0;
   padding: 20px 24px;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -214,18 +216,18 @@ body {
   align-items: center;
   transition: border-color 0.15s;
 }
-.item-row:hover { border-color: #2a2a2a; }
+.item-row:hover { border-color: #c8c2b5; }
 .item-row-info {}
 .item-row-cat {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #444;
+  color: #b0aa9e;
   margin-bottom: 5px;
 }
-.item-row-title { font-size: 14px; font-weight: 400; color: #ccc; margin-bottom: 3px; }
-.item-row-sub { font-size: 12px; font-weight: 300; color: #555; }
+.item-row-title { font-size: 14px; font-weight: 400; color: #1a1814; margin-bottom: 3px; }
+.item-row-sub { font-size: 12px; font-weight: 300; color: #9a9488; }
 .item-row-actions { display: flex; gap: 8px; flex-shrink: 0; }
 .edit-btn, .del-btn {
   font-family: 'IBM Plex Mono', monospace;
@@ -237,37 +239,39 @@ body {
   cursor: pointer;
   transition: all 0.15s;
 }
-.edit-btn { background: #1e1e1e; color: #888; }
-.edit-btn:hover { background: #2a2a2a; color: #ccc; }
-.del-btn { background: transparent; color: #333; border: 1px solid #2a2a2a; }
-.del-btn:hover { border-color: #c0392b; color: #c0392b; }
+.edit-btn { background: #edeae3; color: #5a5448; border: 1px solid #dcd8d0; }
+.edit-btn:hover { background: #e0dcd5; color: #1a1814; border-color: #c8c2b5; }
+.del-btn { background: transparent; color: #c8c2b5; border: 1px solid #dcd8d0; }
+.del-btn:hover { border-color: #b04030; color: #b04030; }
 
 /* MODAL */
 .modal-bg {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(26,24,20,0.35);
   z-index: 500;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px);
 }
 .modal-bg.on { display: flex; }
 .modal {
-  background: #141414;
-  border: 1px solid #2a2a2a;
+  background: #fff;
+  border: 1px solid #dcd8d0;
   width: 560px;
   max-width: 90vw;
   max-height: 90vh;
   overflow-y: auto;
   padding: 36px 40px;
+  box-shadow: 0 12px 40px rgba(26,24,20,0.1);
 }
 .modal-title {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #555;
+  color: #9a9488;
   margin-bottom: 28px;
 }
 .form-group { margin-bottom: 20px; }
@@ -276,15 +280,15 @@ body {
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #555;
+  color: #9a9488;
   display: block;
   margin-bottom: 8px;
 }
 .form-input, .form-textarea, .form-select {
   width: 100%;
-  background: #0f0f0f;
-  border: 1px solid #2a2a2a;
-  color: #e0e0e0;
+  background: #f5f2ed;
+  border: 1px solid #dcd8d0;
+  color: #1a1814;
   padding: 11px 14px;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 13px;
@@ -293,20 +297,20 @@ body {
   transition: border-color 0.15s;
   word-break: keep-all;
 }
-.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: #555; }
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: #9a9488; }
 .form-textarea { height: 100px; resize: vertical; }
-.form-select option { background: #141414; }
+.form-select option { background: #fff; color: #1a1814; }
 .form-hint {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: #333;
+  color: #c8c2b5;
   margin-top: 6px;
   letter-spacing: 0.04em;
 }
 .modal-actions { display: flex; gap: 10px; margin-top: 28px; }
 .save-btn {
-  background: #e0e0e0;
-  color: #0f0f0f;
+  background: #1a1814;
+  color: #f5f2ed;
   border: none;
   padding: 11px 24px;
   font-family: 'IBM Plex Mono', monospace;
@@ -317,11 +321,11 @@ body {
   transition: background 0.15s;
   flex: 1;
 }
-.save-btn:hover { background: #fff; }
+.save-btn:hover { background: #3a3630; }
 .cancel-btn {
   background: transparent;
-  color: #555;
-  border: 1px solid #2a2a2a;
+  color: #9a9488;
+  border: 1px solid #dcd8d0;
   padding: 11px 20px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
@@ -330,30 +334,30 @@ body {
   cursor: pointer;
   transition: all 0.15s;
 }
-.cancel-btn:hover { border-color: #555; color: #aaa; }
+.cancel-btn:hover { border-color: #9a9488; color: #5a5448; }
 
 /* CAREER EDIT */
 .career-form { max-width: 600px; }
 .career-tl-list { display: flex; flex-direction: column; gap: 1px; margin-bottom: 12px; }
 .career-tl-row {
-  background: #141414;
-  border: 1px solid #1e1e1e;
+  background: #fff;
+  border: 1px solid #dcd8d0;
   padding: 14px 18px;
   display: flex;
   align-items: center;
   gap: 16px;
 }
-.career-tl-year { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #555; width: 80px; flex-shrink: 0; }
-.career-tl-content { flex: 1; font-size: 13px; color: #aaa; }
-.career-tl-content span { font-size: 11px; color: #444; display: block; margin-top: 2px; }
+.career-tl-year { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #b0aa9e; width: 80px; flex-shrink: 0; }
+.career-tl-content { flex: 1; font-size: 13px; color: #5a5448; }
+.career-tl-content span { font-size: 11px; color: #c8c2b5; display: block; margin-top: 2px; }
 
 /* TOAST */
 .toast {
   position: fixed;
   bottom: 32px;
   right: 32px;
-  background: #e0e0e0;
-  color: #0f0f0f;
+  background: #1a1814;
+  color: #f5f2ed;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -371,9 +375,28 @@ body {
   text-align: center;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
-  color: #333;
+  color: #c8c2b5;
   letter-spacing: 0.08em;
 }
+
+
+/* ZAN TABS */
+.zan-tab {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #b0aa9e;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s;
+}
+.zan-tab.on { color: #1a1814; border-bottom-color: #1a1814; }
+.zan-tab:hover { color: #5a5448; }
 
 @media (max-width: 640px) {
   .admin-sidebar { width: 100%; position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 20px; }
@@ -444,11 +467,28 @@ body {
       <div class="panel-header">
         <div>
           <div class="panel-title">Community</div>
-          <div class="panel-heading">ZAN 활동 관리</div>
+          <div class="panel-heading">ZAN 관리</div>
         </div>
-        <button class="add-btn" data-type="zan">+ 활동 추가</button>
+        <div style="display:flex;gap:8px;">
+          <button class="add-btn" id="zan-add-cat-btn">+ 카테고리 추가</button>
+          <button class="add-btn" id="zan-add-post-btn">+ 게시물 추가</button>
+        </div>
       </div>
-      <div class="item-list" id="list-zan"></div>
+      <div style="display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid #dcd8d0;">
+        <button class="zan-tab on" data-tab="cats">카테고리</button>
+        <button class="zan-tab" data-tab="posts">게시물</button>
+      </div>
+      <div id="zan-tab-cats">
+        <div class="item-list" id="list-zan"></div>
+      </div>
+      <div id="zan-tab-posts" style="display:none;">
+        <div style="margin-bottom:16px;">
+          <select id="zan-post-filter" class="form-select" style="max-width:260px;">
+            <option value="">전체 카테고리</option>
+          </select>
+        </div>
+        <div class="item-list" id="list-zanposts"></div>
+      </div>
     </div>
 
     <!-- CAREER -->
@@ -650,9 +690,7 @@ body {
       }).join('') + '</select></div>' +
       '<div class="form-group"><label class="form-label">제목</label><input class="form-input" id="f-title" value="' + (item.title||'') + '" placeholder="글 제목"></div>' +
       '<div class="form-group"><label class="form-label">한 줄 요약</label><input class="form-input" id="f-sub" value="' + (item.sub||'') + '" placeholder="요약 / 2026.03"></div>' +
-      '<div class="form-group"><label class="form-label">작성일</label><input class="form-input" id="f-date" value="' + (item.date||'') + '" placeholder="2026.03.10"></div>' +
-      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://images.unsplash.com/..."><div class="form-hint">Unsplash 등 이미지 직접 링크</div></div>' +
-      '<div class="form-group"><label class="form-label">본문 (마크다운)</label><textarea class="form-textarea" id="f-body" style="height:200px;font-family:IBM Plex Mono,monospace;font-size:12px;" placeholder="## 소제목&#10;&#10;본문 텍스트를 입력하세요.&#10;&#10;- 리스트&#10;- 아이템">' + (item.body||'') + '</textarea><div class="form-hint">## 소제목 / - 리스트 / **굵게** 지원</div></div>';
+      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://images.unsplash.com/..."><div class="form-hint">Unsplash 등 이미지 직접 링크</div></div>';
   }
 
   function addBlog() {
@@ -660,7 +698,7 @@ body {
       var title = document.getElementById('f-title').value.trim();
       if (!title) { showToast('제목을 입력해주세요'); return; }
       var data = getData('blog');
-      data.unshift({ id: nextId(data), cat: document.getElementById('f-cat').value, title: title, sub: document.getElementById('f-sub').value, date: document.getElementById('f-date').value, img: document.getElementById('f-img').value, body: document.getElementById('f-body').value });
+      data.unshift({ id: nextId(data), cat: document.getElementById('f-cat').value, title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value });
       save('blog', data);
       renderBlog();
       closeModal();
@@ -678,9 +716,7 @@ body {
       item.cat   = document.getElementById('f-cat').value;
       item.title = title;
       item.sub   = document.getElementById('f-sub').value;
-      item.date  = document.getElementById('f-date').value;
       item.img   = document.getElementById('f-img').value;
-      item.body  = document.getElementById('f-body').value;
       save('blog', data);
       renderBlog();
       closeModal();
@@ -794,8 +830,7 @@ body {
     item = item || {};
     return '<div class="form-group"><label class="form-label">활동명</label><input class="form-input" id="f-title" value="' + (item.title||'') + '" placeholder="커피 스터디"></div>' +
       '<div class="form-group"><label class="form-label">설명</label><input class="form-input" id="f-sub" value="' + (item.sub||'') + '" placeholder="Science / 추출 · 로스팅"></div>' +
-      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://..."></div>' +
-      '<div class="form-group"><label class="form-label">상세 내용</label><textarea class="form-textarea" id="f-body" style="height:140px;">' + (item.body||'') + '</textarea><div class="form-hint">카드 클릭 시 패널에 표시되는 내용</div></div>';
+      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://..."></div>';
   }
 
   function addZan() {
@@ -803,7 +838,7 @@ body {
       var title = document.getElementById('f-title').value.trim();
       if (!title) { showToast('활동명을 입력해주세요'); return; }
       var data = getData('zan');
-      data.push({ id: nextId(data), title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value, body: document.getElementById('f-body').value });
+      data.push({ id: nextId(data), title: title, sub: document.getElementById('f-sub').value, img: document.getElementById('f-img').value });
       save('zan', data);
       renderZan();
       closeModal();
@@ -821,7 +856,6 @@ body {
       item.title = title;
       item.sub = document.getElementById('f-sub').value;
       item.img = document.getElementById('f-img').value;
-      item.body = document.getElementById('f-body').value;
       save('zan', data);
       renderZan();
       closeModal();
@@ -932,6 +966,7 @@ body {
       if (type === 'blog')   editBlog(id);
       else if (type === 'tools')  editTools(id);
       else if (type === 'zan')    editZan(id);
+      else if (type === 'zanpost') editZanPost(id);
       else if (type === 'career') editCareer(id);
     }
     if (btn.classList.contains('del-btn')) {
@@ -940,9 +975,145 @@ body {
       if (type === 'blog')   delBlog(id);
       else if (type === 'tools')  delTools(id);
       else if (type === 'zan')    delZan(id);
+      else if (type === 'zanpost') delZanPost(id);
       else if (type === 'career') delCareer(id);
     }
   });
+
+
+  // ══════════════════════════════
+  // ZAN DEFAULTS (zanPosts)
+  // ══════════════════════════════
+  var zanPostDefaults = [
+    { id:1, catId:1, title:'TDS와 수율, 어떻게 읽어야 할까', sub:'추출 과학의 기초 / 2026.02', img:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80' },
+    { id:2, catId:1, title:'브루잉 레시피 비교 실험 — V60 vs 칼리타', sub:'동일 원두, 다른 결과 / 2026.01', img:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80' },
+    { id:3, catId:2, title:'2026년 3월 크루 모임 후기', sub:'대구 · Regular Meet / 2026.03', img:'https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=800&q=80' },
+    { id:4, catId:2, title:'신규 크루 모집 안내', sub:'함께 커피를 나눌 사람 / 2026.02', img:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800&q=80' },
+    { id:5, catId:3, title:'쇼츠 제작 후기 — 홈카페 브루잉 편', sub:'YouTube Shorts / 2026.01', img:'https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?w=800&q=80' },
+    { id:6, catId:4, title:'WBC 2026 대비 훈련 일지', sub:'Competition Prep / 2026.03', img:'https://images.unsplash.com/photo-1585515320310-259814833e62?w=800&q=80' },
+    { id:7, catId:5, title:'대구 스페셜티 카페 탐방 — 봄 에디션', sub:'Daegu Cafe Tour / 2026.03', img:'https://images.unsplash.com/photo-1521017432531-fbd92d768814?w=800&q=80' },
+    { id:8, catId:6, title:'에티오피아 예가체프 게이샤 레시피 아카이브', sub:'Recipe Archive / 2026.02', img:'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=80' }
+  ];
+
+  function getZanPosts() {
+    return load('zanPosts') || JSON.parse(JSON.stringify(zanPostDefaults));
+  }
+
+  // ── ZAN TAB SWITCHING ──
+  document.querySelectorAll('.zan-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.zan-tab').forEach(function(t) { t.classList.remove('on'); });
+      this.classList.add('on');
+      var which = this.getAttribute('data-tab');
+      document.getElementById('zan-tab-cats').style.display  = which === 'cats'  ? '' : 'none';
+      document.getElementById('zan-tab-posts').style.display = which === 'posts' ? '' : 'none';
+      if (which === 'posts') renderZanPosts();
+    });
+  });
+
+  // ── ZAN ADD BUTTONS ──
+  document.getElementById('zan-add-cat-btn').addEventListener('click', addZan);
+  document.getElementById('zan-add-post-btn').addEventListener('click', addZanPost);
+
+  // ── ZAN POSTS RENDER ──
+  function populateZanFilter() {
+    var cats   = getData('zan');
+    var select = document.getElementById('zan-post-filter');
+    var cur    = select.value;
+    select.innerHTML = '<option value="">전체 카테고리</option>' +
+      cats.map(function(c) {
+        return '<option value="' + c.id + '"' + (String(c.id) === cur ? ' selected' : '') + '>' + c.title + '</option>';
+      }).join('');
+  }
+
+  function renderZanPosts() {
+    populateZanFilter();
+    var posts  = getZanPosts();
+    var cats   = getData('zan');
+    var filter = document.getElementById('zan-post-filter').value;
+    var list   = document.getElementById('list-zanposts');
+    var filtered = filter ? posts.filter(function(p) { return String(p.catId) === filter; }) : posts;
+
+    if (!filtered.length) { list.innerHTML = emptyState('게시물이 없습니다'); return; }
+
+    list.innerHTML = filtered.map(function(item) {
+      var cat = cats.filter(function(c) { return c.id == item.catId; })[0];
+      var catName = cat ? cat.title : '(카테고리 없음)';
+      return '<div class="item-row">' +
+        '<div class="item-row-info">' +
+          '<div class="item-row-cat">' + catName + '</div>' +
+          '<div class="item-row-title">' + item.title + '</div>' +
+          '<div class="item-row-sub">' + (item.sub||'') + '</div>' +
+        '</div>' +
+        '<div class="item-row-actions">' +
+          '<button class="edit-btn" data-type="zanpost" data-id="' + item.id + '">수정</button>' +
+          '<button class="del-btn" data-type="zanpost" data-id="' + item.id + '">삭제</button>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  document.getElementById('zan-post-filter').addEventListener('change', renderZanPosts);
+
+  // ── ZAN POST FORM ──
+  function zanPostForm(item) {
+    item = item || {};
+    var cats = getData('zan');
+    var catOptions = cats.map(function(c) {
+      return '<option value="' + c.id + '"' + (item.catId == c.id ? ' selected' : '') + '>' + c.title + '</option>';
+    }).join('');
+    return '<div class="form-group"><label class="form-label">카테고리</label>' +
+      '<select class="form-select" id="f-catid">' + catOptions + '</select></div>' +
+      '<div class="form-group"><label class="form-label">제목</label><input class="form-input" id="f-title" value="' + (item.title||'') + '" placeholder="게시물 제목"></div>' +
+      '<div class="form-group"><label class="form-label">한 줄 설명</label><input class="form-input" id="f-sub" value="' + (item.sub||'') + '" placeholder="설명 / 2026.03"></div>' +
+      '<div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="f-img" value="' + (item.img||'') + '" placeholder="https://..."></div>';
+  }
+
+  function addZanPost() {
+    var cats = getData('zan');
+    if (!cats.length) { showToast('카테고리를 먼저 추가해주세요'); return; }
+    openModal('게시물 추가', zanPostForm(), function() {
+      var title = document.getElementById('f-title').value.trim();
+      if (!title) { showToast('제목을 입력해주세요'); return; }
+      var posts = getZanPosts();
+      posts.unshift({
+        id: posts.reduce(function(m, i) { return Math.max(m, i.id||0); }, 0) + 1,
+        catId: parseInt(document.getElementById('f-catid').value),
+        title: title,
+        sub: document.getElementById('f-sub').value,
+        img: document.getElementById('f-img').value
+      });
+      save('zanPosts', posts);
+      renderZanPosts();
+      closeModal();
+      showToast('게시물이 추가되었습니다');
+    });
+  }
+
+  function editZanPost(id) {
+    var posts = getZanPosts();
+    var item  = posts.filter(function(i) { return i.id == id; })[0];
+    if (!item) return;
+    openModal('게시물 수정', zanPostForm(item), function() {
+      var title = document.getElementById('f-title').value.trim();
+      if (!title) { showToast('제목을 입력해주세요'); return; }
+      item.catId = parseInt(document.getElementById('f-catid').value);
+      item.title = title;
+      item.sub   = document.getElementById('f-sub').value;
+      item.img   = document.getElementById('f-img').value;
+      save('zanPosts', posts);
+      renderZanPosts();
+      closeModal();
+      showToast('수정되었습니다');
+    });
+  }
+
+  function delZanPost(id) {
+    if (!confirm('삭제할까요?')) return;
+    var posts = getZanPosts().filter(function(i) { return i.id != id; });
+    save('zanPosts', posts);
+    renderZanPosts();
+    showToast('삭제되었습니다');
+  }
 
   // ── RENDER ALL ──
   function renderAll() {
