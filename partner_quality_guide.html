@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -1018,171 +1018,16 @@
   /* print-value는 화면에서 항상 숨김 — 인쇄 시에만 표시됨 */
   .print-value, .print-value-textarea { display: none; }
 
-
-  /* ── PASSWORD OVERLAY ── */
-  #pwOverlay {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #0e0f0c;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column; gap: 0;
-  }
-  .pw-box {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 28px; width: 100%; max-width: 360px; padding: 0 32px;
-  }
-  .pw-logo { text-align: center; }
-  .pw-logo-main { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
-  .pw-logo-sub  { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
-  .pw-title { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #fff; text-align: center; line-height: 1.1; }
-  .pw-input-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  #pwInput {
-    width: 100%; padding: 14px 18px; border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px; background: rgba(255,255,255,0.06);
-    color: #fff; font-family: 'Noto Sans KR', sans-serif; font-size: 22px;
-    font-weight: 700; letter-spacing: 8px; text-align: center;
-    outline: none; transition: border 0.2s;
-  }
-  #pwInput:focus { border-color: rgba(159,232,112,0.5); }
-  #pwInput.pw-error { border-color: #c0292e; animation: pwShake 0.35s; }
-  @keyframes pwShake {
-    0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 60%{transform:translateX(8px)}
-  }
-  #pwError { font-size: 12px; font-weight: 600; color: #c0292e; text-align: center; min-height: 18px; }
-  .pw-btn {
-    width: 100%; padding: 14px; border-radius: 10px; border: none;
-    background: #9fe870; color: #163300; font-family: 'Noto Sans KR', sans-serif;
-    font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
-    transition: transform 0.14s cubic-bezier(.34,1.56,.64,1), opacity 0.14s;
-  }
-  .pw-btn:hover { transform: scale(1.03); }
-  .pw-btn:active { transform: scale(0.97); }
-
-  /* ── PORTAL VIEW ── */
-  #portalView { display: none; min-height: 100vh; background: #f4f6f2; }
-  .portal-header {
-    background: #0e0f0c; position: sticky; top: 0; z-index: 100;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .portal-header-inner {
-    max-width: 720px; margin: 0 auto; padding: 18px 28px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .portal-logo-main { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
-  .portal-logo-sub  { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.35); letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; }
-  .portal-lock-btn {
-    font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.35);
-    background: none; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px;
-    padding: 6px 14px; cursor: pointer; letter-spacing: 0.5px; transition: color 0.15s, border-color 0.15s;
-  }
-  .portal-lock-btn:hover { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.3); }
-  .portal-body { max-width: 720px; margin: 0 auto; padding: 48px 28px 100px; }
-  .portal-hero { margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid rgba(14,15,12,0.18); }
-  .portal-hero-title { font-size: 48px; font-weight: 900; line-height: 0.9; letter-spacing: -2px; color: #0e0f0c; }
-  .portal-hero-sub { font-size: 15px; font-weight: 400; color: #868685; margin-top: 14px; line-height: 1.5; }
-  .portal-cat-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
-    color: #868685; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
-  }
-  .portal-cat-label::after { content: ""; flex: 1; height: 1px; background: rgba(14,15,12,0.12); }
-  .portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .tool-card {
-    background: #fff; border-radius: 14px; border: 1px solid rgba(14,15,12,0.10);
-    padding: 24px; cursor: pointer; transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s;
-    display: flex; flex-direction: column; gap: 14px;
-  }
-  .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(14,15,12,0.10); }
-  .tool-card:active { transform: scale(0.98); }
-  .tool-card-icon {
-    width: 44px; height: 44px; border-radius: 10px;
-    background: #0e0f0c; display: flex; align-items: center; justify-content: center;
-  }
-  .tool-card-icon svg { width: 22px; height: 22px; }
-  .tool-card-name { font-size: 15px; font-weight: 700; color: #0e0f0c; letter-spacing: -0.3px; }
-  .tool-card-desc { font-size: 12px; font-weight: 400; color: #868685; line-height: 1.6; }
-  .tool-card-tag {
-    display: inline-flex; align-items: center;
-    background: #e2f6d5; color: #163300; font-size: 10px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
-    align-self: flex-start;
-  }
-
-  /* ── QC APP BACK BUTTON ── */
-  #qcApp { display: none; }
-  .qc-back-btn {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.5);
-    background: none; border: none; cursor: pointer; padding: 0;
-    letter-spacing: 0.3px; transition: color 0.15s;
-  }
-  .qc-back-btn:hover { color: #9fe870; }
-  .qc-back-btn svg { width: 14px; height: 14px; }
   </style>
 </head>
 <body>
 
-<!-- PASSWORD OVERLAY -->
-<div id="pwOverlay">
-  <div class="pw-box">
-    <div class="pw-logo">
-      <div class="pw-logo-main">Deep Coffee Roasters</div>
-      <div class="pw-logo-sub">Internal Tools</div>
-    </div>
-    <div class="pw-title">비밀번호를<br>입력하세요</div>
-    <div class="pw-input-wrap">
-      <input id="pwInput" type="password" placeholder="····" maxlength="20"
-        onkeydown="if(event.key==='Enter')checkPw()">
-      <div id="pwError"></div>
-      <button class="pw-btn" onclick="checkPw()">확인</button>
-    </div>
-  </div>
-</div>
-
-<!-- PORTAL VIEW -->
-<div id="portalView">
-  <div class="portal-header">
-    <div class="portal-header-inner">
-      <div>
-        <div class="portal-logo-main">Deep Coffee Roasters</div>
-        <div class="portal-logo-sub">Internal Tools</div>
-      </div>
-      <button class="portal-lock-btn" onclick="lockPortal()">잠금</button>
-    </div>
-  </div>
-  <div class="portal-body">
-    <div class="portal-hero">
-      <div class="portal-hero-title">Tools</div>
-      <div class="portal-hero-sub">내부 업무 도구 모음</div>
-    </div>
-    <div class="portal-cat-label">TOOL</div>
-    <div class="portal-grid">
-      <div class="tool-card" onclick="openTool('qcApp')">
-        <div class="tool-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#9fe870" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-            <rect x="9" y="3" width="6" height="4" rx="1"/>
-            <path d="M9 12h6M9 16h4"/>
-          </svg>
-        </div>
-        <div>
-          <div class="tool-card-name">파트너 퀄리티 가이드</div>
-          <div class="tool-card-desc">파트너사 방문 시 에스프레소 품질 점검 체크리스트. 레시피, 수질, 맛 평가까지 종합 기록.</div>
-        </div>
-        <div class="tool-card-tag">QC Checklist</div>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="qcApp">
 <header>
   <div class="header-inner">
     <div class="logo-mark">
       <div class="logo-main">Deep Coffee Roasters</div>
       <div class="logo-sub">Partner Quality Guide</div>
     </div>
-  <button class="qc-back-btn" onclick="backToPortal()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    목록으로
-  </button>
     <div class="header-right">
       <span class="header-tag">QC Checklist</span>
       <div class="header-dot"></div>
@@ -1464,6 +1309,36 @@
 </div>
 
 <div class="toast" id="toast"></div>
+  <!-- iOS PDF 저장 가이드 모달 -->
+  <div id="iosPrintModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(14,15,12,.5);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;">
+    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:28px 24px 40px;font-family:'Noto Sans KR',sans-serif;">
+      <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 24px;"></div>
+      <div style="font-size:18px;font-weight:800;color:#0e0f0c;margin-bottom:6px;">iOS에서 PDF 저장하는 방법</div>
+      <div style="font-size:13px;color:#888;margin-bottom:24px;">iOS는 JavaScript 인쇄 명령을 지원하지 않아<br>아래 Safari 기본 기능을 이용해주세요.</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">1</div>
+          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">Safari 하단 공유 버튼 탭</div><div style="font-size:12px;color:#888;">화면 하단 가운데 ↑ 모양 버튼</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">2</div>
+          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">"프린트" 선택</div><div style="font-size:12px;color:#888;">공유 메뉴에서 프린트(Print) 탭</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">3</div>
+          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">미리보기를 두 손가락으로 확대</div><div style="font-size:12px;color:#888;">확대하면 PDF 저장 옵션이 나타남</div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">4</div>
+          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">공유 버튼 → "파일에 저장"</div><div style="font-size:12px;color:#888;">PDF로 파일 앱에 저장됨</div></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#aaa;background:#f5f5f3;border-radius:10px;padding:12px 14px;margin-bottom:20px;">
+        💡 네이버·크롬 등 다른 브라우저보다 <strong>Safari</strong>에서 열면 화질과 레이아웃이 가장 좋습니다.
+      </div>
+      <button onclick="closeIOSModal()" style="width:100%;height:48px;background:#163300;color:#9fe870;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">확인</button>
+    </div>
+  </div>
   <!-- Load saved inspection panel -->
   <div class="load-panel" id="loadPanel" style="display:none;">
     <div class="load-panel-bg" onclick="closeLoadPanel()"></div>
@@ -1924,40 +1799,49 @@ function syncAllPrintValues(){
 }
 
 function enterPrintMode(){
-  // 모든 input을 인라인 스타일로 강제 숨김 (specificity 1,0,0,0 — 모든 CSS 규칙 무력화)
   document.querySelectorAll('.inp').forEach(el => {
-    el.style.setProperty('display', 'none', 'important');
+    el.style.setProperty('display','none','important');
   });
-  // 모든 print-value를 인라인 스타일로 강제 표시
   document.querySelectorAll('.print-value').forEach(el => {
-    el.style.setProperty('display', 'block', 'important');
+    el.style.setProperty('display','block','important');
   });
 }
 
 function exitPrintMode(){
-  // 인라인 스타일 제거하여 원래 CSS 규칙으로 복원
-  document.querySelectorAll('.inp').forEach(el => {
-    el.style.removeProperty('display');
-  });
-  document.querySelectorAll('.print-value').forEach(el => {
-    el.style.removeProperty('display');
-  });
+  document.querySelectorAll('.inp').forEach(el => el.style.removeProperty('display'));
+  document.querySelectorAll('.print-value').forEach(el => el.style.removeProperty('display'));
+}
+
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function showIOSModal(){
+  document.getElementById('iosPrintModal').style.display = 'flex';
+}
+
+function closeIOSModal(){
+  document.getElementById('iosPrintModal').style.display = 'none';
 }
 
 function printForm(){
   syncAllPrintValues();
-  enterPrintMode();
   const partner = (document.getElementById('partnerName').value || 'Partner').trim();
-  const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g, '');
-  const original = document.title;
+  const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g,'');
   document.title = `DCR_${partner}_${date}`;
-  const cleanup = () => { 
-    exitPrintMode();
-    document.title = original; 
-    updateTitle(); 
-  };
-  window.addEventListener('afterprint', cleanup, {once: true});
-  setTimeout(cleanup, 10000);  // iOS 안전 폴백
+
+  if(isIOS()){
+    // iOS: window.print()이 WKWebView에서 차단됨 → 네이티브 공유 방법 안내
+    showIOSModal();
+    return;
+  }
+
+  // 데스크탑
+  enterPrintMode();
+  const cleanup = () => { exitPrintMode(); updateTitle(); };
+  window.addEventListener('afterprint', cleanup, {once:true});
+  setTimeout(cleanup, 8000);
   window.print();
 }
 
@@ -2074,58 +1958,5 @@ if(dateInput && !dateInput.value) dateInput.value = today;
 updateTitle();
 setupPrintValues();
 </script>
-</div>
-<script>
-// ── Portal & Password Logic ──
-const PW_KEY  = 'dcr_auth';
-const PW_HASH = btoa('0506');
-
-function checkPw(){
-  const val = document.getElementById('pwInput').value;
-  if(btoa(val) === PW_HASH){
-    sessionStorage.setItem(PW_KEY, '1');
-    document.getElementById('pwOverlay').style.display = 'none';
-    showPortal();
-    document.getElementById('pwInput').value = '';
-  } else {
-    const inp = document.getElementById('pwInput');
-    inp.classList.remove('pw-error');
-    void inp.offsetWidth;
-    inp.classList.add('pw-error');
-    document.getElementById('pwError').textContent = '비밀번호가 올바르지 않습니다';
-    setTimeout(()=>{ inp.classList.remove('pw-error'); },400);
-  }
-}
-
-function showPortal(){
-  document.getElementById('portalView').style.display = 'block';
-  document.getElementById('qcApp').style.display = 'none';
-}
-
-function openTool(id){
-  document.getElementById('portalView').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
-  window.scrollTo(0,0);
-}
-
-function backToPortal(){
-  showPortal();
-  window.scrollTo(0,0);
-}
-
-function lockPortal(){
-  sessionStorage.removeItem(PW_KEY);
-  document.getElementById('portalView').style.display = 'none';
-  document.getElementById('qcApp').style.display = 'none';
-  document.getElementById('pwOverlay').style.display = 'flex';
-}
-
-// 세션 인증 확인
-(function(){
-  if(sessionStorage.getItem(PW_KEY) === '1'){
-    document.getElementById('pwOverlay').style.display = 'none';
-    showPortal();
-  }
-})();</script>
 </body>
 </html>
