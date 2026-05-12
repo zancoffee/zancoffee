@@ -819,7 +819,27 @@
     #waterCanvas { max-height: 480px !important; }
     #radarCanvas { max-height: 220px !important; }
 
-    /* Status pills, gauge backgrounds, ratio box — keep their fills */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       iOS Safari 전용: 인쇄 시 1열 스택 레이아웃.
+       iOS PDF 엔진이 grid span을 처리하면서 카드를 페이지 경계에서 자르는 문제를 회피.
+       데스크탑은 위쪽의 2열 grid 규칙 그대로 유지됨. */
+    body.is-ios .layout-grid {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+    }
+    body.is-ios .layout-grid > .card {
+      grid-area: auto !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    /* iOS 인쇄에서 canvas는 본문 폭에 맞춰 약간 축소 — 페이지 넘김 안전 마진 */
+    body.is-ios #waterCanvas { max-width: 380px !important; max-height: 540px !important; margin: 0 auto !important; }
+    body.is-ios #radarCanvas { max-width: 240px !important; max-height: 240px !important; margin: 0 auto !important; }
+
+        /* Status pills, gauge backgrounds, ratio box — keep their fills */
     .pill, .ratio-box, .gauge-wrap, .gauge-track, .gauge-fill-ok, .gauge-thumb {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
@@ -1846,6 +1866,7 @@ const dateInput = document.getElementById('visitDate');
 if(dateInput && !dateInput.value) dateInput.value = today;
 updateTitle();
 document.querySelectorAll('.print-value').forEach(el => el.remove());
+if(isIOS()) document.body.classList.add('is-ios');
 </script>
 </body>
 </html>
