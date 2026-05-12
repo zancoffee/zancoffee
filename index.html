@@ -481,12 +481,25 @@ body {
   .grid3 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
-  .sidebar { position: static; width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 14px 18px 12px; border-right: none; border-bottom: 1px solid var(--line); }
+  .wrap { flex-direction: column; min-height: 0; }
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 14px 18px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
   .logo { margin-bottom: 0; margin-right: 24px; font-size: 18px; }
-  .nav { flex-direction: row; flex-wrap: wrap; gap: 0 14px; }
+  .nav { flex-direction: row; flex-wrap: wrap; gap: 4px 14px; width: 100%; margin-top: 8px; }
+  .nav a { padding: 4px 0; }
   .nav a:hover, .nav a.on { transform: none; }
   .sidebar-foot { display: none; }
-  .content { margin-left: 0; }
+  .content { margin-left: 0; width: 100%; }
   .pg { padding: 24px 18px 60px; }
   .grid3, .grid2 { grid-template-columns: 1fr 1fr; }
   .page-head { flex-direction: column; gap: 8px; align-items: flex-start; }
