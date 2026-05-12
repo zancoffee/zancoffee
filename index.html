@@ -200,6 +200,11 @@ body {
 }
 .card:hover .thumb img { transform: scale(1.04); }
 
+/* ── COMING SOON ── */
+.card.soon { cursor: default; opacity: 0.5; }
+.card.soon:hover .thumb img { transform: none; }
+.card.soon .thumb-cat { background: rgba(0,0,0,0.55); padding: 3px 8px; letter-spacing: 0.18em; }
+
 .thumb-cat {
   position: absolute;
   top: 10px; left: 12px;
@@ -654,9 +659,9 @@ body {
       { id:5, cat:'Essay', title:'대구에서 커피를 한다는 것', sub:'2025.12', img:'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80' }
     ],
     tools: [
-      { id:1, cat:'Brewing', title:'추출 계산기', sub:'TDS · Yield · Ratio', img:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80', link:'' },
-      { id:2, cat:'Roasting', title:'로스팅 로그', sub:'Curve · Note · Compare', img:'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=80', link:'' },
-      { id:3, cat:'Science', title:'Fines 밀도 분석기', sub:'Particle · Density', img:'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=800&q=80', link:'' }
+      { id:1, cat:'Quality', title:'Partner Quality Guide', sub:'Standard · Reference · Guide', img:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80', link:'partner_quality_guide.html' },
+      { id:2, cat:'COMING SOON', title:'추출 계산기', sub:'TDS · Yield · Ratio · 준비 중', img:'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80', link:'', soon:true },
+      { id:3, cat:'COMING SOON', title:'그라인드 분석기', sub:'Particle · Distribution · 준비 중', img:'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=800&q=80', link:'', soon:true }
     ],
     zan: [
       { id:1, title:'커피 스터디', sub:'Science · Study', img:'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800&q=80' },
@@ -682,9 +687,18 @@ body {
 
   function cardHTML(item, ratio, idx, total) {
     var r = ratio || '16/9';
-    var link = item.link ? ' onclick="window.open(\'' + esc(item.link) + '\',\'_blank\')"' : '';
+    var link = '';
+    var soonClass = item.soon ? ' soon' : '';
+    if (item.link && !item.soon) {
+      var isExternal = /^https?:\/\//i.test(item.link);
+      if (isExternal) {
+        link = ' onclick="window.open(\'' + esc(item.link) + '\',\'_blank\')"';
+      } else {
+        link = ' onclick="window.location.href=\'' + esc(item.link) + '\'"';
+      }
+    }
     var numStr = (idx !== undefined) ? '<div class="thumb-num">— ' + pad(idx + 1) + ' / ' + pad(total) + '</div>' : '';
-    return '<a class="card"' + link + '>'
+    return '<a class="card' + soonClass + '"' + link + '>'
       + '<div class="thumb" style="aspect-ratio:' + r + '">'
       + (item.img ? '<img src="' + esc(item.img) + '" alt="' + esc(item.title) + '" loading="lazy">' : '')
       + (item.cat ? '<div class="thumb-cat">' + esc(item.cat) + '</div>' : '')
