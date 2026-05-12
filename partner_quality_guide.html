@@ -805,19 +805,22 @@
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        모바일 미디어 쿼리에서 카드 grid-area를 auto로 만든 규칙을 인쇄에서 무력화.
        데스크탑과 동일한 2열 배치 강제. specificity .layout-grid > .card-XX 로 매칭. */
+    /* 인쇄 카드 배치 — span 없는 순수 2열.
+       span 2 쓰면 iOS Safari가 카드를 페이지 경계에서 잘라버려서
+       단일 셀 배치로 데스크탑·iOS 동일 출력 보장.
+       순서: 01/02 → 03/04 → water/flavor → 05/06 → 07 전체폭 */
     .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
     .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
     .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
-    .layout-grid > .card-water { grid-area: 2 / 2 / span 2 / auto !important; }
-    .layout-grid > .card-04    { grid-area: 3 / 1 !important; }
+    .layout-grid > .card-04    { grid-area: 2 / 2 !important; }
+    .layout-grid > .card-water { grid-area: 3 / 1 !important; }
+    .layout-grid > .card-flavor{ grid-area: 3 / 2 !important; }
     .layout-grid > .card-05    { grid-area: 4 / 1 !important; }
-    .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
-    .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
-    .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
-    
-    /* 캔버스 최대 높이 제한 — 페이지 넘김 방지 */
-    #waterCanvas { max-height: 480px !important; }
-    #radarCanvas { max-height: 220px !important; }
+    .layout-grid > .card-06    { grid-area: 4 / 2 !important; }
+    .layout-grid > .card-07    { grid-row: 5 !important; grid-column: 1 / span 2 !important; }
+
+    #waterCanvas { max-width: 100% !important; max-height: 420px !important; }
+    #radarCanvas { max-width: 100% !important; max-height: 240px !important; }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
        iOS Safari 전용: 인쇄 시 1열 스택 레이아웃.
