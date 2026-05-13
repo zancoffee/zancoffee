@@ -738,74 +738,27 @@
   .load-item-delete:hover { color: #c0292e; }
 
   @media print {
-    /* Force ALL colors and backgrounds to print (overrides browser ink-saving default) */
+    /* 모든 색상·배경을 화면 그대로 인쇄 */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
       color-adjust: exact !important;
     }
 
-    html, body {
-      overflow-x: visible !important;
-      background: white !important;
-    }
+    /* UI 요소만 숨김 */
+    .actions, .toast, #loadPanel, #iosPrintModal { display: none !important; }
 
-    /* Sticky header → static so it appears once at top */
-    header {
-      position: static !important;
-    }
+    /* 용지 폭에 맞추기 */
+    .container { max-width: 100% !important; padding: 0 20px !important; }
+    header { max-width: 100% !important; }
+    .header-inner { max-width: 100% !important; }
 
-    /* Hide controls */
-    .actions, .toast { display: none !important; }
-
-    /* Container: full width with comfortable margin */
-    .container {
-      max-width: 100% !important;
-      padding: 16px 24px !important;
-    }
-    header > .header-inner {
-      max-width: 100% !important;
-      padding: 14px 24px !important;
-    }
-
-    /* Keep 2-column layout in print */
+    /* 모바일 1열 규칙(max-width:680px)을 무력화 — 화면 2열 배치 그대로 유지 */
     .layout-grid {
       display: grid !important;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
       gap: 10px !important;
     }
-
-    /* Cards must not split across pages */
-    .card {
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-
-    /* Canvases must render at the size CSS dictates and not vanish */
-    canvas {
-      display: block !important;
-      max-width: 100% !important;
-      height: auto !important;
-      visibility: visible !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-
-    /* 모든 input은 print에서도 surface 톤 배경으로 통일 */
-    .inp, input.inp, textarea.inp, select.inp,
-    .inline-row > .field-group > .inp,
-    .card-inner > .field-group > .inp {
-      border: 1px solid var(--border-strong) !important;
-      background: var(--surface) !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      color-adjust: exact !important;
-    }
-    
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       모바일 미디어 쿼리에서 카드 grid-area를 auto로 만든 규칙을 인쇄에서 무력화.
-       데스크탑과 동일한 2열 배치 강제. specificity .layout-grid > .card-XX 로 매칭. */
-    /* 인쇄 카드 배치 — 화면 레이아웃과 동일 */
     .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
     .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
     .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
@@ -816,21 +769,11 @@
     .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
     .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
 
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       iOS Safari 전용: 인쇄 시 1열 스택 레이아웃.
-       iOS PDF 엔진이 grid span을 처리하면서 카드를 페이지 경계에서 자르는 문제를 회피.
-       데스크탑은 위쪽의 2열 grid 규칙 그대로 유지됨. */
-    
-    
-    /* iOS 인쇄에서 canvas는 본문 폭에 맞춰 약간 축소 — 페이지 넘김 안전 마진 */
-    
-    
+    /* 카드 페이지 분할 방지 */
+    .card { page-break-inside: avoid !important; break-inside: avoid !important; }
 
-        /* Status pills, gauge backgrounds, ratio box — keep their fills */
-    .pill, .ratio-box, .gauge-wrap, .gauge-track, .gauge-fill-ok, .gauge-thumb {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
+    /* canvas 인쇄 보장 */
+    canvas { display: block !important; visibility: visible !important; }
   }
 
   
