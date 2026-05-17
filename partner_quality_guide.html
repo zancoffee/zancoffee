@@ -988,20 +988,90 @@
     #pwOverlay, #portalView, .actions, .toast, .load-panel,
     .qc-back-btn { display: none !important; }
     #qcApp { display: block !important; }
+
+    /* ── 헤더 컴팩트 ── */
     header { position: static !important; box-shadow: none !important; }
+    header > .header-inner { padding: 8px 0 !important; }
+    .header-title { font-size: 14px !important; }
+    .header-sub { font-size: 9px !important; }
 
-    .hero { margin-bottom: 14px !important; padding-bottom: 10px !important; }
-    .hero-title { font-size: 24px !important; line-height: 1 !important; }
-    .hero-title .sub { font-size: 12px !important; margin-top: 6px !important; }
+    /* ── 컨테이너 padding 축소 ── */
+    .container { padding: 12px 16px !important; }
 
-    /* 카드 잘림 방지 */
-    .card, .card-inner, .field-group, .inline-row,
+    /* ── 히어로 대폭 축소 (1페이지 공간 확보) ── */
+    .hero {
+      margin: 6px 0 8px !important;
+      padding-bottom: 6px !important;
+    }
+    .hero-title {
+      font-size: 18px !important;
+      line-height: 1.05 !important;
+    }
+    .hero-title .sub {
+      font-size: 10px !important;
+      margin-top: 3px !important;
+    }
+
+    /* ── 그리드 갭 축소 ── */
+    .layout-grid { gap: 8px !important; }
+
+    /* ── 카드 컴팩트 ── */
+    .card {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
+    }
+    .card-inner { padding: 12px 14px !important; }
+
+    /* 카드 내부 요소 잘림 방지 */
+    .card-inner, .field-group, .inline-row,
     .gauge-wrap, .ratio-box, .radar-layout, .slider-grid {
       break-inside: avoid !important;
       page-break-inside: avoid !important;
       -webkit-column-break-inside: avoid !important;
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
+
+    /* ── 섹션 헤딩 컴팩트 ── */
+    .sec-heading {
+      padding-bottom: 6px !important;
+      margin-bottom: 8px !important;
+    }
+    .sec-num { font-size: 9px !important; padding: 2px 6px !important; }
+    .sec-title { font-size: 12px !important; }
+
+    /* ── 필드 컴팩트 ── */
+    .field-group { margin-bottom: 0 !important; }
+    .lbl { font-size: 10px !important; margin-bottom: 3px !important; }
+    .inline-row { gap: 8px !important; }
+    .inline-row[style*="margin-top"] { margin-top: 8px !important; }
+
+    /* ── 캔버스 크기 제한 (1페이지에 들어가도록) ── */
+    #waterCanvas {
+      max-width: 200px !important;
+      width: 100% !important;
+      height: auto !important;
+    }
+    #radarCanvas {
+      max-width: 200px !important;
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    /* ── 게이지 컴팩트 ── */
+    .gauge-wrap { margin-top: 10px !important; }
+    .gauge-track { height: 8px !important; }
+    .gauge-scale { font-size: 9px !important; margin-top: 3px !important; }
+    .gauge-label { font-size: 9px !important; }
+
+    /* ── 비율 박스 컴팩트 ── */
+    .ratio-box { margin-top: 10px !important; padding: 8px !important; }
+    .ratio-label { font-size: 9px !important; }
+    .ratio-val { font-size: 16px !important; }
+
+    /* ── 슬라이더 영역 컴팩트 ── */
+    .sl-label { font-size: 10px !important; }
+    .sl-val { font-size: 11px !important; }
 
     /* input 숨기기 (iOS Safari 호환) */
     .inp, input.inp, textarea.inp, select.inp {
@@ -1018,15 +1088,15 @@
     .print-value {
       display: block !important;
       box-sizing: border-box !important;
-      height: 36px !important;
-      line-height: 36px !important;
-      padding: 0 13px !important;
-      margin-top: 6px !important;
+      height: 28px !important;
+      line-height: 28px !important;
+      padding: 0 10px !important;
+      margin-top: 0 !important;
       border: 1px solid #ccc !important;
       background: #f4f6f2 !important;
-      border-radius: 8px !important;
+      border-radius: 6px !important;
       font-family: 'Noto Sans KR', sans-serif !important;
-      font-size: 13px !important;
+      font-size: 11px !important;
       font-weight: 500 !important;
       color: #0e0f0c !important;
       overflow: hidden !important;
@@ -1035,9 +1105,9 @@
     }
     .print-value-textarea {
       height: auto !important;
-      min-height: 80px !important;
+      min-height: 60px !important;
       line-height: 1.4 !important;
-      padding: 8px 13px !important;
+      padding: 6px 10px !important;
       white-space: pre-wrap !important;
     }
   }
