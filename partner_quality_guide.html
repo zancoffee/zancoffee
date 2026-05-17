@@ -980,22 +980,57 @@
   @page { size: A4 portrait; margin: 8mm; }
 
   @media print {
-    /* ★ 핵심: zoom으로 화면 맞춤 (Safari/Chrome 네이티브 지원)
-       전체 콘텐츠를 페이지 폭에 자동으로 맞춤 */
-    html { zoom: 0.78; }
+    /* ★ 핵심: 인쇄 영역 가로를 데스크톱 컨테이너 폭(720px)과 동일하게 고정
+       A4 인쇄 가능 폭(약 733px @ 96dpi)과 거의 1:1로 매칭됨 */
+    html, body {
+      width: 720px !important;
+      max-width: 720px !important;
+      min-width: 720px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      background: #fff !important;
+      overflow: visible !important;
+    }
 
     /* 색상 보존 */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
-    html, body { background: #fff !important; overflow: visible !important; }
 
     /* 포털/비밀번호/컨트롤 숨기기 */
     #pwOverlay, #portalView, .actions, .toast, .load-panel,
     .qc-back-btn { display: none !important; }
     #qcApp { display: block !important; }
-    header { position: static !important; box-shadow: none !important; }
+
+    /* 헤더: 720px 폭 고정 */
+    header {
+      position: static !important;
+      box-shadow: none !important;
+      width: 720px !important;
+      max-width: 720px !important;
+    }
+    header > .header-inner {
+      max-width: 720px !important;
+      width: 720px !important;
+      padding: 12px 0 !important;
+    }
+
+    /* 컨테이너: 720px 폭 고정, 패딩 축소 */
+    .container {
+      max-width: 720px !important;
+      width: 720px !important;
+      padding: 16px 0 !important;
+      margin: 0 auto !important;
+    }
+
+    /* 히어로 약간 축소 (페이지 1에 카드 더 넣기) */
+    .hero {
+      margin-bottom: 20px !important;
+      padding-bottom: 16px !important;
+    }
+    .hero-title { font-size: 32px !important; line-height: 1.05 !important; }
+    .hero-title .sub { font-size: 13px !important; margin-top: 6px !important; }
 
     /* 카드 잘림 방지 */
     .card, .card-inner, .field-group, .inline-row,
