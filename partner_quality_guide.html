@@ -1023,6 +1023,15 @@
     }
     .card-inner { padding: 12px 14px !important; }
 
+    /* ★ 핵심: 05 추출 레시피 & Flavor Profile은 무조건 2페이지로 시작
+       (1페이지는 01~04 + SCA Water Chart까지만) */
+    .layout-grid > .card-05,
+    .layout-grid > .card-flavor {
+      break-before: page !important;
+      page-break-before: always !important;
+      -webkit-column-break-before: always !important;
+    }
+
     /* 카드 내부 요소 잘림 방지 */
     .card-inner, .field-group, .inline-row,
     .gauge-wrap, .ratio-box, .radar-layout, .slider-grid {
