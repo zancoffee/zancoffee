@@ -737,234 +737,6 @@
   }
   .load-item-delete:hover { color: #c0292e; }
 
-  @page {
-    size: A4 portrait;
-    margin: 8mm 10mm 8mm 10mm;
-  }
-
-  @media print {
-    /* ── 기본: 색상 보존 ── */
-    *, *::before, *::after {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-      color-adjust: exact !important;
-    }
-    html, body {
-      overflow-x: visible !important;
-      background: white !important;
-    }
-
-    /* ── 포탈/비밀번호 숨김 ── */
-    #pwOverlay, #portalView { display: none !important; }
-    #qcApp { display: block !important; }
-
-    /* ── 헤더: static, 압축 ── */
-    header { position: static !important; }
-    header > .header-inner {
-      max-width: 100% !important;
-      padding: 8px 16px !important;
-    }
-
-    /* ── 히어로: 인쇄 최적화 ── */
-    .hero {
-      margin-bottom: 10px !important;
-      padding-bottom: 6px !important;
-    }
-    .hero-title {
-      font-size: 16px !important;
-      font-weight: 900 !important;
-      line-height: 1.15 !important;
-      letter-spacing: -0.3px !important;
-    }
-    .hero-title .sub {
-      display: block !important;
-      font-size: 10px !important;
-      margin-top: 3px !important;
-    }
-
-    /* ── 컨트롤 숨김 ── */
-    .actions, .toast, .load-panel, #iosPrintModal,
-    .qc-back-btn { display: none !important; }
-
-    /* ── 컨테이너: 전폭 ── */
-    .container {
-      max-width: 100% !important;
-      padding: 6px 14px 0 14px !important;
-    }
-
-    /* ── 레이아웃 그리드: 2열 고정, 간격 축소 ── */
-    .layout-grid {
-      display: grid !important;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-      gap: 5px !important;
-    }
-    .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
-    .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
-    .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
-    .layout-grid > .card-water { grid-area: 2 / 2 / span 2 / auto !important; }
-    .layout-grid > .card-04    { grid-area: 3 / 1 !important; }
-    .layout-grid > .card-05    { grid-area: 4 / 1 !important; }
-    .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
-    .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
-    .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
-
-    /* ── 강제 페이지 분리 (grid 분리) ── */
-    .print-page-break {
-      display: block !important;
-      break-before: page !important;
-      page-break-before: always !important;
-      height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
-    }
-
-    /* ── 2페이지 그리드 ── */
-    .layout-grid-p2 {
-      display: grid !important;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-      gap: 5px !important;
-    }
-    .layout-grid-p2 > .card-05    { grid-area: 1 / 1 !important; }
-    .layout-grid-p2 > .card-flavor{ grid-area: 1 / 2 !important; }
-    .layout-grid-p2 > .card-06    { grid-area: 2 / 1 !important; }
-    .layout-grid-p2 > .card-07    { grid-area: 2 / 2 !important; }
-
-    /* ── 카드: 페이지 분리 방지 ── */
-    .card {
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-      border-radius: 8px !important;
-    }
-
-    /* ── 카드 내부 압축 ── */
-    .card-inner { padding: 10px 12px !important; }
-    .sec-heading { margin-bottom: 5px !important; }
-    .sec-num { font-size: 8px !important; width: 20px !important; height: 20px !important; line-height: 20px !important; }
-    .sec-title { font-size: 11px !important; }
-
-    /* ── 라벨 ── */
-    .lbl { font-size: 9px !important; }
-    .lbl .hint { font-size: 9px !important; }
-
-    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       iOS Safari 핵심 수정:
-       display: none 은 iOS Safari 인쇄 시 무시됨.
-       position: absolute + clip 으로 완전히 제거.
-       ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-    .inp,
-    input.inp,
-    textarea.inp,
-    select.inp,
-    .inline-row > .field-group > .inp,
-    .card-inner > .field-group > .inp,
-    .field-group > .inp,
-    .field-group input.inp,
-    .field-group textarea.inp,
-    .field-group select.inp,
-    input[type="text"].inp,
-    input[type="number"].inp,
-    input[type="date"].inp {
-      position: absolute !important;
-      left: -9999px !important;
-      width: 1px !important;
-      height: 1px !important;
-      overflow: hidden !important;
-      clip: rect(0,0,0,0) !important;
-      -webkit-clip-path: inset(100%) !important;
-      clip-path: inset(100%) !important;
-      opacity: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
-      pointer-events: none !important;
-    }
-
-    /* ── print-value: input 대체 표시 (단일 정의) ── */
-    .print-value {
-      display: block !important;
-      box-sizing: border-box !important;
-      height: 28px !important;
-      line-height: 28px !important;
-      padding: 0 10px !important;
-      margin-top: 3px !important;
-      border: 1px solid #aaa !important;
-      background: #f4f6f2 !important;
-      border-radius: 6px !important;
-      font-family: 'Noto Sans KR', sans-serif !important;
-      font-size: 11px !important;
-      font-weight: 500 !important;
-      color: #0e0f0c !important;
-      overflow: hidden !important;
-      white-space: nowrap !important;
-      text-overflow: ellipsis !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-    .print-value-textarea {
-      height: auto !important;
-      min-height: 60px !important;
-      line-height: 1.4 !important;
-      padding: 8px 10px !important;
-      white-space: pre-wrap !important;
-    }
-
-    /* ── inline-row: flex (중복 없는 단일 정의) ── */
-    .inline-row {
-      display: flex !important;
-      flex-direction: row !important;
-      gap: 6px !important;
-    }
-    .inline-row.c2 > .field-group { flex: 1 1 50% !important; }
-    .inline-row.c3 > .field-group { flex: 1 1 33.33% !important; }
-    .inline-row > .field-group {
-      display: flex !important;
-      flex-direction: column !important;
-      min-width: 0 !important;
-    }
-    .inline-row > .field-group > .lbl {
-      grid-row: auto !important;
-      height: auto !important;
-      line-height: 1.2 !important;
-      margin: 0 !important;
-    }
-
-    /* ── 캔버스 높이 제한 ── */
-    canvas {
-      display: block !important;
-      max-width: 100% !important;
-      visibility: visible !important;
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-    #waterCanvas { max-height: 340px !important; height: auto !important; }
-    #radarCanvas { max-height: 170px !important; height: auto !important; }
-
-    /* ── 게이지/슬라이더 압축 ── */
-    .gauge-wrap { margin-top: 6px !important; padding: 6px 10px !important; }
-    .gauge-label { font-size: 9px !important; }
-    .ratio-box { padding: 8px !important; margin-top: 6px !important; }
-    .ratio-number { font-size: 28px !important; }
-    .ratio-label { font-size: 8px !important; }
-    .ey-number { font-size: 22px !important; }
-    .ey-label { font-size: 8px !important; }
-    .pill { font-size: 8px !important; padding: 2px 8px !important; }
-
-    /* ── 슬라이더 행 압축 ── */
-    .slider-row { margin-bottom: 2px !important; }
-    .slider-row label { font-size: 10px !important; }
-
-    /* ── field-group 간격 ── */
-    .field-group + .inline-row,
-    .inline-row + .inline-row { margin-top: 6px !important; }
-
-    /* ── 색상 보존 ── */
-    .pill, .ratio-box, .gauge-wrap, .gauge-track, .gauge-fill-ok, .gauge-thumb {
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-  }
-
   
 
 
@@ -1101,8 +873,7 @@
 
   
 
-  /* print-value는 화면에서 항상 숨김 — 인쇄 시에만 표시됨 */
-  .print-value, .print-value-textarea { display: none; }
+
 
 
   /* ── PASSWORD OVERLAY ── */
@@ -1203,20 +974,9 @@
   .qc-back-btn:hover { color: #9fe870; }
   .qc-back-btn svg { width: 14px; height: 14px; }
 
-  /* ── 화면: print-page-break 숨김, p2 grid ── */
-  .print-page-break { display: none; }
-  .layout-grid-p2 {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 14px;
-    margin-top: 14px;
-  }
-  .layout-grid-p2 > .card { min-width: 0; max-width: 100%; }
-  @media (max-width: 680px) {
-    .layout-grid-p2 { grid-template-columns: 1fr; }
-    .layout-grid-p2 > .card { grid-area: auto !important; }
-  }
+
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1296,7 +1056,7 @@
   <!-- Hero -->
   <div class="hero">
     <div>
-      <div class="hero-title">Partner<br>Quality Guide
+      <div class="hero-title">Partner <br>Quality Guide
         <span class="sub">파트너사 방문 품질 점검 체크리스트</span>
       </div>
     </div>
@@ -1417,11 +1177,6 @@
         
       </div>
     </div>
-  </div>
-
-  <div class="print-page-break"></div>
-
-  <div class="layout-grid layout-grid-p2">
     <div class="card card-05">
       <div class="card-inner">
         <div class="sec-heading">
@@ -1563,43 +1318,13 @@
   <div class="actions">
     <button class="btn btn-outline" onclick="openLoadPanel()">기록 불러오기</button>
     <button class="btn btn-outline" onclick="resetForm()">초기화</button>
-    <button class="btn btn-ghost" onclick="printForm()">인쇄 / PDF 저장</button>
+    <button class="btn btn-ghost" onclick="savePDF()">PDF 저장</button>
     <button class="btn btn-primary" onclick="saveForm()">점검 완료 저장</button>
   </div>
 
 </div>
 
 <div class="toast" id="toast"></div>
-  <!-- iOS PDF 저장 가이드 모달 -->
-  <div id="iosPrintModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(14,15,12,.5);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;">
-    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:28px 24px 40px;font-family:'Noto Sans KR',sans-serif;">
-      <div style="width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 24px;"></div>
-      <div style="font-size:18px;font-weight:800;color:#0e0f0c;margin-bottom:6px;">iOS에서 PDF 저장하는 방법</div>
-      <div style="font-size:13px;color:#888;margin-bottom:24px;">iOS는 JavaScript 인쇄 명령을 지원하지 않아<br>아래 Safari 기본 기능을 이용해주세요.</div>
-      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px;">
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">1</div>
-          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">Safari 하단 공유 버튼 탭</div><div style="font-size:12px;color:#888;">화면 하단 가운데 ↑ 모양 버튼</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">2</div>
-          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">"프린트" 선택</div><div style="font-size:12px;color:#888;">공유 메뉴에서 프린트(Print) 탭</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">3</div>
-          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">미리보기를 두 손가락으로 확대</div><div style="font-size:12px;color:#888;">확대하면 PDF 저장 옵션이 나타남</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div style="min-width:36px;height:36px;background:#163300;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#9fe870;font-weight:700;font-size:15px;">4</div>
-          <div><div style="font-size:14px;font-weight:700;color:#0e0f0c;">공유 버튼 → "파일에 저장"</div><div style="font-size:12px;color:#888;">PDF로 파일 앱에 저장됨</div></div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:#aaa;background:#f5f5f3;border-radius:10px;padding:12px 14px;margin-bottom:20px;">
-        💡 네이버·크롬 등 다른 브라우저보다 <strong>Safari</strong>에서 열면 화질과 레이아웃이 가장 좋습니다.
-      </div>
-      <button onclick="closeIOSModal()" style="width:100%;height:48px;background:#163300;color:#9fe870;border:none;border-radius:12px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">확인</button>
-    </div>
-  </div>
   <!-- Load saved inspection panel -->
   <div class="load-panel" id="loadPanel" style="display:none;">
     <div class="load-panel-bg" onclick="closeLoadPanel()"></div>
@@ -2023,98 +1748,37 @@ function showToast(msg){
 }
 
 
-function getInpDisplayValue(el){
-  if(el.tagName === 'SELECT'){
-    const opt = el.options[el.selectedIndex];
-    return (opt && opt.value) ? opt.text : '';
-  }
-  return el.value || '';
-}
-
-function setupPrintValues(){
-  // 모든 .inp 옆에 .print-value div를 영구 삽입.
-  // 화면에서는 CSS로 숨김. @media print 에서만 표시.
-  // input 변경 시마다 텍스트를 자동 갱신해서 항상 최신 값 유지.
-  document.querySelectorAll('.inp').forEach(el => {
-    // 이미 있으면 skip
-    if(el.nextElementSibling && el.nextElementSibling.classList.contains('print-value')) return;
-    const printEl = document.createElement('div');
-    printEl.className = 'print-value';
-    if(el.tagName === 'TEXTAREA') printEl.classList.add('print-value-textarea');
-    el.parentNode.insertBefore(printEl, el.nextSibling);
-    const sync = () => { printEl.textContent = getInpDisplayValue(el); };
-    el.addEventListener('input', sync);
-    el.addEventListener('change', sync);
-    sync(); // 초기값
-  });
-}
-
-function syncAllPrintValues(){
-  // 안전망: 인쇄 직전에 모든 .print-value 강제 재동기화
-  document.querySelectorAll('.inp').forEach(el => {
-    let pe = el.nextElementSibling;
-    if(pe && pe.classList.contains('print-value')){
-      pe.textContent = getInpDisplayValue(el);
-    }
-  });
-}
-
-function enterPrintMode(){
-  document.querySelectorAll('.inp').forEach(el => {
-    el.style.setProperty('position','absolute','important');
-    el.style.setProperty('left','-9999px','important');
-    el.style.setProperty('width','1px','important');
-    el.style.setProperty('height','1px','important');
-    el.style.setProperty('overflow','hidden','important');
-    el.style.setProperty('opacity','0','important');
-    el.style.setProperty('clip','rect(0,0,0,0)','important');
-    el.style.setProperty('pointer-events','none','important');
-  });
-  document.querySelectorAll('.print-value').forEach(el => {
-    el.style.setProperty('display','block','important');
-  });
-}
-
-function exitPrintMode(){
-  document.querySelectorAll('.inp').forEach(el => {
-    ['position','left','width','height','overflow','opacity','clip','pointer-events'].forEach(p => el.style.removeProperty(p));
-  });
-  document.querySelectorAll('.print-value').forEach(el => {
-    el.style.removeProperty('display');
-  });
-}
-
-function isIOS(){
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
-
-function showIOSModal(){
-  document.getElementById('iosPrintModal').style.display = 'flex';
-}
-
-function closeIOSModal(){
-  document.getElementById('iosPrintModal').style.display = 'none';
-}
-
-function printForm(){
-  syncAllPrintValues();
+async function savePDF(){
   const partner = (document.getElementById('partnerName').value || 'Partner').trim();
   const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g,'');
-  document.title = `DCR_${partner}_${date}`;
+  const filename = `DCR_${partner}_${date}.pdf`;
 
-  if(isIOS()){
-    // iOS: window.print()이 WKWebView에서 차단됨 → 네이티브 공유 방법 안내
-    showIOSModal();
-    return;
+  // 버튼 영역 숨기기
+  const actions = document.querySelector('.actions');
+  const toast = document.getElementById('toast');
+  actions.style.display = 'none';
+
+  // 로딩 표시
+  showToast('PDF 생성 중...');
+
+  try {
+    const container = document.querySelector('.container');
+    await html2pdf().set({
+      margin:       [6, 6, 6, 6],
+      filename:     filename,
+      image:        { type: 'jpeg', quality: 0.92 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#f4f6f2', scrollY: 0 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all','css'], avoid: ['.card','.gauge-wrap','.ratio-box'] }
+    }).from(container).save();
+    showToast('PDF 저장 완료');
+  } catch(e) {
+    console.error('PDF error:', e);
+    showToast('PDF 생성 실패');
   }
 
-  // 데스크탑
-  enterPrintMode();
-  const cleanup = () => { exitPrintMode(); updateTitle(); };
-  window.addEventListener('afterprint', cleanup, {once:true});
-  setTimeout(cleanup, 8000);
-  window.print();
+  // 복원
+  actions.style.display = '';
 }
 
 
@@ -2228,17 +1892,7 @@ const today = new Date().toISOString().split('T')[0];
 const dateInput = document.getElementById('visitDate');
 if(dateInput && !dateInput.value) dateInput.value = today;
 updateTitle();
-setupPrintValues();
 
-// ── iOS Safari 인쇄 지원: 공유→프린트 시에도 enterPrintMode 호출 ──
-window.addEventListener('beforeprint', function(){
-  syncAllPrintValues();
-  enterPrintMode();
-});
-window.addEventListener('afterprint', function(){
-  exitPrintMode();
-  updateTitle();
-});
 </script>
 </div><!-- /qcApp -->
 
