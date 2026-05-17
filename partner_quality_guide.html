@@ -1918,40 +1918,229 @@ function setupPrintValues(){
 }
 
 function printForm(){
-  // 모든 print-value 동기화
-  document.querySelectorAll('.inp').forEach(el=>{
-    const pv=el.nextElementSibling;
-    if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
-  });
+  // 폼 값 수집
+  const v=id=>{const el=document.getElementById(id);return el?(el.value||'').trim():'';};
+  const t=id=>{const el=document.getElementById(id);return el?(el.textContent||'').trim():'';};
+  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  const partner=(document.getElementById('partnerName').value||'Partner').trim();
-  const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
-  const originalTitle=document.title;
-  document.title=`DCR_${partner}_${date}`;
+  const d={
+    partnerName:v('partnerName')||'—',
+    visitDate:v('visitDate')||'—',
+    inspector:v('inspector')||'—',
+    machine:v('machine')||'—',
+    grinder:v('grinder')||'—',
+    blend:v('blend')||'—',
+    filterType:v('filterType')||'—',
+    waterTds:v('waterTds')||'—',
+    gh:v('gh')||'—',
+    alkalinity:v('alkalinity')||'—',
+    brewTemp:v('brewTemp')||'—',
+    flowRate:v('flowRate')||'—',
+    pressure:v('pressure')||'—',
+    basket:v('basket')||'—',
+    espTds:v('espTds')||'—',
+    doseIn:v('doseIn')||'—',
+    yieldOut:v('yieldOut')||'—',
+    brewTime:v('brewTime')||'—',
+    brewRatio:t('brewRatioVal')||'1 : —',
+    ey:t('eyVal')||'— %',
+    beverVolume:v('beverVolume')||'—',
+    beverTds:v('beverTds')||'—',
+    sweetness:v('slSweetness')||'3',
+    acidity:v('slAcidity')||'3',
+    body:v('slBody')||'3',
+    cleanCup:v('slClean')||'3',
+    aftertaste:v('slAfter')||'3',
+    bitterness:v('slBitter')||'3',
+    generalNote:v('generalNote')||'—',
+  };
 
-  // ── iOS Safari 핵심: viewport meta 태그를 720px로 강제 → 데스크톱 레이아웃으로 인쇄 ──
-  const vp=document.querySelector('meta[name="viewport"]');
-  const originalVP=vp ? vp.getAttribute('content') : null;
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  // 캔버스 → 이미지 데이터 URL
+  let waterImg='',radarImg='';
+  try{waterImg=document.getElementById('waterCanvas').toDataURL('image/png');}catch(e){}
+  try{radarImg=document.getElementById('radarCanvas').toDataURL('image/png');}catch(e){}
 
-  if(isIOS && vp){
-    vp.setAttribute('content','width=760, initial-scale=1.0');
-    // iOS는 viewport 변경 후 레이아웃 재계산할 시간이 필요
-    document.body.classList.add('printing-ios');
-    // 강제 reflow
-    void document.body.offsetHeight;
-    setTimeout(()=>{
-      window.print();
-      setTimeout(()=>{
-        vp.setAttribute('content',originalVP);
-        document.body.classList.remove('printing-ios');
-        document.title=originalTitle;
-        updateTitle();
-      },500);
-    },300);
-  } else {
-    window.print();
-    setTimeout(()=>{document.title=originalTitle;updateTitle();},3000);
+  // 파일명
+  const fileName=`DCR_${(d.partnerName||'Partner').replace(/[^\w가-힣]/g,'')}_${d.visitDate.replace(/-/g,'')}`;
+
+  // ── 정적 인쇄 HTML 생성 (A4 mm 단위 고정 레이아웃, 뷰포트 의존 없음) ──
+  const html=`<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=820, initial-scale=1.0">
+<title>${esc(fileName)}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 portrait; margin: 7mm 8mm; }
+  *, *::before, *::after { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; padding: 0; background: #f0f0ee; }
+  body { font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; color: #0e0f0c; }
+  .page-wrap { max-width: 210mm; margin: 0 auto; padding: 7mm 8mm; background: #fff; min-height: 297mm; }
+  @media print { .page-wrap { padding: 0; margin: 0; box-shadow: none; max-width: none; } body { background: #fff; } .toolbar { display: none !important; } }
+  .toolbar { position: sticky; top: 0; background: #0e0f0c; color: #fff; padding: 10px 16px; display: flex; gap: 12px; justify-content: center; z-index: 100; font-size: 13px; }
+  .toolbar button { background: #fff; color: #0e0f0c; border: 0; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .toolbar .hint { align-self: center; font-size: 11px; color: #aaa; }
+  .hdr { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4mm; padding-bottom: 2.5mm; border-bottom: 1.5px solid #0e0f0c; }
+  .hdr h1 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
+  .hdr .sub { font-size: 9px; color: #555; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: min-content;
+    gap: 3mm;
+  }
+  .card {
+    border: 1px solid #d4d6cf;
+    border-radius: 2mm;
+    padding: 2.8mm 3.2mm;
+    background: #fff;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .sec { display: flex; gap: 2mm; align-items: baseline; border-bottom: 1px solid #ecedea; padding-bottom: 1.4mm; margin-bottom: 2.2mm; }
+  .sec-num { font-size: 7.5px; color: #888; font-weight: 700; letter-spacing: 0.5px; }
+  .sec-title { font-size: 10.5px; font-weight: 700; }
+  .fld { margin-bottom: 1.4mm; }
+  .fld:last-child { margin-bottom: 0; }
+  .lbl { font-size: 7.5px; color: #666; display: block; margin-bottom: 0.6mm; font-weight: 500; }
+  .val { background: #f4f6f2; border: 1px solid #d4d6cf; border-radius: 1.2mm; padding: 1.1mm 2mm; font-size: 9.5px; font-weight: 500; min-height: 4.8mm; line-height: 1.4; word-break: break-all; }
+  .row { display: grid; gap: 2mm; margin-bottom: 1.4mm; }
+  .row.c2 { grid-template-columns: 1fr 1fr; }
+  .row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row:last-child { margin-bottom: 0; }
+  .chart { display: block; width: 100%; margin: 0 auto; }
+  .chart-water { max-width: 55mm; }
+  .chart-radar { max-width: 38mm; }
+  .ratio-box { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 3mm; margin-top: 2mm; padding: 2.5mm 2mm; background: #f4f6f2; border-radius: 1.5mm; align-items: center; }
+  .ratio-cell { text-align: center; }
+  .ratio-lbl { font-size: 7px; color: #666; font-weight: 500; letter-spacing: 0.3px; }
+  .ratio-val { font-size: 13px; font-weight: 700; margin-top: 0.5mm; color: #0e0f0c; }
+  .ratio-divider { background: #d4d6cf; height: 80%; }
+  .note-val { min-height: 28mm; white-space: pre-wrap; }
+  .slider-list { margin-top: 1.5mm; }
+  .slider-row { display: flex; justify-content: space-between; align-items: center; font-size: 8.5px; padding: 1mm 0; border-bottom: 1px dashed #ecedea; }
+  .slider-row:last-child { border: 0; }
+  .slider-row .sname { color: #555; font-weight: 500; }
+  .slider-row .sval { font-weight: 700; color: #0e0f0c; background: #f4f6f2; padding: 0.4mm 1.8mm; border-radius: 0.8mm; min-width: 6mm; text-align: center; }
+  /* 카드 배치 - 웹 레이아웃과 동일 */
+  .card-c1 { grid-column: 1; grid-row: 1; }
+  .card-c2 { grid-column: 2; grid-row: 1; }
+  .card-c3 { grid-column: 1; grid-row: 2; }
+  .card-cw { grid-column: 2; grid-row: 2 / span 2; }
+  .card-c4 { grid-column: 1; grid-row: 3; }
+  .card-c5 { grid-column: 1; grid-row: 4; }
+  .card-cf { grid-column: 2; grid-row: 4; }
+  .card-c6 { grid-column: 1; grid-row: 5; }
+  .card-c7 { grid-column: 2; grid-row: 5; }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <button onclick="window.print()">인쇄 / PDF 저장</button>
+    <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
+    <span class="hint">iOS: 공유 → 프린트 → PDF로 저장</span>
+  </div>
+  <div class="page-wrap">
+    <div class="hdr">
+      <h1>Partner Quality Guide</h1>
+      <div class="sub">${esc(d.partnerName)} &nbsp;·&nbsp; ${esc(d.visitDate)}</div>
+    </div>
+    <div class="grid">
+      <div class="card card-c1">
+        <div class="sec"><span class="sec-num">01</span><span class="sec-title">파트너사 정보</span></div>
+        <div class="fld"><div class="lbl">파트너사명</div><div class="val">${esc(d.partnerName)}</div></div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">점검 일자</div><div class="val">${esc(d.visitDate)}</div></div>
+          <div class="fld"><div class="lbl">담당자</div><div class="val">${esc(d.inspector)}</div></div>
+        </div>
+      </div>
+      <div class="card card-c2">
+        <div class="sec"><span class="sec-num">02</span><span class="sec-title">장비 현황</span></div>
+        <div class="fld"><div class="lbl">에스프레소 머신</div><div class="val">${esc(d.machine)}</div></div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">그라인더</div><div class="val">${esc(d.grinder)}</div></div>
+          <div class="fld"><div class="lbl">사용 블렌드</div><div class="val">${esc(d.blend)}</div></div>
+        </div>
+      </div>
+      <div class="card card-c3">
+        <div class="sec"><span class="sec-num">03</span><span class="sec-title">추출수 수질</span></div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">정수 필터</div><div class="val">${esc(d.filterType)}</div></div>
+          <div class="fld"><div class="lbl">TDS (ppm)</div><div class="val">${esc(d.waterTds)}</div></div>
+        </div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">GH (ppm CaCO₃)</div><div class="val">${esc(d.gh)}</div></div>
+          <div class="fld"><div class="lbl">Alkalinity (ppm CaCO₃)</div><div class="val">${esc(d.alkalinity)}</div></div>
+        </div>
+      </div>
+      <div class="card card-cw">
+        <div class="sec"><span class="sec-title">SCA Water Chart</span></div>
+        ${waterImg?`<img class="chart chart-water" src="${waterImg}" alt="SCA Water Chart">`:'<div class="val">차트 없음</div>'}
+      </div>
+      <div class="card card-c4">
+        <div class="sec"><span class="sec-num">04</span><span class="sec-title">머신 파라미터</span></div>
+        <div class="row c3">
+          <div class="fld"><div class="lbl">추출 온도 (°C)</div><div class="val">${esc(d.brewTemp)}</div></div>
+          <div class="fld"><div class="lbl">유량 (ml/10s)</div><div class="val">${esc(d.flowRate)}</div></div>
+          <div class="fld"><div class="lbl">추출 압력 (bar)</div><div class="val">${esc(d.pressure)}</div></div>
+        </div>
+      </div>
+      <div class="card card-c5">
+        <div class="sec"><span class="sec-num">05</span><span class="sec-title">추출 레시피</span></div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">바스켓</div><div class="val">${esc(d.basket)}</div></div>
+          <div class="fld"><div class="lbl">에스프레소 TDS (%)</div><div class="val">${esc(d.espTds)}</div></div>
+        </div>
+        <div class="row c3">
+          <div class="fld"><div class="lbl">도징량 (g)</div><div class="val">${esc(d.doseIn)}</div></div>
+          <div class="fld"><div class="lbl">추출량 (g)</div><div class="val">${esc(d.yieldOut)}</div></div>
+          <div class="fld"><div class="lbl">추출 시간 (s)</div><div class="val">${esc(d.brewTime)}</div></div>
+        </div>
+        <div class="ratio-box">
+          <div class="ratio-cell"><div class="ratio-lbl">Brew Ratio</div><div class="ratio-val">${esc(d.brewRatio)}</div></div>
+          <div class="ratio-divider"></div>
+          <div class="ratio-cell"><div class="ratio-lbl">Extraction Yield</div><div class="ratio-val">${esc(d.ey)}</div></div>
+        </div>
+      </div>
+      <div class="card card-cf">
+        <div class="sec"><span class="sec-title">Flavor Profile</span></div>
+        ${radarImg?`<img class="chart chart-radar" src="${radarImg}" alt="Flavor Radar">`:''}
+        <div class="slider-list">
+          <div class="slider-row"><span class="sname">Sweetness</span><span class="sval">${esc(d.sweetness)}</span></div>
+          <div class="slider-row"><span class="sname">Acidity</span><span class="sval">${esc(d.acidity)}</span></div>
+          <div class="slider-row"><span class="sname">Body</span><span class="sval">${esc(d.body)}</span></div>
+          <div class="slider-row"><span class="sname">Clean Cup</span><span class="sval">${esc(d.cleanCup)}</span></div>
+          <div class="slider-row"><span class="sname">Aftertaste</span><span class="sval">${esc(d.aftertaste)}</span></div>
+          <div class="slider-row"><span class="sname">Bitterness</span><span class="sval">${esc(d.bitterness)}</span></div>
+        </div>
+      </div>
+      <div class="card card-c6">
+        <div class="sec"><span class="sec-num">06</span><span class="sec-title">TDS 측정값</span></div>
+        <div class="row c2">
+          <div class="fld"><div class="lbl">음료 용량 (ml)</div><div class="val">${esc(d.beverVolume)}</div></div>
+          <div class="fld"><div class="lbl">음료 TDS (%)</div><div class="val">${esc(d.beverTds)}</div></div>
+        </div>
+      </div>
+      <div class="card card-c7">
+        <div class="sec"><span class="sec-num">07</span><span class="sec-title">기타 사항</span></div>
+        <div class="fld"><div class="lbl">종합 의견 및 특이사항</div><div class="val note-val">${esc(d.generalNote)}</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  // Blob URL로 새 탭 열기 (iOS Safari 호환)
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');
+  if(!w){
+    // 팝업 차단 fallback: 현재 창에 직접 이동
+    if(typeof showToast==='function') showToast('팝업이 차단됨 - 같은 창에서 열립니다');
+    setTimeout(()=>{ window.location.href=url; }, 800);
   }
 }
 
