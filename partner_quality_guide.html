@@ -977,9 +977,22 @@
 
 
   /* ── 인쇄 전용: 화면 레이아웃 유지, 최소 변경만 ── */
-  @page { size: A4 portrait; margin: 10mm; }
+  @page { size: A4 portrait; margin: 6mm 8mm; }
 
   @media print {
+    /* ── 핵심: body를 720px로 강제 → 모바일 뷰포트 무시 ── */
+    html {
+      width: 720px !important;
+      min-width: 720px !important;
+      overflow: visible !important;
+    }
+    body {
+      width: 720px !important;
+      min-width: 720px !important;
+      overflow: visible !important;
+      margin: 0 auto !important;
+    }
+
     /* 색상 보존 */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
@@ -993,10 +1006,10 @@
 
     /* 헤더 */
     header { position: static !important; }
-    header > .header-inner { max-width: 100% !important; }
+    header > .header-inner { max-width: 720px !important; width: 720px !important; }
 
-    /* 컨테이너 전폭 */
-    .container { max-width: 100% !important; }
+    /* 컨테이너 */
+    .container { max-width: 720px !important; width: 720px !important; }
 
     /* ── 히어로 축소 (1페이지 공간 확보) ── */
     .hero {
