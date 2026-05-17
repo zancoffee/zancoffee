@@ -977,202 +977,56 @@
 
 
   /* ── 인쇄 전용 ── */
-  @page { size: A4 portrait; margin: 8mm; }
+  @page { size: A4 portrait; margin: 6mm 8mm; }
 
   @media print {
-    /* 색상 보존 */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
-
-    /* ★ 핵심: mm 단위로 너비 고정 → iOS viewport(390px) 무시
-       A4(210mm) - margin(8mm*2) = 194mm 컨텐츠 영역 */
-    html, body {
-      width: 194mm !important;
-      min-width: 194mm !important;
-      max-width: 194mm !important;
-      background: #fff !important;
-      margin: 0 auto !important;
-      padding: 0 !important;
-      overflow: visible !important;
-      font-size: 11px !important;
-    }
-
-    /* 포탈/비밀번호/컨트롤 숨기기 */
+    html, body { background: #fff !important; overflow: visible !important; }
     #pwOverlay, #portalView, .actions, .toast, .load-panel,
     .qc-back-btn { display: none !important; }
     #qcApp { display: block !important; }
+    header { position: static !important; box-shadow: none !important; }
 
-    /* 헤더 */
-    header {
-      position: static !important;
-      box-shadow: none !important;
-      border-bottom: 1px solid #d4d6cf !important;
-      width: 194mm !important;
-    }
-    header > .header-inner {
-      max-width: 194mm !important;
-      width: 194mm !important;
-      padding: 4mm 0 !important;
-    }
-    .container {
-      max-width: 194mm !important;
-      width: 194mm !important;
-      padding: 0 !important;
-      margin: 0 auto !important;
-    }
+    .hero { margin-bottom: 14px !important; padding-bottom: 10px !important; }
+    .hero-title { font-size: 24px !important; line-height: 1 !important; }
+    .hero-title .sub { font-size: 12px !important; margin-top: 6px !important; }
 
-    /* 히어로 컴팩트 */
-    .hero {
-      margin-bottom: 4mm !important;
-      padding-bottom: 3mm !important;
-    }
-    .hero-title {
-      font-size: 18px !important;
-      line-height: 1.1 !important;
-    }
-    .hero-title .sub {
-      font-size: 10px !important;
-      margin-top: 2mm !important;
-    }
-
-    /* ★ 핵심: 2열 그리드 강제 (mm 단위로 → iOS도 따름) */
-    .layout-grid {
-      display: grid !important;
-      grid-template-columns: 95mm 95mm !important;
-      gap: 4mm !important;
-      width: 194mm !important;
-    }
-
-    /* grid-area 배치 (데스크톱 레이아웃과 동일) */
-    .layout-grid > .card { grid-area: auto !important; }
-    .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
-    .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
-    .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
-    .layout-grid > .card-water { grid-area: 2 / 2 / span 2 / auto !important; }
-    .layout-grid > .card-04    { grid-area: 3 / 1 !important; }
-    .layout-grid > .card-05    { grid-area: 4 / 1 !important; }
-    .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
-    .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
-    .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
-
-    /* ★ 카드: 너비 강제 + 잘림 방지 */
-    .card {
-      width: 95mm !important;
-      max-width: 95mm !important;
-      min-width: 0 !important;
-      padding: 3mm 3.5mm !important;
-      margin: 0 !important;
-      box-sizing: border-box !important;
+    /* 카드 잘림 방지 */
+    .card, .card-inner, .field-group, .inline-row,
+    .gauge-wrap, .ratio-box, .radar-layout, .slider-grid {
       break-inside: avoid !important;
       page-break-inside: avoid !important;
       -webkit-column-break-inside: avoid !important;
     }
-    .card-inner { padding: 0 !important; }
+    canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
 
-    /* 카드 내부 요소도 잘리지 않도록 */
-    .card-inner,
-    .field-group,
-    .inline-row,
-    .gauge-wrap,
-    .ratio-box,
-    .radar-layout,
-    .slider-grid {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
-      -webkit-column-break-inside: avoid !important;
-    }
-
-    /* inline-row: 가로 배치 강제 */
-    .inline-row {
-      display: flex !important;
-      flex-direction: row !important;
-      gap: 2mm !important;
-    }
-    .inline-row.c2 {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-    }
-    .inline-row.c3 {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr 1fr !important;
-    }
-
-    /* 슬라이더 2열 강제 */
-    .slider-grid {
-      display: grid !important;
-      grid-template-columns: 1fr 1fr !important;
-      gap: 2mm !important;
-    }
-
-    /* 섹션 헤딩 컴팩트 */
-    .sec-heading {
-      padding-bottom: 1.5mm !important;
-      margin-bottom: 2mm !important;
-    }
-    .sec-num { font-size: 8px !important; }
-    .sec-title { font-size: 11px !important; }
-    .lbl { font-size: 8.5px !important; margin-bottom: 0.5mm !important; }
-
-    /* 캔버스: mm 기준 크기 강제 */
-    canvas {
-      break-inside: avoid !important;
-      page-break-inside: avoid !important;
-    }
-    #waterCanvas {
-      width: 60mm !important;
-      max-width: 60mm !important;
-      height: auto !important;
-      max-height: 90mm !important;
-      display: block !important;
-      margin: 0 auto !important;
-    }
-    #radarCanvas {
-      width: 45mm !important;
-      max-width: 45mm !important;
-      height: 45mm !important;
-      max-height: 45mm !important;
-      display: block !important;
-      margin: 0 auto 2mm !important;
-    }
-
-    /* 게이지/비율 박스 컴팩트 */
-    .gauge-wrap { margin-top: 3mm !important; }
-    .gauge-track { height: 5mm !important; }
-    .ratio-box { margin-top: 3mm !important; padding: 2mm !important; }
-    .ratio-val { font-size: 13px !important; }
-    .ratio-label { font-size: 8px !important; }
-
-    /* ── input 숨기기 (iOS Safari 호환) ── */
+    /* input 숨기기 (iOS Safari 호환) */
     .inp, input.inp, textarea.inp, select.inp {
       position: absolute !important;
       left: -9999px !important;
-      width: 1px !important;
-      height: 1px !important;
+      width: 1px !important; height: 1px !important;
       overflow: hidden !important;
       clip: rect(0,0,0,0) !important;
       -webkit-clip-path: inset(100%) !important;
       clip-path: inset(100%) !important;
       opacity: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: 0 !important;
+      margin: 0 !important; padding: 0 !important; border: 0 !important;
     }
-
-    /* ── print-value 표시 (mm 단위) ── */
     .print-value {
       display: block !important;
       box-sizing: border-box !important;
-      height: 7mm !important;
-      line-height: 7mm !important;
-      padding: 0 2.5mm !important;
-      margin-top: 1mm !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      padding: 0 13px !important;
+      margin-top: 6px !important;
       border: 1px solid #ccc !important;
       background: #f4f6f2 !important;
-      border-radius: 1.5mm !important;
+      border-radius: 8px !important;
       font-family: 'Noto Sans KR', sans-serif !important;
-      font-size: 10px !important;
+      font-size: 13px !important;
       font-weight: 500 !important;
       color: #0e0f0c !important;
       overflow: hidden !important;
@@ -1181,9 +1035,9 @@
     }
     .print-value-textarea {
       height: auto !important;
-      min-height: 20mm !important;
+      min-height: 80px !important;
       line-height: 1.4 !important;
-      padding: 2mm 2.5mm !important;
+      padding: 8px 13px !important;
       white-space: pre-wrap !important;
     }
   }
@@ -1985,6 +1839,8 @@ function setupPrintValues(){
 }
 
 function printForm(){
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+
   // 모든 print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
@@ -1993,12 +1849,165 @@ function printForm(){
 
   const partner=(document.getElementById('partnerName').value||'Partner').trim();
   const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
-  const original=document.title;
-  document.title=`DCR_${partner}_${date}`;
 
-  window.print();
+  // 데스크톱은 그대로 window.print()
+  if(!isIOS){
+    const original=document.title;
+    document.title=`DCR_${partner}_${date}`;
+    window.print();
+    setTimeout(()=>{document.title=original;updateTitle();},3000);
+    return;
+  }
 
-  setTimeout(()=>{document.title=original;updateTitle();},3000);
+  // ── iOS: 현재 페이지를 통째로 복제 → viewport=820으로 새 탭 열기 ──
+  // (디자인은 1픽셀도 바뀌지 않음. 단지 viewport만 데스크톱으로)
+  try{
+    // 1. 캔버스 → 이미지 데이터 (clone은 canvas 픽셀을 복사하지 않음)
+    const waterImg=document.getElementById('waterCanvas').toDataURL('image/png');
+    const radarImg=document.getElementById('radarCanvas').toDataURL('image/png');
+
+    // 2. 전체 document 복제
+    const cloneRoot=document.documentElement.cloneNode(true);
+
+    // 3. viewport meta를 데스크톱 폭으로 (모바일 1열 미디어쿼리 회피)
+    const vp=cloneRoot.querySelector('meta[name="viewport"]');
+    if(vp) vp.setAttribute('content','width=820, initial-scale=1.0');
+
+    // 4. 타이틀
+    const titleEl=cloneRoot.querySelector('title');
+    if(titleEl) titleEl.textContent=`DCR_${partner}_${date}`;
+
+    // 5. 포털/비밀번호/로드패널/토스트 제거 → qcApp만 보이게
+    cloneRoot.querySelector('#pwOverlay')?.remove();
+    cloneRoot.querySelector('#portalView')?.remove();
+    cloneRoot.querySelectorAll('.toast, .load-panel, .qc-back-btn').forEach(el=>el.remove());
+    const qcApp=cloneRoot.querySelector('#qcApp');
+    if(qcApp){ qcApp.style.display='block'; }
+
+    // 6. 캔버스를 img로 치환 (canvas 픽셀은 clone되지 않음)
+    const waterC=cloneRoot.querySelector('#waterCanvas');
+    if(waterC){
+      const img=document.createElement('img');
+      img.src=waterImg;
+      img.alt='SCA Water Chart';
+      img.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
+      waterC.parentNode.replaceChild(img,waterC);
+    }
+    const radarC=cloneRoot.querySelector('#radarCanvas');
+    if(radarC){
+      const img=document.createElement('img');
+      img.src=radarImg;
+      img.alt='Flavor Profile';
+      img.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
+      radarC.parentNode.replaceChild(img,radarC);
+    }
+
+    // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
+    cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
+      const original=document.querySelectorAll('input.inp')[i];
+      if(original){
+        if(original.type==='checkbox'||original.type==='radio'){
+          if(original.checked) cloneInput.setAttribute('checked','');
+        } else {
+          cloneInput.setAttribute('value', original.value||'');
+        }
+      }
+    });
+    cloneRoot.querySelectorAll('textarea.inp').forEach((cloneTa,i)=>{
+      const original=document.querySelectorAll('textarea.inp')[i];
+      if(original) cloneTa.textContent=original.value||'';
+    });
+    cloneRoot.querySelectorAll('select.inp').forEach((cloneSel,i)=>{
+      const original=document.querySelectorAll('select.inp')[i];
+      if(original){
+        const val=original.value;
+        cloneSel.querySelectorAll('option').forEach(opt=>{
+          if(opt.value===val) opt.setAttribute('selected','');
+          else opt.removeAttribute('selected');
+        });
+      }
+    });
+    // range 슬라이더도 값 동기화
+    cloneRoot.querySelectorAll('input[type="range"]').forEach((cloneR,i)=>{
+      const original=document.querySelectorAll('input[type="range"]')[i];
+      if(original) cloneR.setAttribute('value',original.value);
+    });
+
+    // 8. 모든 script 태그 제거 (새 탭에서 JS 재실행 방지)
+    cloneRoot.querySelectorAll('script').forEach(s=>s.remove());
+
+    // 9. 새 탭용 보조 스타일 + 자동 인쇄 스크립트 주입
+    const head=cloneRoot.querySelector('head');
+    const extraStyle=document.createElement('style');
+    extraStyle.textContent=`
+      /* 새 탭: 인쇄 미리보기 모드 - 현재 입력값을 print-value로 표시 */
+      body { padding-bottom: 80px; }
+      .inp { display: none !important; }
+      .print-value, .print-value-textarea {
+        display: block !important;
+        box-sizing: border-box;
+        min-height: 36px;
+        padding: 9px 13px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        background: #f4f6f2;
+        border-radius: 8px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        color: #0e0f0c;
+      }
+      .print-value-textarea { min-height: 80px; white-space: pre-wrap; line-height: 1.4; }
+      .print-toolbar {
+        position: fixed; bottom: 0; left: 0; right: 0;
+        background: #0e0f0c; color: #fff;
+        padding: 12px 16px; display: flex; gap: 10px; justify-content: center;
+        z-index: 9999;
+      }
+      .print-toolbar button {
+        background: #fff; color: #0e0f0c; border: 0;
+        padding: 10px 18px; border-radius: 8px;
+        font-weight: 600; font-size: 14px; cursor: pointer;
+      }
+      .print-toolbar .hint { color: #aaa; font-size: 11px; align-self: center; }
+      @media print { .print-toolbar { display: none !important; } }
+    `;
+    head.appendChild(extraStyle);
+
+    // print-value 텍스트도 미리 채워넣기
+    cloneRoot.querySelectorAll('.print-value').forEach((pv,i)=>{
+      const originalPv=document.querySelectorAll('.print-value')[i];
+      if(originalPv) pv.textContent=originalPv.textContent;
+    });
+
+    // 툴바 추가
+    const body=cloneRoot.querySelector('body');
+    const toolbar=document.createElement('div');
+    toolbar.className='print-toolbar';
+    toolbar.innerHTML=`
+      <button onclick="window.print()">인쇄 / PDF 저장</button>
+      <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
+      <span class="hint">공유 → 프린트 → PDF로 저장</span>
+    `;
+    body.appendChild(toolbar);
+
+    // 10. 직렬화 + 새 탭 열기
+    const html='<!DOCTYPE html>\n'+cloneRoot.outerHTML;
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const w=window.open(url,'_blank');
+    if(!w){
+      // 팝업 차단시 같은 창 이동
+      window.location.href=url;
+    }
+  } catch(e){
+    console.error('iOS 인쇄 처리 실패:',e);
+    // fallback: 일반 인쇄
+    const original=document.title;
+    document.title=`DCR_${partner}_${date}`;
+    window.print();
+    setTimeout(()=>{document.title=original;updateTitle();},3000);
+  }
 }
 
 
