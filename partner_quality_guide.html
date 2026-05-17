@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -737,28 +737,184 @@
   }
   .load-item-delete:hover { color: #c0292e; }
 
+  @page {
+    size: A4 portrait;
+    margin: 8mm 12mm 10mm 12mm;
+  }
   @media print {
-    /* 모든 색상·배경을 화면 그대로 인쇄 */
+    /* Force ALL colors and backgrounds to print (overrides browser ink-saving default) */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
       color-adjust: exact !important;
     }
 
-    /* UI 요소만 숨김 */
-    .actions, .toast, #loadPanel, #iosPrintModal { display: none !important; }
+    html, body {
+      overflow-x: visible !important;
+      background: white !important;
+    }
 
-    /* 용지 폭에 맞추기 */
-    .container { max-width: 100% !important; padding: 0 20px !important; }
-    header { max-width: 100% !important; }
-    .header-inner { max-width: 100% !important; }
+    /* Sticky header → static so it appears once at top */
+    header {
+      position: static !important;
+    }
 
-    /* 모바일 1열 규칙(max-width:680px)을 무력화 — 화면 2열 배치 그대로 유지 */
+    /* Hide controls */
+    .actions, .toast { display: none !important; }
+
+    /* Container: full width with comfortable margin */
+    .container {
+      max-width: 100% !important;
+      padding: 10px 16px 0 16px !important;
+    }
+    header > .header-inner {
+      max-width: 100% !important;
+      padding: 10px 16px !important;
+    }
+
+    /* ── Hero: 인쇄 시 대폭 축소 (용지 공간 절약) ── */
+    .hero {
+      margin-bottom: 10px !important;
+      padding-bottom: 8px !important;
+    }
+    .hero-title {
+      font-size: 20px !important;
+      font-weight: 900 !important;
+      letter-spacing: -0.5px !important;
+      line-height: 1.1 !important;
+    }
+    .hero-title .sub {
+      font-size: 11px !important;
+      margin-top: 4px !important;
+    }
+    .hero-score-wrap { display: none !important; }
+
+    /* ── 카드 내부 패딩 압축 ── */
+    .card-inner {
+      padding: 12px 14px !important;
+    }
+    .sec-heading {
+      margin-bottom: 8px !important;
+    }
+    .sec-num {
+      font-size: 9px !important;
+    }
+    .sec-title {
+      font-size: 12px !important;
+    }
+    .lbl {
+      font-size: 10px !important;
+    }
+    .print-value {
+      height: 30px !important;
+      line-height: 30px !important;
+      font-size: 12px !important;
+      margin-top: 4px !important;
+    }
+    .print-value-textarea {
+      height: auto !important;
+      min-height: 100px !important;
+      font-size: 12px !important;
+    }
+    .inline-row {
+      gap: 8px !important;
+    }
+
+    /* ── layout-grid 간격 축소 ── */
+    .layout-grid {
+      gap: 6px !important;
+    }
+
+    /* Keep 2-column layout in print */
     .layout-grid {
       display: grid !important;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
       gap: 10px !important;
     }
+
+    /* Cards must not split across pages */
+    .card {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Canvases must render at the size CSS dictates and not vanish */
+    canvas {
+      display: block !important;
+      max-width: 100% !important;
+      height: auto !important;
+      visibility: visible !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* iOS Safari 등은 인쇄 시 input을 native control로 다시 그리며 값을 누락.
+       해결: 모든 .inp를 매우 specific한 셀렉터로 강제 숨기고, JS가 삽입한 .print-value div로 대체. */
+    .inp,
+    input.inp,
+    textarea.inp,
+    select.inp,
+    .inline-row > .field-group > .inp,
+    .card-inner > .field-group > .inp,
+    .field-group > .inp,
+    .field-group input.inp,
+    .field-group textarea.inp,
+    .field-group select.inp {
+      display: none !important;
+    }
+    
+    /* .print-value를 input과 동일하게 스타일링 */
+    .print-value {
+      display: block !important;
+      box-sizing: border-box !important;
+      height: 40px !important;
+      line-height: 40px !important;
+      padding: 0 13px !important;
+      margin-top: 6px !important;
+      border: 1px solid #999 !important;
+      background: var(--surface) !important;
+      border-radius: 8px !important;
+      font-family: 'Noto Sans KR', sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      color: #0e0f0c !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .print-value-textarea {
+      height: auto !important;
+      min-height: 200px !important;
+      line-height: 1.5 !important;
+      padding: 12px 13px !important;
+      white-space: pre-wrap !important;
+    }
+    
+    /* inline-row를 flex로 전환해서 라벨 + print-value가 세로로 자연 정렬 */
+    .inline-row {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 12px !important;
+    }
+    .inline-row.c2 > .field-group { flex: 1 1 50%; }
+    .inline-row.c3 > .field-group { flex: 1 1 33.33%; }
+    .inline-row > .field-group {
+      display: flex !important;
+      flex-direction: column !important;
+      min-width: 0;
+    }
+    .inline-row > .field-group > .lbl {
+      grid-row: auto !important;
+      height: auto !important;
+      line-height: 1.3 !important;
+      margin: 0 !important;
+    }
+    
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       모바일 미디어 쿼리에서 카드 grid-area를 auto로 만든 규칙을 인쇄에서 무력화.
+       데스크탑과 동일한 2열 배치 강제. specificity .layout-grid > .card-XX 로 매칭. */
     .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
     .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
     .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
@@ -768,12 +924,16 @@
     .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
     .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
     .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
+    
+    /* 캔버스 최대 높이 제한 — 페이지 넘김 방지 */
+    #waterCanvas { max-height: 480px !important; }
+    #radarCanvas { max-height: 220px !important; }
 
-    /* 카드 페이지 분할 방지 */
-    .card { page-break-inside: avoid !important; break-inside: avoid !important; }
-
-    /* canvas 인쇄 보장 */
-    canvas { display: block !important; visibility: visible !important; }
+    /* Status pills, gauge backgrounds, ratio box — keep their fills */
+    .pill, .ratio-box, .gauge-wrap, .gauge-track, .gauge-fill-ok, .gauge-thumb {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
   }
 
   
@@ -913,7 +1073,8 @@
   
 
   /* print-value는 화면에서 항상 숨김 — 인쇄 시에만 표시됨 */
-  
+  .print-value, .print-value-textarea { display: none; }
+
   </style>
 </head>
 <body>
@@ -1658,6 +1819,56 @@ function showToast(msg){
 }
 
 
+function getInpDisplayValue(el){
+  if(el.tagName === 'SELECT'){
+    const opt = el.options[el.selectedIndex];
+    return (opt && opt.value) ? opt.text : '';
+  }
+  return el.value || '';
+}
+
+function setupPrintValues(){
+  // 모든 .inp 옆에 .print-value div를 영구 삽입.
+  // 화면에서는 CSS로 숨김. @media print 에서만 표시.
+  // input 변경 시마다 텍스트를 자동 갱신해서 항상 최신 값 유지.
+  document.querySelectorAll('.inp').forEach(el => {
+    // 이미 있으면 skip
+    if(el.nextElementSibling && el.nextElementSibling.classList.contains('print-value')) return;
+    const printEl = document.createElement('div');
+    printEl.className = 'print-value';
+    if(el.tagName === 'TEXTAREA') printEl.classList.add('print-value-textarea');
+    el.parentNode.insertBefore(printEl, el.nextSibling);
+    const sync = () => { printEl.textContent = getInpDisplayValue(el); };
+    el.addEventListener('input', sync);
+    el.addEventListener('change', sync);
+    sync(); // 초기값
+  });
+}
+
+function syncAllPrintValues(){
+  // 안전망: 인쇄 직전에 모든 .print-value 강제 재동기화
+  document.querySelectorAll('.inp').forEach(el => {
+    let pe = el.nextElementSibling;
+    if(pe && pe.classList.contains('print-value')){
+      pe.textContent = getInpDisplayValue(el);
+    }
+  });
+}
+
+function enterPrintMode(){
+  document.querySelectorAll('.inp').forEach(el => {
+    el.style.setProperty('display','none','important');
+  });
+  document.querySelectorAll('.print-value').forEach(el => {
+    el.style.setProperty('display','block','important');
+  });
+}
+
+function exitPrintMode(){
+  document.querySelectorAll('.inp').forEach(el => el.style.removeProperty('display'));
+  document.querySelectorAll('.print-value').forEach(el => el.style.removeProperty('display'));
+}
+
 function isIOS(){
   return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
@@ -1672,16 +1883,23 @@ function closeIOSModal(){
 }
 
 function printForm(){
+  syncAllPrintValues();
   const partner = (document.getElementById('partnerName').value || 'Partner').trim();
-  const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g, '');
+  const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g,'');
+  document.title = `DCR_${partner}_${date}`;
+
   if(isIOS()){
+    // iOS: window.print()이 WKWebView에서 차단됨 → 네이티브 공유 방법 안내
     showIOSModal();
     return;
   }
-  const original = document.title;
-  document.title = `DCR_${partner}_${date}`;
+
+  // 데스크탑
+  enterPrintMode();
+  const cleanup = () => { exitPrintMode(); updateTitle(); };
+  window.addEventListener('afterprint', cleanup, {once:true});
+  setTimeout(cleanup, 8000);
   window.print();
-  setTimeout(() => { document.title = original; updateTitle(); }, 1500);
 }
 
 
@@ -1795,8 +2013,7 @@ const today = new Date().toISOString().split('T')[0];
 const dateInput = document.getElementById('visitDate');
 if(dateInput && !dateInput.value) dateInput.value = today;
 updateTitle();
-document.querySelectorAll('.print-value').forEach(el => el.remove());
-if(isIOS()) document.body.classList.add('is-ios');
+setupPrintValues();
 </script>
 </body>
 </html>
