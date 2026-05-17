@@ -981,17 +981,64 @@
 
   @media print {
     /* 색상 보존 */
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    *, *::before, *::after {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
 
     /* 포탈/비밀번호/컨트롤 숨기기 */
     #pwOverlay, #portalView, .actions, .toast, .load-panel,
     .qc-back-btn { display: none !important; }
     #qcApp { display: block !important; }
 
-    /* 헤더 고정 해제 */
+    /* 헤더 */
     header { position: static !important; }
+    header > .header-inner { max-width: 100% !important; }
 
-    /* input 숨기기 (iOS Safari 호환: display:none은 무시됨) */
+    /* 컨테이너 전폭 */
+    .container { max-width: 100% !important; }
+
+    /* ── 히어로 축소 (1페이지 공간 확보) ── */
+    .hero {
+      margin-bottom: 14px !important;
+      padding-bottom: 10px !important;
+    }
+    .hero-title {
+      font-size: 24px !important;
+      line-height: 1 !important;
+    }
+    .hero-title .sub {
+      font-size: 12px !important;
+      margin-top: 6px !important;
+    }
+
+    /* ── 핵심: 2열 그리드 강제 (모바일 1열 무력화) ── */
+    .layout-grid {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      gap: 10px !important;
+    }
+
+    /* ── 핵심: grid-area 강제 배치 (모바일 auto 무력화) ── */
+    .layout-grid > .card { grid-area: auto !important; }
+    .layout-grid > .card-01    { grid-area: 1 / 1 !important; }
+    .layout-grid > .card-02    { grid-area: 1 / 2 !important; }
+    .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
+    .layout-grid > .card-water { grid-area: 2 / 2 / span 2 / auto !important; }
+    .layout-grid > .card-04    { grid-area: 3 / 1 !important; }
+    .layout-grid > .card-05    { grid-area: 4 / 1 !important; }
+    .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
+    .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
+    .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
+
+    /* ── inline-row: 가로 배치 강제 (모바일 세로 무력화) ── */
+    .inline-row { flex-direction: row !important; }
+    .inline-row.c3 { grid-template-columns: 1fr 1fr 1fr !important; }
+
+    /* ── 슬라이더: 2열 강제 ── */
+    .slider-grid { grid-template-columns: 1fr 1fr !important; }
+
+    /* ── input 숨기기 (iOS Safari 호환) ── */
     .inp, input.inp, textarea.inp, select.inp {
       position: absolute !important;
       left: -9999px !important;
@@ -1007,19 +1054,19 @@
       border: 0 !important;
     }
 
-    /* print-value 표시 (화면에서는 숨겨져 있음) */
+    /* ── print-value 표시 ── */
     .print-value {
       display: block !important;
       box-sizing: border-box !important;
-      height: 40px !important;
-      line-height: 40px !important;
+      height: 36px !important;
+      line-height: 36px !important;
       padding: 0 13px !important;
       margin-top: 6px !important;
       border: 1px solid #ccc !important;
       background: #f4f6f2 !important;
       border-radius: 8px !important;
       font-family: 'Noto Sans KR', sans-serif !important;
-      font-size: 14px !important;
+      font-size: 13px !important;
       font-weight: 500 !important;
       color: #0e0f0c !important;
       overflow: hidden !important;
@@ -1028,13 +1075,13 @@
     }
     .print-value-textarea {
       height: auto !important;
-      min-height: 120px !important;
-      line-height: 1.5 !important;
-      padding: 10px 13px !important;
+      min-height: 80px !important;
+      line-height: 1.4 !important;
+      padding: 8px 13px !important;
       white-space: pre-wrap !important;
     }
 
-    /* 카드 잘림 방지 */
+    /* ── 카드 잘림 방지 ── */
     .card { break-inside: avoid !important; page-break-inside: avoid !important; }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
   }
