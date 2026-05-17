@@ -1923,12 +1923,13 @@ function printForm(){
     if(qcApp){ qcApp.style.display='block'; }
 
     // 6. 캔버스를 img로 치환 (canvas 픽셀은 clone되지 않음)
+    // ★ 핵심: 인라인 style로 작은 고정 크기 → 그리드 행 늘어남 방지
     const waterC=cloneRoot.querySelector('#waterCanvas');
     if(waterC){
       const img=document.createElement('img');
       img.src=waterImg;
       img.alt='SCA Water Chart';
-      img.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
+      img.style.cssText='display:block;width:210px;height:315px;border-radius:8px;margin:0 auto;';
       waterC.parentNode.replaceChild(img,waterC);
     }
     const radarC=cloneRoot.querySelector('#radarCanvas');
@@ -1936,9 +1937,20 @@ function printForm(){
       const img=document.createElement('img');
       img.src=radarImg;
       img.alt='Flavor Profile';
-      img.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
+      img.style.cssText='display:block;width:170px;height:170px;margin:0 auto;';
       radarC.parentNode.replaceChild(img,radarC);
     }
+
+    // ★ 핵심: card-05 앞에서 페이지 분할 (card-flavor는 같은 행이므로 자동 따라감)
+    // 결과: 1페이지(01-04+water) / 2페이지(05-flavor+06-07)
+    const card05=cloneRoot.querySelector('.card-05');
+    if(card05){
+      card05.style.cssText+=';page-break-before:always !important;break-before:page !important;-webkit-column-break-before:always !important;';
+    }
+    // 모든 카드에 잘림 방지 인라인 적용
+    cloneRoot.querySelectorAll('.card').forEach(c=>{
+      c.style.cssText+=';page-break-inside:avoid !important;break-inside:avoid !important;-webkit-column-break-inside:avoid !important;';
+    });
 
     // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
     cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
@@ -2040,14 +2052,6 @@ function printForm(){
       <span class="hint">공유 → 프린트 → PDF로 저장</span>
     `;
     body.appendChild(toolbar);
-
-    // ★★★ 핵심 변경: html 요소에 인라인 zoom 직접 적용 ★★★
-    // 이전엔 @media print 안에 zoom을 넣었는데 iOS Safari는 print 모드에서 zoom을 무시함
-    // 인라인 style은 iOS Safari가 무조건 따르므로 우회 불가능
-    // 새 탭이 처음부터 78% 크기로 렌더링되고, 인쇄도 그 상태로 캡처됨
-    cloneRoot.style.zoom = '0.78';
-    // 툴바는 원래 크기 유지 (인라인 zoom으로 역보정)
-    toolbar.style.cssText += ';zoom: 1.282;transform-origin: bottom center;';
 
     // 10. 직렬화 + 새 탭 열기
     const html='<!DOCTYPE html>\n'+cloneRoot.outerHTML;
