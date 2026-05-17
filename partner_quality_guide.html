@@ -2041,6 +2041,14 @@ function printForm(){
     `;
     body.appendChild(toolbar);
 
+    // ★★★ 핵심 변경: html 요소에 인라인 zoom 직접 적용 ★★★
+    // 이전엔 @media print 안에 zoom을 넣었는데 iOS Safari는 print 모드에서 zoom을 무시함
+    // 인라인 style은 iOS Safari가 무조건 따르므로 우회 불가능
+    // 새 탭이 처음부터 78% 크기로 렌더링되고, 인쇄도 그 상태로 캡처됨
+    cloneRoot.style.zoom = '0.78';
+    // 툴바는 원래 크기 유지 (인라인 zoom으로 역보정)
+    toolbar.style.cssText += ';zoom: 1.282;transform-origin: bottom center;';
+
     // 10. 직렬화 + 새 탭 열기
     const html='<!DOCTYPE html>\n'+cloneRoot.outerHTML;
     const blob=new Blob([html],{type:'text/html;charset=utf-8'});
