@@ -803,18 +803,32 @@
     .layout-grid > .card-03    { grid-area: 2 / 1 !important; }
     .layout-grid > .card-water { grid-area: 2 / 2 / span 2 / auto !important; }
     .layout-grid > .card-04    { grid-area: 3 / 1 !important; }
-    .layout-grid > .card-05    {
-      grid-area: 4 / 1 !important;
-      break-before: page !important;
-      page-break-before: always !important;
-    }
-    .layout-grid > .card-flavor{
-      grid-area: 4 / 2 !important;
-      break-before: page !important;
-      page-break-before: always !important;
-    }
+    .layout-grid > .card-05    { grid-area: 4 / 1 !important; }
+    .layout-grid > .card-flavor{ grid-area: 4 / 2 !important; }
     .layout-grid > .card-06    { grid-area: 5 / 1 !important; }
     .layout-grid > .card-07    { grid-area: 5 / 2 !important; }
+
+    /* ── 강제 페이지 분리 (grid 분리) ── */
+    .print-page-break {
+      display: block !important;
+      break-before: page !important;
+      page-break-before: always !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+    }
+
+    /* ── 2페이지 그리드 ── */
+    .layout-grid-p2 {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      gap: 5px !important;
+    }
+    .layout-grid-p2 > .card-05    { grid-area: 1 / 1 !important; }
+    .layout-grid-p2 > .card-flavor{ grid-area: 1 / 2 !important; }
+    .layout-grid-p2 > .card-06    { grid-area: 2 / 1 !important; }
+    .layout-grid-p2 > .card-07    { grid-area: 2 / 2 !important; }
 
     /* ── 카드: 페이지 분리 방지 ── */
     .card {
@@ -1188,6 +1202,20 @@
   }
   .qc-back-btn:hover { color: #9fe870; }
   .qc-back-btn svg { width: 14px; height: 14px; }
+
+  /* ── 화면: print-page-break 숨김, p2 grid ── */
+  .print-page-break { display: none; }
+  .layout-grid-p2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .layout-grid-p2 > .card { min-width: 0; max-width: 100%; }
+  @media (max-width: 680px) {
+    .layout-grid-p2 { grid-template-columns: 1fr; }
+    .layout-grid-p2 > .card { grid-area: auto !important; }
+  }
   </style>
 </head>
 <body>
@@ -1389,6 +1417,11 @@
         
       </div>
     </div>
+  </div>
+
+  <div class="print-page-break"></div>
+
+  <div class="layout-grid layout-grid-p2">
     <div class="card card-05">
       <div class="card-inner">
         <div class="sec-heading">
