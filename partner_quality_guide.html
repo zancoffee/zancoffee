@@ -2008,7 +2008,44 @@ function printForm(){
         font-weight: 600; font-size: 14px; cursor: pointer;
       }
       .print-toolbar .hint { color: #aaa; font-size: 11px; align-self: center; }
-      @media print { .print-toolbar { display: none !important; } }
+
+      /* ★★★ iOS Safari 인쇄 전용 추가 규칙 (웹에는 영향 없음 - 이 CSS는 새 탭에만 주입됨) ★★★
+         iOS Safari는 데스크톱 Chrome처럼 'Fit to page' 자동 맞춤이 없어서
+         캔버스 크기 제한 + zoom으로 명시적 페이지 맞춤 */
+      @media print {
+        .print-toolbar { display: none !important; }
+
+        /* ★ 핵심: 캔버스 크기를 제한해서 그리드 행이 늘어지지 않도록
+           (water chart가 너무 크면 card-03/04가 빈 공간으로 늘어남) */
+        #waterCanvas {
+          max-width: 250px !important;
+          max-height: 375px !important;
+          width: 100% !important;
+          height: auto !important;
+        }
+        #radarCanvas {
+          max-width: 180px !important;
+          max-height: 180px !important;
+          width: 100% !important;
+          height: auto !important;
+        }
+
+        /* 그리드 행 stretch 방지: 카드를 자기 자연 높이로 유지 */
+        .layout-grid { align-items: start !important; }
+        .card { align-self: start !important; }
+
+        /* 히어로 약간 더 컴팩트 (페이지 1에 공간 확보) */
+        .hero { margin-bottom: 18px !important; padding-bottom: 14px !important; }
+        .hero-title { font-size: 28px !important; line-height: 1.05 !important; }
+
+        /* 카드 잘림 방지 */
+        .card, .card-inner, .field-group, .inline-row,
+        .gauge-wrap, .ratio-box, .radar-layout, .slider-grid {
+          break-inside: avoid !important;
+          page-break-inside: avoid !important;
+          -webkit-column-break-inside: avoid !important;
+        }
+      }
     `;
     head.appendChild(extraStyle);
 
