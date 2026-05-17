@@ -975,8 +975,73 @@
   .qc-back-btn svg { width: 14px; height: 14px; }
 
 
+
+  /* ── 인쇄 전용: 화면 레이아웃 유지, 최소 변경만 ── */
+  @page { size: A4 portrait; margin: 10mm; }
+
+  @media print {
+    /* 색상 보존 */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+    /* 포탈/비밀번호/컨트롤 숨기기 */
+    #pwOverlay, #portalView, .actions, .toast, .load-panel,
+    .qc-back-btn { display: none !important; }
+    #qcApp { display: block !important; }
+
+    /* 헤더 고정 해제 */
+    header { position: static !important; }
+
+    /* input 숨기기 (iOS Safari 호환: display:none은 무시됨) */
+    .inp, input.inp, textarea.inp, select.inp {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      -webkit-clip-path: inset(100%) !important;
+      clip-path: inset(100%) !important;
+      opacity: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+    }
+
+    /* print-value 표시 (화면에서는 숨겨져 있음) */
+    .print-value {
+      display: block !important;
+      box-sizing: border-box !important;
+      height: 40px !important;
+      line-height: 40px !important;
+      padding: 0 13px !important;
+      margin-top: 6px !important;
+      border: 1px solid #ccc !important;
+      background: #f4f6f2 !important;
+      border-radius: 8px !important;
+      font-family: 'Noto Sans KR', sans-serif !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      color: #0e0f0c !important;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+    .print-value-textarea {
+      height: auto !important;
+      min-height: 120px !important;
+      line-height: 1.5 !important;
+      padding: 10px 13px !important;
+      white-space: pre-wrap !important;
+    }
+
+    /* 카드 잘림 방지 */
+    .card { break-inside: avoid !important; page-break-inside: avoid !important; }
+    canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
+  }
+
+  /* print-value: 화면에서는 항상 숨김 */
+  .print-value, .print-value-textarea { display: none; }
   </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1318,7 +1383,7 @@
   <div class="actions">
     <button class="btn btn-outline" onclick="openLoadPanel()">기록 불러오기</button>
     <button class="btn btn-outline" onclick="resetForm()">초기화</button>
-    <button class="btn btn-ghost" onclick="savePDF()">PDF 저장</button>
+    <button class="btn btn-ghost" onclick="printForm()">인쇄 / PDF 저장</button>
     <button class="btn btn-primary" onclick="saveForm()">점검 완료 저장</button>
   </div>
 
@@ -1748,38 +1813,52 @@ function showToast(msg){
 }
 
 
-async function savePDF(){
-  const partner = (document.getElementById('partnerName').value || 'Partner').trim();
-  const date = (document.getElementById('visitDate').value || new Date().toISOString().split('T')[0]).replace(/-/g,'');
-  const filename = `DCR_${partner}_${date}.pdf`;
-
-  // 버튼 영역 숨기기
-  const actions = document.querySelector('.actions');
-  const toast = document.getElementById('toast');
-  actions.style.display = 'none';
-
-  // 로딩 표시
-  showToast('PDF 생성 중...');
-
-  try {
-    const container = document.querySelector('.container');
-    await html2pdf().set({
-      margin:       [6, 6, 6, 6],
-      filename:     filename,
-      image:        { type: 'jpeg', quality: 0.92 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#f4f6f2', scrollY: 0 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all','css'], avoid: ['.card','.gauge-wrap','.ratio-box'] }
-    }).from(container).save();
-    showToast('PDF 저장 완료');
-  } catch(e) {
-    console.error('PDF error:', e);
-    showToast('PDF 생성 실패');
+function getDisplayValue(el){
+  if(el.tagName==='SELECT'){
+    const o=el.options[el.selectedIndex];
+    return (o&&o.value)?o.text:'';
   }
-
-  // 복원
-  actions.style.display = '';
+  return el.value||'';
 }
+
+function setupPrintValues(){
+  document.querySelectorAll('.inp').forEach(el=>{
+    if(el.nextElementSibling&&el.nextElementSibling.classList.contains('print-value')) return;
+    const pv=document.createElement('div');
+    pv.className='print-value';
+    if(el.tagName==='TEXTAREA') pv.classList.add('print-value-textarea');
+    el.parentNode.insertBefore(pv,el.nextSibling);
+    const sync=()=>{pv.textContent=getDisplayValue(el);};
+    el.addEventListener('input',sync);
+    el.addEventListener('change',sync);
+    sync();
+  });
+}
+
+function printForm(){
+  // 모든 print-value 동기화
+  document.querySelectorAll('.inp').forEach(el=>{
+    const pv=el.nextElementSibling;
+    if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
+  });
+
+  const partner=(document.getElementById('partnerName').value||'Partner').trim();
+  const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
+  const original=document.title;
+  document.title=`DCR_${partner}_${date}`;
+
+  window.print();
+
+  setTimeout(()=>{document.title=original;updateTitle();},3000);
+}
+
+// beforeprint / afterprint 로 자동 처리
+window.addEventListener('beforeprint',()=>{
+  document.querySelectorAll('.inp').forEach(el=>{
+    const pv=el.nextElementSibling;
+    if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
+  });
+});
 
 
 function updateTitle(){
@@ -1892,6 +1971,7 @@ const today = new Date().toISOString().split('T')[0];
 const dateInput = document.getElementById('visitDate');
 if(dateInput && !dateInput.value) dateInput.value = today;
 updateTitle();
+setupPrintValues();
 
 </script>
 </div><!-- /qcApp -->
