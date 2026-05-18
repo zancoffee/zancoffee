@@ -1877,8 +1877,6 @@ function setupPrintValues(){
 }
 
 function printForm(){
-  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
-
   // 모든 print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
@@ -1887,179 +1885,14 @@ function printForm(){
 
   const partner=(document.getElementById('partnerName').value||'Partner').trim();
   const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
+  const original=document.title;
+  document.title=`DCR_${partner}_${date}`;
 
-  // 데스크톱은 그대로 window.print()
-  if(!isIOS){
-    const original=document.title;
-    document.title=`DCR_${partner}_${date}`;
-    window.print();
-    setTimeout(()=>{document.title=original;updateTitle();},3000);
-    return;
-  }
+  // iOS/데스크톱 동일: 그냥 window.print() 호출 (백지 상태)
+  window.print();
 
-  // ── iOS: 현재 페이지를 통째로 복제 → viewport=820으로 새 탭 열기 ──
-  // (디자인은 1픽셀도 바뀌지 않음. 단지 viewport만 데스크톱으로)
-  try{
-    // 1. 캔버스 → 이미지 데이터 (clone은 canvas 픽셀을 복사하지 않음)
-    const waterImg=document.getElementById('waterCanvas').toDataURL('image/png');
-    const radarImg=document.getElementById('radarCanvas').toDataURL('image/png');
-
-    // 2. 전체 document 복제
-    const cloneRoot=document.documentElement.cloneNode(true);
-
-    // 3. viewport meta를 데스크톱 폭으로 (모바일 1열 미디어쿼리 회피)
-    const vp=cloneRoot.querySelector('meta[name="viewport"]');
-    if(vp) vp.setAttribute('content','width=820, initial-scale=1.0');
-
-    // 4. 타이틀
-    const titleEl=cloneRoot.querySelector('title');
-    if(titleEl) titleEl.textContent=`DCR_${partner}_${date}`;
-
-    // 5. 포털/비밀번호/로드패널/토스트 제거 → qcApp만 보이게
-    cloneRoot.querySelector('#pwOverlay')?.remove();
-    cloneRoot.querySelector('#portalView')?.remove();
-    cloneRoot.querySelectorAll('.toast, .load-panel, .qc-back-btn').forEach(el=>el.remove());
-    const qcApp=cloneRoot.querySelector('#qcApp');
-    if(qcApp){ qcApp.style.display='block'; }
-
-    // 6. 캔버스를 img로 치환 (canvas 픽셀은 clone되지 않음)
-    const waterC=cloneRoot.querySelector('#waterCanvas');
-    if(waterC){
-      const img=document.createElement('img');
-      img.src=waterImg;
-      img.alt='SCA Water Chart';
-      img.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
-      waterC.parentNode.replaceChild(img,waterC);
-    }
-    const radarC=cloneRoot.querySelector('#radarCanvas');
-    if(radarC){
-      const img=document.createElement('img');
-      img.src=radarImg;
-      img.alt='Flavor Profile';
-      img.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
-      radarC.parentNode.replaceChild(img,radarC);
-    }
-
-    // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
-    cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
-      const original=document.querySelectorAll('input.inp')[i];
-      if(original){
-        if(original.type==='checkbox'||original.type==='radio'){
-          if(original.checked) cloneInput.setAttribute('checked','');
-        } else {
-          cloneInput.setAttribute('value', original.value||'');
-        }
-      }
-    });
-    cloneRoot.querySelectorAll('textarea.inp').forEach((cloneTa,i)=>{
-      const original=document.querySelectorAll('textarea.inp')[i];
-      if(original) cloneTa.textContent=original.value||'';
-    });
-    cloneRoot.querySelectorAll('select.inp').forEach((cloneSel,i)=>{
-      const original=document.querySelectorAll('select.inp')[i];
-      if(original){
-        const val=original.value;
-        cloneSel.querySelectorAll('option').forEach(opt=>{
-          if(opt.value===val) opt.setAttribute('selected','');
-          else opt.removeAttribute('selected');
-        });
-      }
-    });
-    // range 슬라이더도 값 동기화
-    cloneRoot.querySelectorAll('input[type="range"]').forEach((cloneR,i)=>{
-      const original=document.querySelectorAll('input[type="range"]')[i];
-      if(original) cloneR.setAttribute('value',original.value);
-    });
-
-    // 8. 모든 script 태그 제거 (새 탭에서 JS 재실행 방지)
-    cloneRoot.querySelectorAll('script').forEach(s=>s.remove());
-
-    // 9. 새 탭용 보조 스타일 + 자동 인쇄 스크립트 주입
-    const head=cloneRoot.querySelector('head');
-    const extraStyle=document.createElement('style');
-    extraStyle.textContent=`
-      /* 새 탭: 인쇄 미리보기 모드 - 현재 입력값을 print-value로 표시 */
-      body { padding-bottom: 80px; }
-      .inp { display: none !important; }
-      .print-value, .print-value-textarea {
-        display: block !important;
-        box-sizing: border-box;
-        min-height: 36px;
-        padding: 9px 13px;
-        margin-top: 6px;
-        border: 1px solid #ccc;
-        background: #f4f6f2;
-        border-radius: 8px;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        color: #0e0f0c;
-      }
-      .print-value-textarea { min-height: 80px; white-space: pre-wrap; line-height: 1.4; }
-      .print-toolbar {
-        position: fixed; bottom: 0; left: 0; right: 0;
-        background: #0e0f0c; color: #fff;
-        padding: 12px 16px; display: flex; gap: 10px; justify-content: center;
-        z-index: 9999;
-      }
-      .print-toolbar button {
-        background: #fff; color: #0e0f0c; border: 0;
-        padding: 10px 18px; border-radius: 8px;
-        font-weight: 600; font-size: 14px; cursor: pointer;
-      }
-      .print-toolbar .hint { color: #aaa; font-size: 11px; align-self: center; }
-
-      /* ★★★ iOS Safari 인쇄 전용 (웹/데스크톱에는 영향 없음 - 이 CSS는 iOS 새 탭에만 주입됨) ★★★
-         iOS Safari는 데스크톱 Chrome처럼 자동 'Fit to page'가 없어서
-         zoom으로 명시적 페이지 맞춤을 적용 → 데스크톱 인쇄와 동일한 결과 */
-      @media print {
-        .print-toolbar { display: none !important; }
-
-        /* ★ 핵심: 화면 맞춤 - 콘텐츠 전체를 페이지에 맞게 축소 */
-        html { zoom: 0.78 !important; }
-
-        /* 카드 잘림 방지 */
-        .card { break-inside: avoid !important; page-break-inside: avoid !important; }
-      }
-    `;
-    head.appendChild(extraStyle);
-
-    // print-value 텍스트도 미리 채워넣기
-    cloneRoot.querySelectorAll('.print-value').forEach((pv,i)=>{
-      const originalPv=document.querySelectorAll('.print-value')[i];
-      if(originalPv) pv.textContent=originalPv.textContent;
-    });
-
-    // 툴바 추가
-    const body=cloneRoot.querySelector('body');
-    const toolbar=document.createElement('div');
-    toolbar.className='print-toolbar';
-    toolbar.innerHTML=`
-      <button onclick="window.print()">인쇄 / PDF 저장</button>
-      <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
-      <span class="hint">v7-ROLLBACK · 공유 → 프린트 → PDF로 저장</span>
-    `;
-    body.appendChild(toolbar);
-
-    // 10. 직렬화 + 새 탭 열기
-    const html='<!DOCTYPE html>\n'+cloneRoot.outerHTML;
-    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    const url=URL.createObjectURL(blob);
-    const w=window.open(url,'_blank');
-    if(!w){
-      // 팝업 차단시 같은 창 이동
-      window.location.href=url;
-    }
-  } catch(e){
-    console.error('iOS 인쇄 처리 실패:',e);
-    // fallback: 일반 인쇄
-    const original=document.title;
-    document.title=`DCR_${partner}_${date}`;
-    window.print();
-    setTimeout(()=>{document.title=original;updateTitle();},3000);
-  }
+  setTimeout(()=>{document.title=original;updateTitle();},3000);
 }
-
 
 // beforeprint / afterprint 로 자동 처리
 window.addEventListener('beforeprint',()=>{
