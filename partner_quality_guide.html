@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP4-CARD04-MIN-HEIGHT-2026-05-18 ==== -->
+<!-- ==== SYNC-MARKER-STEP6-IOS-MARGIN-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP4]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP6]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -1046,23 +1046,24 @@
        SCA Water Chart 캔버스 크기 제한 → 그리드 row stretching 방지 */
     .layout-grid { align-items: start !important; }
     #waterCanvas {
-      width: 200px !important;
-      height: 300px !important;
-      max-width: 200px !important;
-      max-height: 300px !important;
+      width: 260px !important;
+      height: 390px !important;
+      max-width: 260px !important;
+      max-height: 390px !important;
     }
     #radarCanvas {
-      width: 180px !important;
-      height: 180px !important;
-      max-width: 180px !important;
-      max-height: 180px !important;
+      width: 200px !important;
+      height: 200px !important;
+      max-width: 200px !important;
+      max-height: 200px !important;
     }
 
     /* ★ row 4 (card-05 + card-flavor) 통째로 2페이지로 이동
        iOS Safari가 그리드 자식의 page-break-before를 무시하므로
-       대신 card-04를 강제로 키워서 page 1을 가득 채워 row 4가 자연스럽게 page 2로 밀리도록 함 */
+       대신 card-04를 강제로 키워서 page 1을 가득 채워 row 4가 자연스럽게 page 2로 밀리도록 함
+       iOS는 푸터 영역이 있어서 안전 마진 필요 (270 → 230) */
     .layout-grid > .card-04 {
-      min-height: 350px !important;
+      min-height: 230px !important;
     }
 
     /* 추가 방어선: page-break-before/after 강제 (작동하면 더 깔끔) */
