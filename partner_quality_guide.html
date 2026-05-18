@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP8-CANVAS-HIDE-FIX-2026-05-18 ==== -->
+<!-- ==== SYNC-MARKER-STEP9-IOS-NO-BEFOREPRINT-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP8]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP9]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -975,7 +975,8 @@
   .qc-back-btn:hover { color: #9fe870; }
   .qc-back-btn svg { width: 14px; height: 14px; }
 
-
+  /* print-img는 화면에서 항상 숨김 (인쇄 시에만 표시) */
+  img[data-print-canvas-img] { display: none; }
 
   /* ── 인쇄 전용 ── */
   @page { size: A4 portrait; margin: 8mm; }
@@ -1042,24 +1043,14 @@
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
 
-    /* canvas → img 치환 시 canvas는 무조건 숨김 (JS의 display:none 백업) */
-    canvas[data-print-hidden] { display: none !important; }
+    /* ★ canvas → img 토글 (iOS Safari 호환):
+       인쇄 시 canvas는 무조건 숨김, 미리 생성된 print-img가 보이게 */
+    #waterCanvas, #radarCanvas { display: none !important; }
+    img[data-print-canvas-img] { display: block !important; margin: 0 auto !important; }
 
     /* ★ 2단계: 페이지 분할 문제 해결
-       SCA Water Chart 캔버스 크기 제한 → 그리드 row stretching 방지 */
+       canvas는 인쇄 시 숨겨지고 img가 대신 표시됨 (img는 위에서 정확한 크기로 생성됨) */
     .layout-grid { align-items: start !important; }
-    #waterCanvas {
-      width: 260px !important;
-      height: 390px !important;
-      max-width: 260px !important;
-      max-height: 390px !important;
-    }
-    #radarCanvas {
-      width: 200px !important;
-      height: 200px !important;
-      max-width: 200px !important;
-      max-height: 200px !important;
-    }
 
     /* ★ row 4 (card-05 + card-flavor) 통째로 2페이지로 이동
        iOS Safari가 그리드 자식의 page-break-before를 무시하므로
@@ -1924,63 +1915,54 @@ function printForm(){
     if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
   });
 
+  // ★ iOS Safari는 beforeprint 이벤트가 안 발생하므로 여기서 직접 print-img 업데이트
+  ensurePrintImgsUpdated();
+
   const partner=(document.getElementById('partnerName').value||'Partner').trim();
   const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
   const original=document.title;
   document.title=`DCR_${partner}_${date}`;
 
-  // iOS/데스크톱 동일: 그냥 window.print() 호출 (백지 상태)
+  // iOS/데스크톱 동일: 그냥 window.print() 호출
   window.print();
 
   setTimeout(()=>{document.title=original;updateTitle();},3000);
 }
 
-// beforeprint / afterprint 로 자동 처리
+// ★ 핵심: iOS Safari는 beforeprint/afterprint 이벤트를 발생시키지 않음
+//   → printForm() 함수에서 직접 처리 + CSS @media print로 canvas↔img 토글
 
 const PRINT_CANVAS_CONFIGS=[
   {id:'waterCanvas',width:260,height:390,extraStyle:'border-radius:8px;'},
   {id:'radarCanvas',width:200,height:200,extraStyle:''}
 ];
 
-function restorePrintCanvases(){
-  // 모든 print img 제거
-  document.querySelectorAll('img[data-print-canvas-img]').forEach(img=>img.remove());
-  // 숨겨진 canvas 복원
-  document.querySelectorAll('canvas[data-print-hidden]').forEach(c=>{
-    c.style.removeProperty('display');
-    c.removeAttribute('data-print-hidden');
+// canvas의 현재 그림을 print-img(영구 생성)에 동기화
+function ensurePrintImgsUpdated(){
+  PRINT_CANVAS_CONFIGS.forEach(cfg=>{
+    const canvas=document.getElementById(cfg.id);
+    if(!canvas) return;
+    let img=canvas.parentNode.querySelector(`img[data-print-canvas-img="${cfg.id}"]`);
+    if(!img){
+      // 처음이면 img 생성 (canvas 옆에 영구 배치, 화면에선 CSS로 숨김)
+      img=document.createElement('img');
+      img.setAttribute('data-print-canvas-img',cfg.id);
+      img.style.cssText=`width:${cfg.width}px;height:${cfg.height}px;margin:0 auto;${cfg.extraStyle}`;
+      canvas.parentNode.insertBefore(img,canvas.nextSibling);
+    }
+    try{
+      img.src=canvas.toDataURL('image/png');
+    }catch(e){console.error('canvas→img 실패:',e);}
   });
 }
 
+// 데스크톱용: beforeprint 발생 시에도 동기화
 window.addEventListener('beforeprint',()=>{
-  // print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
     if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
   });
-
-  // 기존 print 아티팩트 정리 (중복 방지)
-  restorePrintCanvases();
-
-  // ★ canvas → img 치환 (iOS Safari가 canvas를 CSS 사이즈 무시하고 본래 buffer 크기로 출력하는 버그 회피)
-  PRINT_CANVAS_CONFIGS.forEach(cfg=>{
-    const canvas=document.getElementById(cfg.id);
-    if(!canvas) return;
-    try{
-      const img=document.createElement('img');
-      img.src=canvas.toDataURL('image/png');
-      img.setAttribute('data-print-canvas-img',cfg.id);
-      img.style.cssText=`display:block;width:${cfg.width}px;height:${cfg.height}px;margin:0 auto;${cfg.extraStyle}`;
-      canvas.parentNode.insertBefore(img,canvas.nextSibling);
-      // !important로 canvas 강제 숨김 (인라인 style의 display:block 오버라이드)
-      canvas.setAttribute('data-print-hidden','true');
-      canvas.style.setProperty('display','none','important');
-    }catch(e){console.error('canvas→img 실패:',e);}
-  });
-});
-
-window.addEventListener('afterprint',()=>{
-  restorePrintCanvases();
+  ensurePrintImgsUpdated();
 });
 
 
