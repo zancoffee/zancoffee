@@ -1922,14 +1922,17 @@ function printForm(){
     const qcApp=cloneRoot.querySelector('#qcApp');
     if(qcApp){ qcApp.style.display='block'; }
 
-    // 6. 캔버스를 img로 치환 (canvas 픽셀은 clone되지 않음)
-    // ★ 핵심: 인라인 style로 작은 고정 크기 → 그리드 행 늘어남 방지
+    // 6. 캔버스를 img로 치환
+    // ★ 핵심: width/height HTML 속성도 같이 설정 (iOS Safari가 CSS보다 우선시함)
+    //         사이즈를 작게 해서 row span으로 인한 카드 늘어남 방지
     const waterC=cloneRoot.querySelector('#waterCanvas');
     if(waterC){
       const img=document.createElement('img');
       img.src=waterImg;
       img.alt='SCA Water Chart';
-      img.style.cssText='display:block;width:210px;height:315px;border-radius:8px;margin:0 auto;';
+      img.setAttribute('width','200');
+      img.setAttribute('height','300');
+      img.style.cssText='display:block;width:200px !important;height:300px !important;max-width:200px;max-height:300px;border-radius:8px;margin:0 auto;';
       waterC.parentNode.replaceChild(img,waterC);
     }
     const radarC=cloneRoot.querySelector('#radarCanvas');
@@ -1937,20 +1940,26 @@ function printForm(){
       const img=document.createElement('img');
       img.src=radarImg;
       img.alt='Flavor Profile';
-      img.style.cssText='display:block;width:170px;height:170px;margin:0 auto;';
+      img.setAttribute('width','160');
+      img.setAttribute('height','160');
+      img.style.cssText='display:block;width:160px !important;height:160px !important;max-width:160px;max-height:160px;margin:0 auto;';
       radarC.parentNode.replaceChild(img,radarC);
     }
 
-    // ★ 핵심: card-05 앞에서 페이지 분할 (card-flavor는 같은 행이므로 자동 따라감)
-    // 결과: 1페이지(01-04+water) / 2페이지(05-flavor+06-07)
-    const card05=cloneRoot.querySelector('.card-05');
-    if(card05){
-      card05.style.cssText+=';page-break-before:always !important;break-before:page !important;-webkit-column-break-before:always !important;';
+    // ★ 핵심: 그리드 행 stretch 완전 방지 - 카드를 자기 자연 높이로 유지
+    const layoutGridEl=cloneRoot.querySelector('.layout-grid');
+    if(layoutGridEl){
+      layoutGridEl.style.cssText+=';align-items:start !important;align-content:start !important;';
     }
-    // 모든 카드에 잘림 방지 인라인 적용
+    // 모든 카드에 align-self start + 잘림 방지 인라인 적용
     cloneRoot.querySelectorAll('.card').forEach(c=>{
-      c.style.cssText+=';page-break-inside:avoid !important;break-inside:avoid !important;-webkit-column-break-inside:avoid !important;';
+      c.style.cssText+=';align-self:start !important;page-break-inside:avoid !important;break-inside:avoid !important;-webkit-column-break-inside:avoid !important;';
     });
+
+    // ★ 핵심: body에 zoom 적용 (인라인 style은 iOS Safari가 무시 불가능)
+    // 새 탭이 78% 크기로 렌더링되고, 인쇄도 그 상태로 캡처됨
+    const bodyEl=cloneRoot.querySelector('body');
+    if(bodyEl) bodyEl.style.cssText+=';zoom:0.78;';
 
     // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
     cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
@@ -2046,10 +2055,12 @@ function printForm(){
     const body=cloneRoot.querySelector('body');
     const toolbar=document.createElement('div');
     toolbar.className='print-toolbar';
+    // 툴바는 body zoom의 영향을 받지 않도록 자체 zoom 보정 (1/0.78 ≈ 1.282)
+    toolbar.style.cssText='zoom:1.282;';
     toolbar.innerHTML=`
       <button onclick="window.print()">인쇄 / PDF 저장</button>
       <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
-      <span class="hint">v3 · 공유 → 프린트 → PDF로 저장</span>
+      <span class="hint">v4 · 공유 → 프린트 → PDF로 저장</span>
     `;
     body.appendChild(toolbar);
 
