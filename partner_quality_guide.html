@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-CLEAN-STATE-2026-05-18-1410 ==== -->
+<!-- ==== SYNC-MARKER-STEP2-PAGINATION-FIX-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [CLEAN]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP2]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -1041,6 +1041,22 @@
       -webkit-column-break-inside: avoid !important;
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
+
+    /* ★ 2단계: 페이지 분할 문제 해결
+       SCA Water Chart 캔버스 크기 제한 → 그리드 row stretching 방지 */
+    .layout-grid { align-items: start !important; }
+    #waterCanvas {
+      width: 200px !important;
+      height: 300px !important;
+      max-width: 200px !important;
+      max-height: 300px !important;
+    }
+    #radarCanvas {
+      width: 180px !important;
+      height: 180px !important;
+      max-width: 180px !important;
+      max-height: 180px !important;
+    }
 
     /* input 숨기기 (iOS Safari 호환) */
     .inp, input.inp, textarea.inp, select.inp {
