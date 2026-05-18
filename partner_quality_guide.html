@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP12-SPLIT-IOS-DESKTOP-2026-05-18 ==== -->
+<!-- ==== SYNC-MARKER-STEP14-INAPP-PDF-DOWNLOAD-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP12]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP14]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -1941,7 +1941,91 @@ function setupPrintValues(){
   });
 }
 
+// CDN 스크립트를 한 번만 동적 로드
+function loadScriptOnce(url){
+  return new Promise((resolve,reject)=>{
+    if(document.querySelector(`script[src="${url}"]`)){resolve();return;}
+    const s=document.createElement('script');
+    s.src=url;
+    s.onload=resolve;
+    s.onerror=()=>reject(new Error('스크립트 로드 실패: '+url));
+    document.head.appendChild(s);
+  });
+}
+
+// 인앱 브라우저용: html2canvas + jsPDF로 PDF 직접 생성 → 다운로드
+async function downloadPDFFallback(){
+  try{
+    if(typeof showToast==='function') showToast('PDF 생성 중... (몇 초 소요)');
+
+    // CDN 라이브러리 로드
+    await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+    // print-value 동기화
+    document.querySelectorAll('.inp').forEach(el=>{
+      const pv=el.nextElementSibling;
+      if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
+    });
+    syncAllCanvasImgs();
+
+    // 인쇄 모드를 강제 적용하기 위해 임시 클래스 추가
+    document.body.classList.add('__pdf-capture-mode');
+
+    // qcApp 캡처
+    const target=document.getElementById('qcApp');
+    const canvas=await html2canvas(target,{
+      scale:2,
+      backgroundColor:'#ffffff',
+      useCORS:true,
+      logging:false,
+      windowWidth:820,
+    });
+
+    document.body.classList.remove('__pdf-capture-mode');
+
+    // jsPDF로 A4 PDF 만들기
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF('portrait','mm','a4');
+
+    const pageW=210, pageH=297, marginX=8, marginY=8;
+    const contentW=pageW-2*marginX;
+    const contentH=pageH-2*marginY;
+
+    const ratio=canvas.height/canvas.width;
+    const pdfImgW=contentW;
+    const pdfImgH=pdfImgW*ratio;
+
+    // 콘텐츠가 한 페이지 넘으면 여러 페이지로 분할
+    const numPages=Math.ceil(pdfImgH/contentH);
+    const imgData=canvas.toDataURL('image/png');
+    for(let i=0;i<numPages;i++){
+      if(i>0) pdf.addPage();
+      pdf.addImage(imgData,'PNG',marginX,marginY-i*contentH,pdfImgW,pdfImgH);
+    }
+
+    // 파일명 + 저장 (다운로드 트리거)
+    const partner=(document.getElementById('partnerName').value||'Partner').trim();
+    const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
+    pdf.save(`DCR_${partner}_${date}.pdf`);
+
+    if(typeof showToast==='function') showToast('PDF 다운로드 완료');
+  }catch(e){
+    console.error('PDF 생성 실패:',e);
+    document.body.classList.remove('__pdf-capture-mode');
+    alert('PDF 생성 실패: '+e.message+'\n\n인터넷 연결을 확인하거나 외부 브라우저(Safari/Chrome)에서 다시 시도해 주세요.');
+  }
+}
+
 function printForm(){
+  // ★ 인앱 브라우저 감지 → PDF 직접 다운로드 (window.print() 우회)
+  const ua=navigator.userAgent||'';
+  const isInAppBrowser=/NAVER|KAKAOTALK|FBAN|FBAV|Instagram|Line\/|whale-inapp/i.test(ua);
+  if(isInAppBrowser){
+    downloadPDFFallback();
+    return;
+  }
+
   // 모든 print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
