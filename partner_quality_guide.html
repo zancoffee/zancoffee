@@ -1956,10 +1956,7 @@ function printForm(){
       c.style.cssText+=';align-self:start !important;page-break-inside:avoid !important;break-inside:avoid !important;-webkit-column-break-inside:avoid !important;';
     });
 
-    // ★ 핵심: body에 zoom 적용 (인라인 style은 iOS Safari가 무시 불가능)
-    // 새 탭이 78% 크기로 렌더링되고, 인쇄도 그 상태로 캡처됨
-    const bodyEl=cloneRoot.querySelector('body');
-    if(bodyEl) bodyEl.style.cssText+=';zoom:0.78;';
+    // (zoom은 별도 stylesheet 규칙 + runtime script로 처리 - 아래 단계 9에서)
 
     // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
     cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
@@ -1994,6 +1991,35 @@ function printForm(){
 
     // 8. 모든 script 태그 제거 (새 탭에서 JS 재실행 방지)
     cloneRoot.querySelectorAll('script').forEach(s=>s.remove());
+
+    // 8-1. ★★★ 핵심: 런타임 zoom + transform 강제 스크립트 주입 ★★★
+    // HTML 파싱 단계의 inline zoom은 iOS Safari가 무시할 수 있지만
+    // 페이지 로드 후 JS로 적용하는 style은 무시 불가능
+    const forceScale=cloneRoot.ownerDocument.createElement('script');
+    forceScale.textContent=`
+(function(){
+  function apply(){
+    document.documentElement.style.zoom='0.78';
+    document.body.style.zoom='0.78';
+    // transform도 백업으로 적용
+    var app=document.getElementById('qcApp');
+    if(app){
+      app.style.transformOrigin='top left';
+    }
+    // 툴바는 zoom 역보정
+    var bar=document.querySelector('.print-toolbar');
+    if(bar){
+      bar.style.zoom='1.282';
+    }
+  }
+  apply();
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',apply);
+  }
+  window.addEventListener('load',apply);
+})();
+`;
+    cloneRoot.querySelector('body').appendChild(forceScale);
 
     // 9. 새 탭용 보조 스타일 + 자동 인쇄 스크립트 주입
     const head=cloneRoot.querySelector('head');
@@ -2055,12 +2081,10 @@ function printForm(){
     const body=cloneRoot.querySelector('body');
     const toolbar=document.createElement('div');
     toolbar.className='print-toolbar';
-    // 툴바는 body zoom의 영향을 받지 않도록 자체 zoom 보정 (1/0.78 ≈ 1.282)
-    toolbar.style.cssText='zoom:1.282;';
     toolbar.innerHTML=`
       <button onclick="window.print()">인쇄 / PDF 저장</button>
       <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
-      <span class="hint">v4 · 공유 → 프린트 → PDF로 저장</span>
+      <span class="hint">v5 · 공유 → 프린트 → PDF로 저장</span>
     `;
     body.appendChild(toolbar);
 
