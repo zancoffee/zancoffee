@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP11-FIXED-PIXEL-IMG-2026-05-18 ==== -->
+<!-- ==== SYNC-MARKER-STEP12-SPLIT-IOS-DESKTOP-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP11]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP12]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -975,14 +975,21 @@
   .qc-back-btn:hover { color: #9fe870; }
   .qc-back-btn svg { width: 14px; height: 14px; }
 
-  /* ── 인쇄 전용 ── */
-  @page { size: A4 portrait; margin: 8mm; }
+  /* ══════════════════════════════════════════════════════════════
+     ── 인쇄 전용 CSS - 사용자 직접 조정 가능 ──
+     ══════════════════════════════════════════════════════════════ */
 
+  /* ──── 📄 A4 페이지 여백 (공통) ──── */
+  @page { size: A4 portrait; margin: 8mm; }
+  /*                                  ↑↑↑ 4mm~15mm 범위로 조정 */
+
+  /* ══════════════════════════════════════════════════════════════
+     🖥 데스크톱 인쇄 설정 (사용자 직접 조정 가능)
+     ══════════════════════════════════════════════════════════════ */
   @media print {
-    /* ★ 핵심: 인쇄 영역 가로를 데스크톱 컨테이너 폭(720px)과 동일하게 고정
-       A4 인쇄 가능 폭(약 733px @ 96dpi)과 거의 1:1로 매칭됨 */
+    /* 인쇄 영역 가로 폭 */
     html, body {
-      width: 720px !important;
+      width: 720px !important;       /* ← 데스크톱 인쇄 가로 폭 */
       max-width: 720px !important;
       min-width: 720px !important;
       margin: 0 auto !important;
@@ -991,18 +998,18 @@
       overflow: visible !important;
     }
 
-    /* 색상 보존 */
+    /* 색상 보존 (공통) */
     *, *::before, *::after {
       -webkit-print-color-adjust: exact !important;
       print-color-adjust: exact !important;
     }
 
-    /* 포털/비밀번호/컨트롤 숨기기 */
+    /* 포털/비밀번호/컨트롤 숨기기 (공통) */
     #pwOverlay, #portalView, .actions, .toast, .load-panel,
     .qc-back-btn { display: none !important; }
     #qcApp { display: block !important; }
 
-    /* 헤더: 720px 폭 고정 */
+    /* 헤더 (데스크톱) */
     header {
       position: static !important;
       box-shadow: none !important;
@@ -1012,10 +1019,8 @@
     header > .header-inner {
       max-width: 720px !important;
       width: 720px !important;
-      padding: 12px 0 !important;
+      padding: 12px 0 !important;     /* ← 헤더 상하 패딩 */
     }
-
-    /* 컨테이너: 720px 폭 고정, 패딩 축소 */
     .container {
       max-width: 720px !important;
       width: 720px !important;
@@ -1023,15 +1028,26 @@
       margin: 0 auto !important;
     }
 
-    /* 히어로 약간 축소 (페이지 1에 카드 더 넣기) */
+    /* 히어로 - "Partner Quality Guide" 타이틀 영역 (데스크톱) */
     .hero {
-      margin-bottom: 20px !important;
-      padding-bottom: 16px !important;
+      margin-bottom: 20px !important;   /* ← 히어로 아래 여백 */
+      padding-bottom: 16px !important;  /* ← 히어로 내부 아래 패딩 */
     }
-    .hero-title { font-size: 32px !important; line-height: 1.05 !important; }
-    .hero-title .sub { font-size: 13px !important; margin-top: 6px !important; }
+    .hero-title {
+      font-size: 32px !important;       /* ← 히어로 타이틀 크기 */
+      line-height: 1.05 !important;
+    }
+    .hero-title .sub {
+      font-size: 13px !important;       /* ← 히어로 서브타이틀 크기 */
+      margin-top: 6px !important;
+    }
 
-    /* 카드 잘림 방지 */
+    /* Card-04 머신 파라미터 - 페이지 분할 제어용 (데스크톱) */
+    .layout-grid > .card-04 {
+      min-height: 230px !important;     /* ← 값 ↑하면 page1 더 채움, ↓하면 덜 채움 */
+    }
+
+    /* ──── 공통 인쇄 규칙 (수정 비권장) ──── */
     .card, .card-inner, .field-group, .inline-row,
     .gauge-wrap, .ratio-box, .radar-layout, .slider-grid {
       break-inside: avoid !important;
@@ -1039,23 +1055,8 @@
       -webkit-column-break-inside: avoid !important;
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
-
-    /* canvas는 오프스크린에 있지만 만약 보이면 강제 숨김 (defense in depth) */
     #waterCanvas, #radarCanvas { display: none !important; }
-
-    /* ★ 2단계: 페이지 분할 문제 해결
-       canvas는 인쇄 시 숨겨지고 img가 대신 표시됨 (img는 위에서 정확한 크기로 생성됨) */
     .layout-grid { align-items: start !important; }
-
-    /* ★ row 4 (card-05 + card-flavor) 통째로 2페이지로 이동
-       iOS Safari가 그리드 자식의 page-break-before를 무시하므로
-       대신 card-04를 강제로 키워서 page 1을 가득 채워 row 4가 자연스럽게 page 2로 밀리도록 함
-       iOS는 푸터 영역이 있어서 안전 마진 필요 (270 → 230) */
-    .layout-grid > .card-04 {
-      min-height: 230px !important;
-    }
-
-    /* 추가 방어선: page-break-before/after 강제 (작동하면 더 깔끔) */
     .layout-grid > .card-05,
     .layout-grid > .card-flavor {
       page-break-before: always !important;
@@ -1104,6 +1105,43 @@
       line-height: 1.4 !important;
       padding: 8px 13px !important;
       white-space: pre-wrap !important;
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     📱 iOS Safari 인쇄 전용 오버라이드 (사용자 직접 조정 가능)
+     이 블록의 값은 iOS에만 적용됨. 데스크톱은 위 데스크톱 설정 사용.
+     ══════════════════════════════════════════════════════════════ */
+  @media print {
+    /* 인쇄 영역 가로 폭 (iOS) */
+    html.ios-device, html.ios-device body {
+      width: 720px !important;          /* ← iOS 인쇄 가로 폭 */
+      max-width: 720px !important;
+      min-width: 720px !important;
+    }
+
+    /* 헤더 (iOS) */
+    html.ios-device header > .header-inner {
+      padding: 12px 0 !important;       /* ← iOS 헤더 상하 패딩 */
+    }
+
+    /* 히어로 (iOS) */
+    html.ios-device .hero {
+      margin-bottom: 20px !important;   /* ← iOS 히어로 아래 여백 */
+      padding-bottom: 16px !important;
+    }
+    html.ios-device .hero-title {
+      font-size: 32px !important;       /* ← iOS 히어로 타이틀 크기 */
+      line-height: 1.05 !important;
+    }
+    html.ios-device .hero-title .sub {
+      font-size: 13px !important;       /* ← iOS 히어로 서브타이틀 크기 */
+      margin-top: 6px !important;
+    }
+
+    /* Card-04 머신 파라미터 - 페이지 분할 제어 (iOS) */
+    html.ios-device .layout-grid > .card-04 {
+      min-height: 230px !important;     /* ← iOS 전용 값. 페이지 분할 조절 */
     }
   }
 
@@ -1928,11 +1966,28 @@ function printForm(){
 // iOS Safari는 인쇄 시 canvas의 display:none을 무시하고 본래 크기로 인쇄하는 버그가 있음
 // → canvas를 화면에서 영구적으로 제거하고 img로 대체 (iOS가 canvas를 인쇄할 수 없게 만듦)
 
-// 화면과 인쇄 동일한 고정 픽셀 크기 사용 (iOS Safari가 max-width override 무시하는 버그 회피)
-const PRINT_CANVAS_CONFIGS=[
+// iOS 디바이스 감지 → html 태그에 ios-device 클래스 추가 (CSS에서 iOS 전용 규칙 사용)
+const __IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+if (__IS_IOS) document.documentElement.classList.add('ios-device');
+
+// ════════════════════════════════════════════════════════
+// 🎨 데스크톱 인쇄 - Canvas/Radar 크기 (직접 조정 가능)
+// ════════════════════════════════════════════════════════
+const PRINT_CANVAS_CONFIGS_DESKTOP=[
   {id:'waterCanvas',width:260,height:390,extraStyle:'border-radius:8px;'},
   {id:'radarCanvas',width:200,height:200,extraStyle:''}
 ];
+
+// ════════════════════════════════════════════════════════
+// 📱 iOS 인쇄 - Canvas/Radar 크기 (직접 조정 가능)
+// ════════════════════════════════════════════════════════
+const PRINT_CANVAS_CONFIGS_IOS=[
+  {id:'waterCanvas',width:260,height:390,extraStyle:'border-radius:8px;'},
+  {id:'radarCanvas',width:200,height:200,extraStyle:''}
+];
+
+// 디바이스에 따라 적절한 설정 사용
+const PRINT_CANVAS_CONFIGS = __IS_IOS ? PRINT_CANVAS_CONFIGS_IOS : PRINT_CANVAS_CONFIGS_DESKTOP;
 
 // canvas의 현재 그림을 img에 동기화
 function syncCanvasImg(canvasId){
