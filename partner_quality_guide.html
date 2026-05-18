@@ -1922,17 +1922,13 @@ function printForm(){
     const qcApp=cloneRoot.querySelector('#qcApp');
     if(qcApp){ qcApp.style.display='block'; }
 
-    // 6. 캔버스를 img로 치환
-    // ★ 핵심: width/height HTML 속성도 같이 설정 (iOS Safari가 CSS보다 우선시함)
-    //         사이즈를 작게 해서 row span으로 인한 카드 늘어남 방지
+    // 6. 캔버스를 img로 치환 (canvas 픽셀은 clone되지 않음)
     const waterC=cloneRoot.querySelector('#waterCanvas');
     if(waterC){
       const img=document.createElement('img');
       img.src=waterImg;
       img.alt='SCA Water Chart';
-      img.setAttribute('width','200');
-      img.setAttribute('height','300');
-      img.style.cssText='display:block;width:200px !important;height:300px !important;max-width:200px;max-height:300px;border-radius:8px;margin:0 auto;';
+      img.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
       waterC.parentNode.replaceChild(img,waterC);
     }
     const radarC=cloneRoot.querySelector('#radarCanvas');
@@ -1940,23 +1936,9 @@ function printForm(){
       const img=document.createElement('img');
       img.src=radarImg;
       img.alt='Flavor Profile';
-      img.setAttribute('width','160');
-      img.setAttribute('height','160');
-      img.style.cssText='display:block;width:160px !important;height:160px !important;max-width:160px;max-height:160px;margin:0 auto;';
+      img.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
       radarC.parentNode.replaceChild(img,radarC);
     }
-
-    // ★ 핵심: 그리드 행 stretch 완전 방지 - 카드를 자기 자연 높이로 유지
-    const layoutGridEl=cloneRoot.querySelector('.layout-grid');
-    if(layoutGridEl){
-      layoutGridEl.style.cssText+=';align-items:start !important;align-content:start !important;';
-    }
-    // 모든 카드에 align-self start + 잘림 방지 인라인 적용
-    cloneRoot.querySelectorAll('.card').forEach(c=>{
-      c.style.cssText+=';align-self:start !important;page-break-inside:avoid !important;break-inside:avoid !important;-webkit-column-break-inside:avoid !important;';
-    });
-
-    // (zoom은 별도 stylesheet 규칙 + runtime script로 처리 - 아래 단계 9에서)
 
     // 7. 입력값들을 value 속성으로 baking (clone은 value 속성만 복사, .value 프로퍼티는 안 됨)
     cloneRoot.querySelectorAll('input.inp').forEach((cloneInput,i)=>{
@@ -1991,115 +1973,6 @@ function printForm(){
 
     // 8. 모든 script 태그 제거 (새 탭에서 JS 재실행 방지)
     cloneRoot.querySelectorAll('script').forEach(s=>s.remove());
-
-    // 8-1. ★★★ 완전히 새로운 접근: html2canvas로 폼을 이미지로 변환 ★★★
-    // CSS Grid + iOS Safari 인쇄 문제 회피 → 그냥 PNG 2장을 인쇄
-    // 결과: 데스크톱 PDF와 픽셀 단위 동일
-
-    // html2canvas CDN 스크립트 로드
-    const h2cScript=cloneRoot.ownerDocument.createElement('script');
-    h2cScript.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-    h2cScript.crossOrigin='anonymous';
-    cloneRoot.querySelector('head').appendChild(h2cScript);
-
-    // 캡쳐 및 이미지 치환 스크립트
-    const captureScript=cloneRoot.ownerDocument.createElement('script');
-    captureScript.textContent=`
-(function(){
-  function $(s){return document.querySelector(s);}
-
-  async function capture(){
-    // 폰트 로딩 대기
-    if(document.fonts && document.fonts.ready) await document.fonts.ready;
-    await new Promise(r=>setTimeout(r,500));
-
-    if(!window.html2canvas){
-      console.error('html2canvas not loaded');
-      document.getElementById('captureStatus').textContent='⚠ 이미지 변환 라이브러리 로딩 실패';
-      return;
-    }
-
-    try{
-      document.getElementById('captureStatus').textContent='🎨 데스크톱 레이아웃 이미지로 변환 중...';
-
-      const grid=$('.layout-grid');
-      if(!grid) return;
-
-      const cards=Array.from(grid.children);
-      // 1페이지 그룹: card-01, card-02, card-03, card-04, card-water (HTML 순서로 처음 5개)
-      // 2페이지 그룹: card-05, card-flavor, card-06, card-07 (나머지)
-
-      // 두 페이지 wrapper 생성 (원본 그리드 구조 유지)
-      const page1=document.createElement('div');
-      page1.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;';
-      const page2=document.createElement('div');
-      page2.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;';
-
-      // 원본 grid-area 유지를 위해 카드 분배
-      cards.forEach(c=>{
-        if(c.classList.contains('card-01')||c.classList.contains('card-02')||
-           c.classList.contains('card-03')||c.classList.contains('card-04')||
-           c.classList.contains('card-water')){
-          // grid-area 재설정 (페이지 내 좌표로)
-          if(c.classList.contains('card-01'))c.style.gridArea='1/1';
-          if(c.classList.contains('card-02'))c.style.gridArea='1/2';
-          if(c.classList.contains('card-03'))c.style.gridArea='2/1';
-          if(c.classList.contains('card-water'))c.style.gridArea='2/2/span 2/auto';
-          if(c.classList.contains('card-04'))c.style.gridArea='3/1';
-          page1.appendChild(c);
-        } else {
-          if(c.classList.contains('card-05'))c.style.gridArea='1/1';
-          if(c.classList.contains('card-flavor'))c.style.gridArea='1/2';
-          if(c.classList.contains('card-06'))c.style.gridArea='2/1';
-          if(c.classList.contains('card-07'))c.style.gridArea='2/2';
-          page2.appendChild(c);
-        }
-      });
-
-      // 임시로 grid를 block으로 만들고 두 페이지 추가
-      grid.style.display='block';
-      grid.appendChild(page1);
-      grid.appendChild(page2);
-
-      // 레이아웃 안정화 대기
-      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-
-      // 각 페이지 캡쳐
-      const opts={backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,allowTaint:true};
-      const canvas1=await html2canvas(page1,opts);
-      const canvas2=await html2canvas(page2,opts);
-
-      // 이미지로 치환
-      const img1=document.createElement('img');
-      img1.src=canvas1.toDataURL('image/png');
-      img1.style.cssText='display:block;width:100%;max-width:720px;height:auto;margin:0 auto;page-break-after:always;break-after:page;';
-
-      const img2=document.createElement('img');
-      img2.src=canvas2.toDataURL('image/png');
-      img2.style.cssText='display:block;width:100%;max-width:720px;height:auto;margin:0 auto;';
-
-      // grid 비우고 이미지 추가
-      grid.innerHTML='';
-      grid.style.display='block';
-      grid.appendChild(img1);
-      grid.appendChild(img2);
-
-      document.getElementById('captureStatus').textContent='✅ 변환 완료! 인쇄 / PDF 저장 버튼을 누르세요';
-      document.querySelector('.print-toolbar button').disabled=false;
-    } catch(e){
-      console.error('Capture failed:',e);
-      document.getElementById('captureStatus').textContent='⚠ 변환 실패: '+e.message;
-    }
-  }
-
-  if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',()=>setTimeout(capture,300));
-  } else {
-    setTimeout(capture,300);
-  }
-})();
-`;
-    cloneRoot.querySelector('body').appendChild(captureScript);
 
     // 9. 새 탭용 보조 스타일 + 자동 인쇄 스크립트 주입
     const head=cloneRoot.querySelector('head');
@@ -2162,9 +2035,9 @@ function printForm(){
     const toolbar=document.createElement('div');
     toolbar.className='print-toolbar';
     toolbar.innerHTML=`
-      <button onclick="window.print()" disabled>인쇄 / PDF 저장</button>
+      <button onclick="window.print()">인쇄 / PDF 저장</button>
       <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
-      <span class="hint" id="captureStatus">v6 · 변환 준비 중...</span>
+      <span class="hint">v7-ROLLBACK · 공유 → 프린트 → PDF로 저장</span>
     `;
     body.appendChild(toolbar);
 
