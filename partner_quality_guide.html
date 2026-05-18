@@ -1992,34 +1992,114 @@ function printForm(){
     // 8. 모든 script 태그 제거 (새 탭에서 JS 재실행 방지)
     cloneRoot.querySelectorAll('script').forEach(s=>s.remove());
 
-    // 8-1. ★★★ 핵심: 런타임 zoom + transform 강제 스크립트 주입 ★★★
-    // HTML 파싱 단계의 inline zoom은 iOS Safari가 무시할 수 있지만
-    // 페이지 로드 후 JS로 적용하는 style은 무시 불가능
-    const forceScale=cloneRoot.ownerDocument.createElement('script');
-    forceScale.textContent=`
+    // 8-1. ★★★ 완전히 새로운 접근: html2canvas로 폼을 이미지로 변환 ★★★
+    // CSS Grid + iOS Safari 인쇄 문제 회피 → 그냥 PNG 2장을 인쇄
+    // 결과: 데스크톱 PDF와 픽셀 단위 동일
+
+    // html2canvas CDN 스크립트 로드
+    const h2cScript=cloneRoot.ownerDocument.createElement('script');
+    h2cScript.src='https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    h2cScript.crossOrigin='anonymous';
+    cloneRoot.querySelector('head').appendChild(h2cScript);
+
+    // 캡쳐 및 이미지 치환 스크립트
+    const captureScript=cloneRoot.ownerDocument.createElement('script');
+    captureScript.textContent=`
 (function(){
-  function apply(){
-    document.documentElement.style.zoom='0.78';
-    document.body.style.zoom='0.78';
-    // transform도 백업으로 적용
-    var app=document.getElementById('qcApp');
-    if(app){
-      app.style.transformOrigin='top left';
+  function $(s){return document.querySelector(s);}
+
+  async function capture(){
+    // 폰트 로딩 대기
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise(r=>setTimeout(r,500));
+
+    if(!window.html2canvas){
+      console.error('html2canvas not loaded');
+      document.getElementById('captureStatus').textContent='⚠ 이미지 변환 라이브러리 로딩 실패';
+      return;
     }
-    // 툴바는 zoom 역보정
-    var bar=document.querySelector('.print-toolbar');
-    if(bar){
-      bar.style.zoom='1.282';
+
+    try{
+      document.getElementById('captureStatus').textContent='🎨 데스크톱 레이아웃 이미지로 변환 중...';
+
+      const grid=$('.layout-grid');
+      if(!grid) return;
+
+      const cards=Array.from(grid.children);
+      // 1페이지 그룹: card-01, card-02, card-03, card-04, card-water (HTML 순서로 처음 5개)
+      // 2페이지 그룹: card-05, card-flavor, card-06, card-07 (나머지)
+
+      // 두 페이지 wrapper 생성 (원본 그리드 구조 유지)
+      const page1=document.createElement('div');
+      page1.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;';
+      const page2=document.createElement('div');
+      page2.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;';
+
+      // 원본 grid-area 유지를 위해 카드 분배
+      cards.forEach(c=>{
+        if(c.classList.contains('card-01')||c.classList.contains('card-02')||
+           c.classList.contains('card-03')||c.classList.contains('card-04')||
+           c.classList.contains('card-water')){
+          // grid-area 재설정 (페이지 내 좌표로)
+          if(c.classList.contains('card-01'))c.style.gridArea='1/1';
+          if(c.classList.contains('card-02'))c.style.gridArea='1/2';
+          if(c.classList.contains('card-03'))c.style.gridArea='2/1';
+          if(c.classList.contains('card-water'))c.style.gridArea='2/2/span 2/auto';
+          if(c.classList.contains('card-04'))c.style.gridArea='3/1';
+          page1.appendChild(c);
+        } else {
+          if(c.classList.contains('card-05'))c.style.gridArea='1/1';
+          if(c.classList.contains('card-flavor'))c.style.gridArea='1/2';
+          if(c.classList.contains('card-06'))c.style.gridArea='2/1';
+          if(c.classList.contains('card-07'))c.style.gridArea='2/2';
+          page2.appendChild(c);
+        }
+      });
+
+      // 임시로 grid를 block으로 만들고 두 페이지 추가
+      grid.style.display='block';
+      grid.appendChild(page1);
+      grid.appendChild(page2);
+
+      // 레이아웃 안정화 대기
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+      // 각 페이지 캡쳐
+      const opts={backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false,allowTaint:true};
+      const canvas1=await html2canvas(page1,opts);
+      const canvas2=await html2canvas(page2,opts);
+
+      // 이미지로 치환
+      const img1=document.createElement('img');
+      img1.src=canvas1.toDataURL('image/png');
+      img1.style.cssText='display:block;width:100%;max-width:720px;height:auto;margin:0 auto;page-break-after:always;break-after:page;';
+
+      const img2=document.createElement('img');
+      img2.src=canvas2.toDataURL('image/png');
+      img2.style.cssText='display:block;width:100%;max-width:720px;height:auto;margin:0 auto;';
+
+      // grid 비우고 이미지 추가
+      grid.innerHTML='';
+      grid.style.display='block';
+      grid.appendChild(img1);
+      grid.appendChild(img2);
+
+      document.getElementById('captureStatus').textContent='✅ 변환 완료! 인쇄 / PDF 저장 버튼을 누르세요';
+      document.querySelector('.print-toolbar button').disabled=false;
+    } catch(e){
+      console.error('Capture failed:',e);
+      document.getElementById('captureStatus').textContent='⚠ 변환 실패: '+e.message;
     }
   }
-  apply();
+
   if(document.readyState==='loading'){
-    document.addEventListener('DOMContentLoaded',apply);
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(capture,300));
+  } else {
+    setTimeout(capture,300);
   }
-  window.addEventListener('load',apply);
 })();
 `;
-    cloneRoot.querySelector('body').appendChild(forceScale);
+    cloneRoot.querySelector('body').appendChild(captureScript);
 
     // 9. 새 탭용 보조 스타일 + 자동 인쇄 스크립트 주입
     const head=cloneRoot.querySelector('head');
@@ -2082,9 +2162,9 @@ function printForm(){
     const toolbar=document.createElement('div');
     toolbar.className='print-toolbar';
     toolbar.innerHTML=`
-      <button onclick="window.print()">인쇄 / PDF 저장</button>
+      <button onclick="window.print()" disabled>인쇄 / PDF 저장</button>
       <button onclick="window.close()" style="background:#444;color:#fff;">닫기</button>
-      <span class="hint">v5 · 공유 → 프린트 → PDF로 저장</span>
+      <span class="hint" id="captureStatus">v6 · 변환 준비 중...</span>
     `;
     body.appendChild(toolbar);
 
