@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP6-IOS-MARGIN-2026-05-18 ==== -->
+<!-- ==== SYNC-MARKER-STEP8-CANVAS-HIDE-FIX-2026-05-18 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP6]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP8]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -1042,6 +1042,9 @@
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
 
+    /* canvas → img 치환 시 canvas는 무조건 숨김 (JS의 display:none 백업) */
+    canvas[data-print-hidden] { display: none !important; }
+
     /* ★ 2단계: 페이지 분할 문제 해결
        SCA Water Chart 캔버스 크기 제한 → 그리드 row stretching 방지 */
     .layout-grid { align-items: start !important; }
@@ -1933,11 +1936,51 @@ function printForm(){
 }
 
 // beforeprint / afterprint 로 자동 처리
+
+const PRINT_CANVAS_CONFIGS=[
+  {id:'waterCanvas',width:260,height:390,extraStyle:'border-radius:8px;'},
+  {id:'radarCanvas',width:200,height:200,extraStyle:''}
+];
+
+function restorePrintCanvases(){
+  // 모든 print img 제거
+  document.querySelectorAll('img[data-print-canvas-img]').forEach(img=>img.remove());
+  // 숨겨진 canvas 복원
+  document.querySelectorAll('canvas[data-print-hidden]').forEach(c=>{
+    c.style.removeProperty('display');
+    c.removeAttribute('data-print-hidden');
+  });
+}
+
 window.addEventListener('beforeprint',()=>{
+  // print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
     if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
   });
+
+  // 기존 print 아티팩트 정리 (중복 방지)
+  restorePrintCanvases();
+
+  // ★ canvas → img 치환 (iOS Safari가 canvas를 CSS 사이즈 무시하고 본래 buffer 크기로 출력하는 버그 회피)
+  PRINT_CANVAS_CONFIGS.forEach(cfg=>{
+    const canvas=document.getElementById(cfg.id);
+    if(!canvas) return;
+    try{
+      const img=document.createElement('img');
+      img.src=canvas.toDataURL('image/png');
+      img.setAttribute('data-print-canvas-img',cfg.id);
+      img.style.cssText=`display:block;width:${cfg.width}px;height:${cfg.height}px;margin:0 auto;${cfg.extraStyle}`;
+      canvas.parentNode.insertBefore(img,canvas.nextSibling);
+      // !important로 canvas 강제 숨김 (인라인 style의 display:block 오버라이드)
+      canvas.setAttribute('data-print-hidden','true');
+      canvas.style.setProperty('display','none','important');
+    }catch(e){console.error('canvas→img 실패:',e);}
+  });
+});
+
+window.addEventListener('afterprint',()=>{
+  restorePrintCanvases();
 });
 
 
