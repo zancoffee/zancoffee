@@ -985,7 +985,8 @@
 
   /* ══════════════════════════════════════════════════════════════
      🖥 데스크톱 인쇄 설정 (사용자 직접 조정 가능)
-     ══════════════════════════════════════════════════════════════ */
+
+══════════════════════════════════════════════════════════════ */
   @media print {
     /* 인쇄 영역 가로 폭 */
     html, body {
@@ -1044,8 +1045,12 @@
 
     /* Card-04 머신 파라미터 - 페이지 분할 제어용 (데스크톱) */
     .layout-grid > .card-04 {
-      min-height: 230px !important;     /* ← 값 ↑하면 page1 더 채움, ↓하면 덜 채움 */
+      min-height: 278px !important;     /* ← 값 ↑하면 page1 더 채움, ↓하면 덜 채움 */
     }
+
+    /* Card-05 추출 레시피 - 페이지 분할 제어용 (데스크톱) */
+    .layout-grid > .card-05 {
+      min-height: 320px !important;     /* ← 값 ↑하면 page1 더 채움, ↓하면 덜 채움 */
 
     /* ──── 공통 인쇄 규칙 (수정 비권장) ──── */
     .card, .card-inner, .field-group, .inline-row,
@@ -1135,13 +1140,18 @@
     }
     html.ios-device .hero-title .sub {
       font-size: 13px !important;       /* ← iOS 히어로 서브타이틀 크기 */
-      margin-top: 6px !important;
+      margin-top: 10px !important;
     }
 
     /* Card-04 머신 파라미터 - 페이지 분할 제어 (iOS) */
     html.ios-device .layout-grid > .card-04 {
       min-height: 230px !important;     /* ← iOS 전용 값. 페이지 분할 조절 */
     }
+
+  html.ios-device #waterCanvas {
+    margin-top: -400px !important;   /* ← 위로 80px 이동 */
+  }
+}
   }
 
   /* print-value: 화면에서는 항상 숨김 */
