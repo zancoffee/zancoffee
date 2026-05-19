@@ -858,18 +858,20 @@
 
   /* Canvas mobile fix: aspect-ratio 명시로 모바일 브라우저에서 height:auto가 0이 되는 문제 방지 */
   #waterCanvas {
-    aspect-ratio: 2 / 3 !important;
-    width: 100% !important;
-    max-width: 400px !important;
-    height: auto !important;
-    display: block !important;
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
   }
   #radarCanvas {
-    aspect-ratio: 1 / 1 !important;
-    width: 100% !important;
-    max-width: 240px !important;
-    height: auto !important;
-    display: block !important;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
   }
 
   
@@ -1359,7 +1361,7 @@
           <span class="sec-num"></span>
           <span class="sec-title">SCA Water Chart</span>
         </div>
-        <canvas id="waterCanvas" width="400" height="600" style="display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;"></canvas>
+        <canvas id="waterCanvas" width="400" height="600" style="border-radius:8px;"></canvas>
         
       </div>
     </div>
@@ -1427,7 +1429,7 @@
           <span class="sec-title">Flavor Profile</span>
         </div>
         <div class="radar-layout">
-          <canvas id="radarCanvas" width="240" height="240" style="display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;"></canvas>
+          <canvas id="radarCanvas" width="240" height="240"></canvas>
           <div class="slider-grid">
             <div class="sl-field">
               <div class="sl-label">Sweetness <span class="sl-val" id="svSweetness">3</span></div>
