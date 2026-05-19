@@ -2026,12 +2026,23 @@ async function downloadPDFFallback(){
   }
 }
 
+function printForm(){
+  // ★ 인앱 브라우저 감지 → PDF 직접 다운로드 (window.print() 우회)
+  const ua=navigator.userAgent||'';
+  const isInAppBrowser=/NAVER|KAKAOTALK|FBAN|FBAV|Instagram|Line\/|whale-inapp/i.test(ua);
+  if(isInAppBrowser){
+    downloadPDFFallback();
+    return;
+  }
 
   // 모든 print-value 동기화
   document.querySelectorAll('.inp').forEach(el=>{
     const pv=el.nextElementSibling;
     if(pv&&pv.classList.contains('print-value')) pv.textContent=getDisplayValue(el);
   });
+
+  // ★ iOS Safari는 beforeprint 이벤트가 안 발생하므로 여기서 직접 img 동기화
+  syncAllCanvasImgs();
 
   const partner=(document.getElementById('partnerName').value||'Partner').trim();
   const date=(document.getElementById('visitDate').value||new Date().toISOString().split('T')[0]).replace(/-/g,'');
@@ -2043,8 +2054,6 @@ async function downloadPDFFallback(){
 
   setTimeout(()=>{document.title=original;updateTitle();},3000);
 }
-  // ★ iOS Safari는 beforeprint 이벤트가 안 발생하므로 여기서 직접 img 동기화
-  syncAllCanvasImgs();
 
 // iOS 디바이스 감지 → html 태그에 ios-device 클래스 추가 (CSS에서 iOS 전용 규칙 사용)
 const __IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2068,6 +2077,28 @@ const PRINT_CANVAS_CONFIGS_IOS=[
 
 // 디바이스에 따라 적절한 설정 사용
 const PRINT_CANVAS_CONFIGS = __IS_IOS ? PRINT_CANVAS_CONFIGS_IOS : PRINT_CANVAS_CONFIGS_DESKTOP;
+
+
+// STEP15 canvas buffer 축소 시도 실패 → canvas 원본 상태(400x600, 240x240) 유지
+// 화면에 잘못 적용된 크기 복구를 위해 페이지 로드 시 원본 크기로 되돌림
+function restoreCanvasesToOriginal(){
+  const water=document.getElementById('waterCanvas');
+  if(water){
+    water.width=400;
+    water.height=600;
+    water.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
+    delete water.dataset.shrunk;
+  }
+  const radar=document.getElementById('radarCanvas');
+  if(radar){
+    radar.width=240;
+    radar.height=240;
+    radar.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
+    delete radar.dataset.shrunk;
+  }
+  if(typeof updateWaterChart==='function') updateWaterChart();
+  if(typeof updateRadar==='function') updateRadar();
+}
 
 
 // 다른 코드와의 호환성을 위해 빈 함수만 유지
