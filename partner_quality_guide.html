@@ -1145,6 +1145,12 @@
       margin-top: 10px !important;
     }
 
+    /* ★ 카드 overflow 해제 - margin 음수로 차트 이동 가능하게 (iOS) */
+    html.ios-device .card-water,
+    html.ios-device .card-flavor {
+      overflow: visible !important;
+    }
+
     /* 워터 차트 위치 (iOS) */
     html.ios-device #waterCanvas {
       margin-top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 */
