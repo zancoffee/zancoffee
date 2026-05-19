@@ -1156,7 +1156,6 @@
 
   }
 }
-}
   }
 
   /* print-value: 화면에서는 항상 숨김 */
@@ -2087,26 +2086,6 @@ const PRINT_CANVAS_CONFIGS_IOS=[
 // 디바이스에 따라 적절한 설정 사용
 const PRINT_CANVAS_CONFIGS = __IS_IOS ? PRINT_CANVAS_CONFIGS_IOS : PRINT_CANVAS_CONFIGS_DESKTOP;
 
-// STEP15 canvas buffer 축소 시도 실패 → canvas 원본 상태(400x600, 240x240) 유지
-// 화면에 잘못 적용된 크기 복구를 위해 페이지 로드 시 원본 크기로 되돌림
-function restoreCanvasesToOriginal(){
-  const water=document.getElementById('waterCanvas');
-  if(water){
-    water.width=400;
-    water.height=600;
-    water.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
-    delete water.dataset.shrunk;
-  }
-  const radar=document.getElementById('radarCanvas');
-  if(radar){
-    radar.width=240;
-    radar.height=240;
-    radar.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
-    delete radar.dataset.shrunk;
-  }
-  if(typeof updateWaterChart==='function') updateWaterChart();
-  if(typeof updateRadar==='function') updateRadar();
-}
 
 // 다른 코드와의 호환성을 위해 빈 함수만 유지
 function syncAllCanvasImgs(){ /* no-op */ }
