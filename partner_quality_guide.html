@@ -1143,13 +1143,17 @@
       margin-top: 10px !important;
     }
 
-@media print {
   html.ios-device #waterCanvas {
     margin-top: -150px !important;   /* 워터는 많이 위로 */
   }
+
   html.ios-device #radarCanvas {
     margin-top: -150px !important;   /* 플레이버는 조금만 위로 */
   }
+
+html.ios-device .layout-grid > .card-03 {
+   min-height: -200px !important;     /* ← 값 ↑하면 page1 더 채움, ↓하면 덜 채움 */
+}
 }
   }
 
