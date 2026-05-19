@@ -2043,6 +2043,8 @@ async function downloadPDFFallback(){
 
   setTimeout(()=>{document.title=original;updateTitle();},3000);
 }
+  // ★ iOS Safari는 beforeprint 이벤트가 안 발생하므로 여기서 직접 img 동기화
+  syncAllCanvasImgs();
 
 // iOS 디바이스 감지 → html 태그에 ios-device 클래스 추가 (CSS에서 iOS 전용 규칙 사용)
 const __IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
