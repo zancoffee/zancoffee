@@ -1155,7 +1155,7 @@
 
     /* 03 추출수 수질 카드 크기 (iOS) */
     html.ios-device .layout-grid > .card-03 {
-      max-height: 10px !important;    /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
+      height: 10px !important;    /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
     }
   }
 
@@ -2088,18 +2088,18 @@ const PRINT_CANVAS_CONFIGS = __IS_IOS ? PRINT_CANVAS_CONFIGS_IOS : PRINT_CANVAS_
 // STEP15 canvas buffer 축소 시도 실패 → canvas 원본 상태(400x600, 240x240) 유지
 // 화면에 잘못 적용된 크기 복구를 위해 페이지 로드 시 원본 크기로 되돌림
 function restoreCanvasesToOriginal(){
+  // ★ canvas의 인라인 style은 건드리지 않음 (CSS 규칙이 정상 작동하도록)
+  //   width/height 속성(HTML attribute)만 복구 - drawing buffer 크기
   const water=document.getElementById('waterCanvas');
   if(water){
     water.width=400;
     water.height=600;
-    water.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
     delete water.dataset.shrunk;
   }
   const radar=document.getElementById('radarCanvas');
   if(radar){
     radar.width=240;
     radar.height=240;
-    radar.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
     delete radar.dataset.shrunk;
   }
   if(typeof updateWaterChart==='function') updateWaterChart();
