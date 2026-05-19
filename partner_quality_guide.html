@@ -1,10 +1,21 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP18-IOS-DETECT-TEST-2026-05-20 ==== -->
+<!-- ==== SYNC-MARKER-STEP20-EARLY-IOS-DETECT-2026-05-20 ==== -->
 <html lang="ko">
 <head>
+<script>
+/* ★ iOS 감지를 <head> 최상단에서 즉시 실행 → @media print 스냅샷 전에 ios-device 클래스 설정됨 */
+(function(){
+  var ua = navigator.userAgent || '';
+  var isIOS = (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) ||
+              (ua.indexOf('Mac') !== -1 && 'ontouchend' in document); /* iPadOS 13+ desktop UA */
+  if (isIOS) {
+    document.documentElement.classList.add('ios-device');
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP18]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP20]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -2078,9 +2089,20 @@ function printForm(){
   setTimeout(()=>{document.title=original;updateTitle();},3000);
 }
 
-// iOS 디바이스 감지 → html 태그에 ios-device 클래스 추가 (CSS에서 iOS 전용 규칙 사용)
-const __IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-if (__IS_IOS) document.documentElement.classList.add('ios-device');
+// iOS 디바이스 감지는 이제 <head>에서 즉시 처리됨 (위 라인 5)
+// 여기서는 PRINT_CANVAS_CONFIGS용 변수만 정의
+const __IS_IOS = document.documentElement.classList.contains('ios-device');
+
+// 진단 마커: iOS면 화면에 빨간 박스 표시 (5초간)
+if (__IS_IOS) {
+  document.addEventListener('DOMContentLoaded', function(){
+    const marker = document.createElement('div');
+    marker.style.cssText = 'position:fixed;top:60px;right:10px;background:red;color:white;padding:8px 12px;font-size:14px;font-weight:bold;z-index:99999;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.3);';
+    marker.textContent = '✓ iOS 감지됨 (head)';
+    document.body.appendChild(marker);
+    setTimeout(()=>marker.remove(), 5000);
+  });
+}
 
 // ════════════════════════════════════════════════════════
 // 🎨 데스크톱 인쇄 - Canvas/Radar 크기 (직접 조정 가능)
