@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP15-CANVAS-BUFFER-RESIZE-2026-05-19 ==== -->
+<!-- ==== SYNC-MARKER-STEP17-CANVAS-VISIBLE-IN-PRINT-2026-05-19 ==== -->
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deep Coffee Roasters — Partner Quality Guide [STEP15]</title>
+<title>Deep Coffee Roasters — Partner Quality Guide [STEP17]</title>
 <style>
   @font-face {
     font-family: 'Noto Sans KR';
@@ -1055,7 +1055,6 @@
       -webkit-column-break-inside: avoid !important;
     }
     canvas { break-inside: avoid !important; page-break-inside: avoid !important; }
-    #waterCanvas, #radarCanvas { display: none !important; }
     .layout-grid { align-items: start !important; }
     .layout-grid > .card-05,
     .layout-grid > .card-flavor {
@@ -2073,32 +2072,35 @@ const PRINT_CANVAS_CONFIGS_IOS=[
 // 디바이스에 따라 적절한 설정 사용
 const PRINT_CANVAS_CONFIGS = __IS_IOS ? PRINT_CANVAS_CONFIGS_IOS : PRINT_CANVAS_CONFIGS_DESKTOP;
 
-// ★ 가장 직접적인 해결: canvas의 drawing buffer 크기를 직접 줄이기
-// iOS Safari는 canvas를 본래 buffer 크기로 인쇄하므로, buffer 자체를 작게 만들면 작게 인쇄됨
-function shrinkCanvasesPermanently(){
-  PRINT_CANVAS_CONFIGS.forEach(cfg=>{
-    const canvas=document.getElementById(cfg.id);
-    if(!canvas) return;
-    // 이미 처리한 경우 건너뛰기
-    if(canvas.dataset.shrunk) return;
-    canvas.width=cfg.width;
-    canvas.height=cfg.height;
-    canvas.style.cssText=`display:block;width:${cfg.width}px;height:${cfg.height}px;margin:0 auto;${cfg.extraStyle}`;
-    canvas.dataset.shrunk='true';
-  });
-  // 새 크기로 차트 다시 그리기
+// STEP15 canvas buffer 축소 시도 실패 → canvas 원본 상태(400x600, 240x240) 유지
+// 화면에 잘못 적용된 크기 복구를 위해 페이지 로드 시 원본 크기로 되돌림
+function restoreCanvasesToOriginal(){
+  const water=document.getElementById('waterCanvas');
+  if(water){
+    water.width=400;
+    water.height=600;
+    water.style.cssText='display:block;width:100%;max-width:400px;height:auto;aspect-ratio:2/3;border-radius:8px;margin:0 auto;';
+    delete water.dataset.shrunk;
+  }
+  const radar=document.getElementById('radarCanvas');
+  if(radar){
+    radar.width=240;
+    radar.height=240;
+    radar.style.cssText='display:block;width:100%;max-width:240px;height:auto;aspect-ratio:1/1;';
+    delete radar.dataset.shrunk;
+  }
   if(typeof updateWaterChart==='function') updateWaterChart();
   if(typeof updateRadar==='function') updateRadar();
 }
 
-// syncAllCanvasImgs는 더 이상 필요 없지만, 다른 코드와의 호환성 위해 빈 함수로 유지
-function syncAllCanvasImgs(){ /* no-op (canvas-img 치환 방식 폐기) */ }
+// 다른 코드와의 호환성을 위해 빈 함수만 유지
+function syncAllCanvasImgs(){ /* no-op */ }
 
-// 페이지 로드 직후 canvas 크기 축소
+// 페이지 로드 직후 canvas 원본 크기 복구
 if(document.readyState==='complete'){
-  setTimeout(shrinkCanvasesPermanently,100);
+  setTimeout(restoreCanvasesToOriginal,100);
 } else {
-  window.addEventListener('load',()=>setTimeout(shrinkCanvasesPermanently,100));
+  window.addEventListener('load',()=>setTimeout(restoreCanvasesToOriginal,100));
 }
 
 // beforeprint(데스크톱)에서도 한 번 더 동기화
