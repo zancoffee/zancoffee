@@ -1188,7 +1188,7 @@
     /* 플레이버 차트 위치 (iOS) */
     html.ios-device #radarCanvas {
       position: relative !important;
-      top: 20px !important;   /* ← 음수면 위로, 양수면 아래로 */
+      top: 0px !important;   /* ← 음수면 위로, 양수면 아래로 */
     }
 
     /* page-break 강제 규칙도 iOS에선 해제 (margin/position 자유롭게 작동하도록) */
@@ -1199,7 +1199,7 @@
     }
 
 html.ios-device .card-04 {
-  max-height: 337px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
+  max-height: 340px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
 }
 
 html.ios-device .card-water {
