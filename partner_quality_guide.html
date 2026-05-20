@@ -1202,13 +1202,29 @@
         max-height: 540px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
     }
 
-    html.ios-device .card-05 {
-        max-height: 500px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
-    }
+/* iOS 카드 크기 자유롭게 조정 - min-height 제약 먼저 풀고 max-height 적용 */
 
-    html.ios-device .card-07 {
-        max-height: 400px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
-    }
+/* 1. min-height 제약 해제 */
+html.ios-device .layout-grid > .card-04,
+html.ios-device .layout-grid > .card-05 {
+  min-height: 0 !important;
+}
+
+/* 2. 카드별 크기 설정 */
+html.ios-device .card-04 {
+  max-height: 200px !important;
+  overflow: hidden !important;
+}
+
+html.ios-device .card-05 {
+  max-height: 300px !important;
+  overflow: hidden !important;
+}
+
+html.ios-device .card-07 {
+  max-height: 200px !important;
+  overflow: hidden !important;
+}
   }
 
 
