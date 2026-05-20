@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP22-DOUBLE-IOS-DETECT-2026-05-20 ==== -->
+<!-- ==== SYNC-MARKER-STEP23-BREAK-INSIDE-AUTO-2026-05-20 ==== -->
 <html lang="ko">
 <head>
 <script>
@@ -1140,7 +1140,7 @@
 
     /* 헤더 (iOS) */
     html.ios-device header > .header-inner {
-      padding: 25px 0 !important;       /* ← iOS 헤더 상하 패딩 */
+      padding: 12px 0 !important;       /* ← iOS 헤더 상하 패딩 */
     }
 
     /* 히어로 (iOS) */
@@ -1163,6 +1163,20 @@
       overflow: visible !important;
     }
 
+    /* ★ break-inside 제약 해제 - margin-top 값이 자유롭게 적용되도록 (iOS)
+       이 규칙 없으면 canvas가 페이지 경계 넘을 때 강제로 위치 고정됨 */
+    html.ios-device #waterCanvas,
+    html.ios-device #radarCanvas,
+    html.ios-device .card-water,
+    html.ios-device .card-flavor,
+    html.ios-device .card-water .card-inner,
+    html.ios-device .card-flavor .card-inner,
+    html.ios-device .radar-layout {
+      break-inside: auto !important;
+      page-break-inside: auto !important;
+      -webkit-column-break-inside: auto !important;
+    }
+
     /* 워터 차트 위치 (iOS) */
     html.ios-device #waterCanvas {
       margin-top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 */
@@ -1170,7 +1184,12 @@
 
     /* 플레이버 차트 위치 (iOS) */
     html.ios-device #radarCanvas {
-      margin-top: 20px !important;   /* ← 음수면 위로, 양수면 아래로 */
+      margin-top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 */
+    }
+
+    /* 03 추출수 수질 카드 크기 (iOS) */
+    html.ios-device .layout-grid > .card-03 {
+      height: 10px !important;    /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
     }
   }
 
