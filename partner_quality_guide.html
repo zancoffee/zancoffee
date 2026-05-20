@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP23-BREAK-INSIDE-AUTO-2026-05-20 ==== -->
+<!-- ==== SYNC-MARKER-STEP24-POSITION-RELATIVE-2026-05-20 ==== -->
 <html lang="ko">
 <head>
 <script>
@@ -1177,15 +1177,27 @@
       -webkit-column-break-inside: auto !important;
     }
 
-    /* 워터 차트 위치 (iOS) */
+    /* 워터 차트 위치 (iOS) - position:relative + top 사용 (margin-top 대신)
+       margin-top은 페이지 분할 계산에 영향을 줘서 특정 값에서 고정됨
+       position:relative + top은 페이지 분할에 영향 없이 시각적 위치만 이동 */
     html.ios-device #waterCanvas {
-      margin-top: -30px !important;   /* ← 음수면 위로, 양수면 아래로 */
+      position: relative !important;
+      top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
     }
 
     /* 플레이버 차트 위치 (iOS) */
     html.ios-device #radarCanvas {
-      margin-top: 10px !important;   /* ← 음수면 위로, 양수면 아래로 */
+      position: relative !important;
+      top: -10px !important;   /* ← 음수면 위로, 양수면 아래로 */
     }
+
+    /* page-break 강제 규칙도 iOS에선 해제 (margin/position 자유롭게 작동하도록) */
+    html.ios-device .layout-grid > .card-water {
+      page-break-after: auto !important;
+      break-after: auto !important;
+      -webkit-column-break-after: auto !important;
+    }
+
   }
 
 
