@@ -1206,7 +1206,6 @@
 
 /* 1. min-height 제약 해제 */
 html.ios-device .layout-grid > .card-04,
-html.ios-device .layout-grid > .card-05,
 html.ios-device .layout-grid > .card-07 {
   min-height: 0 !important;
 }
@@ -1217,14 +1216,18 @@ html.ios-device .card-04 {
   overflow: hidden !important;
 }
 
+/* card-05는 따로 처리 */
 html.ios-device .card-05 {
-  max-height: 520px !important;
-  overflow: hidden !important;
+  min-height: 500px !important;   /* 키우기 */
 }
 
 html.ios-device .card-07 {
   max-height: 400px !important;
   overflow: hidden !important;
+}
+
+html.ios-device .card-06 .gauge-wrap {
+  margin-top: 4px !important;   /* 기본 12px → 4px (조정 가능) */
 }
   }
 
