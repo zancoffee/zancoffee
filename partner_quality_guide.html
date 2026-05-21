@@ -1225,9 +1225,14 @@ html.ios-device .card-03 {
   min-height: 260px !important;   /* 키우기 */
 }
 
-/* card-04는 따로 처리 */
+/* card-04: 높이 키우고 콘텐츠는 위에 */
 html.ios-device .card-04 {
-  min-height: 450px !important;   /* 키우기 */
+  min-height: 400px !important;   /* 카드 키움 */
+}
+html.ios-device .card-04 .card-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;   /* 콘텐츠 위쪽 */
 }
 
 /* card-05는 따로 처리 */
