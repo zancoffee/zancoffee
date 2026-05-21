@@ -1145,7 +1145,7 @@
 
     /* 히어로 (iOS) */
     html.ios-device .hero {
-      margin-bottom: 20px !important;   /* ← iOS 히어로 아래 여백 */
+      margin-bottom: 16px !important;   /* ← iOS 히어로 아래 여백 */
       padding-bottom: 16px !important;
     }
     html.ios-device .hero-title {
@@ -1182,13 +1182,19 @@
        position:relative + top은 페이지 분할에 영향 없이 시각적 위치만 이동 */
     html.ios-device #waterCanvas {
       position: relative !important;
-      top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
+      top: -295px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
     }
+
+/* card-04를 위로 당겨서 card-03 바로 아래에 붙이기 (iOS) */
+html.ios-device .card-04 {
+  position: relative !important;
+  top: 0px   /* ← 음수면 위로 (값 조정) */
+}
 
     /* 플레이버 차트 위치 (iOS) */
     html.ios-device #radarCanvas {
       position: relative !important;
-      top: -150px !important;   /* ← 음수면 위로, 양수면 아래로 */
+      top: 0px !important;   /* ← 음수면 위로, 양수면 아래로 */
     }
 
     /* page-break 강제 규칙도 iOS에선 해제 (margin/position 자유롭게 작동하도록) */
@@ -1198,18 +1204,31 @@
       -webkit-column-break-after: auto !important;
     }
 
-    /* 03 추출수 수질 카드 크기 (iOS) */
-    html.ios-device .layout-grid > .card-03 {
-      height: 10px !important;    /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
+    html.ios-device .card-water {
+        max-height: 570px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
     }
 
-    /* card-06 BEVERAGE TDS 게이지 위로 당기기 (iOS)
-       card-06이 card-07 textarea 때문에 늘어나면서 게이지가 아래로 밀린 것 보정 */
-    html.ios-device .card-06 .gauge-wrap {
-      position: relative !important;
-      top: -80px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
-    }
+html.ios-device .card-06 {
+  align-self: start !important;
+  height: auto !important;
+}
 
+/* iOS 카드 크기 자유롭게 조정 - min-height 제약 먼저 풀고 max-height 적용 */
+
+/* 1. min-height 제약 해제 */
+html.ios-device .layout-grid > .card-04 {
+  min-height: 0 !important;
+}
+
+/* card-03는 따로 처리 */
+html.ios-device .card-03 {
+  min-height: 260px !important;   /* 키우기 */
+}
+
+/* card-05는 따로 처리 */
+html.ios-device .card-05 {
+  min-height: 444px !important;   /* 키우기 */
+}
   }
 
 
