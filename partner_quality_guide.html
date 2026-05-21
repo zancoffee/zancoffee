@@ -1234,9 +1234,15 @@ html.ios-device .card-06 .gauge-wrap {
   top: -30px !important;
 }
 
-/* card-07는 따로 처리 */
-html.ios-device .layout-grid > .card-07 {
-  min-height: 400px !important;   /* ← 숫자 키울수록 카드 커짐 */
+/* card-07: 높이 줄이고 콘텐츠 위에 */
+html.ios-device .card-07 {
+  max-height: 200px !important;
+  overflow: hidden !important;
+}
+html.ios-device .card-07 .card-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
 }
   }
 
