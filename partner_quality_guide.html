@@ -1187,8 +1187,8 @@
 
 /* card-04를 위로 당겨서 card-03 바로 아래에 붙이기 (iOS) */
 html.ios-device .card-04 {
-  position: relative !important;
-  top: -50px !important;   /* ← 음수면 위로 (값 조정) */
+  transform: translateY(-200px) !important;
+  /*                    ↑↑↑ 음수면 위로 (자유롭게 조정) */
 }
 
     /* 플레이버 차트 위치 (iOS) */
