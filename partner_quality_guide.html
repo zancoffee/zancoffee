@@ -1231,7 +1231,7 @@ html.ios-device .layout-grid > .card-04 {
 
 html.ios-device .card-06 .gauge-wrap {
   position: relative !important;
-  top: -30px !important;
+  top: -50px !important;
 }
 
 /* card-07: 높이 줄이고 콘텐츠 위에 */
@@ -1243,6 +1243,12 @@ html.ios-device .card-07 .card-inner {
   display: flex !important;
   flex-direction: column !important;
   justify-content: flex-start !important;
+}
+
+/* card-07 종합 의견 라벨 + textarea 같이 위로 (iOS) */
+html.ios-device .card-07 .field-group {
+  position: relative !important;
+  top: -90px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
 }
   }
 
