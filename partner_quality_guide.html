@@ -1197,7 +1197,7 @@
       /* ─── 8. card-06 게이지 위치 ─── */
       .card-06 .gauge-wrap {
         position: relative !important;
-        top: 0px !important;   /* ← 게이지 위치 */
+        top: -20px !important;   /* ← 게이지 위치 */
       }
 
       /* ─── 사용자 자유 영역 (여기에 추가하세요) ─── */
@@ -1217,7 +1217,13 @@ html.ios-device .layout-grid > .card-water {
 
 html.ios-device #waterCanvas {
   position: relative !important;
-  top: -350px !important;   /* 음수면 위로 */
+  top: -200px !important;   /* 음수면 위로 */
+}
+
+html.ios-device .layout-grid > .card-04 {
+  min-height: 0 !important;        /* 데스크톱 min-height 해제 */
+  max-height: 200px !important;    /* 원하는 크기 */
+  overflow: hidden !important;
 }
       /*
       .card-07 .field-group {
