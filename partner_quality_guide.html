@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- ==== SYNC-MARKER-STEP24-POSITION-RELATIVE-2026-05-20 ==== -->
+<!-- ==== CLEAN-VERSION-CSS-ONLY-IOS-DETECT ==== -->
 <html lang="ko">
 <head>
 <script>
@@ -1127,133 +1127,101 @@
   }
 
   /* ══════════════════════════════════════════════════════════════
-     📱 iOS Safari 인쇄 전용 오버라이드 (사용자 직접 조정 가능)
-     이 블록의 값은 iOS에만 적용됨. 데스크톱은 위 데스크톱 설정 사용.
+     📱 iOS Safari 인쇄 전용 오버라이드 (CSS-only iOS 감지)
+     @supports (-webkit-touch-callout: none) = iOS Safari에서만 참
+     JS 의존 없이 CSS 파싱 시점에 평가 → 인쇄 시에도 안정적 적용
      ══════════════════════════════════════════════════════════════ */
-  @media print {
-    /* 인쇄 영역 가로 폭 (iOS) */
-    html.ios-device, html.ios-device body {
-      width: 720px !important;          /* ← iOS 인쇄 가로 폭 */
-      max-width: 720px !important;
-      min-width: 720px !important;
+  @supports (-webkit-touch-callout: none) {
+    @media print {
+
+      /* ─── 1. 인쇄 영역 가로 폭 ─── */
+      html, body {
+        width: 720px !important;
+        max-width: 720px !important;
+        min-width: 720px !important;
+      }
+
+      /* ─── 2. 헤더 ─── */
+      header > .header-inner {
+        padding: 12px 0 !important;
+      }
+
+      /* ─── 3. 히어로 ─── */
+      .hero {
+        margin-bottom: 20px !important;
+        padding-bottom: 16px !important;
+      }
+      .hero-title {
+        font-size: 32px !important;
+        line-height: 1.05 !important;
+      }
+      .hero-title .sub {
+        font-size: 13px !important;
+        margin-top: 10px !important;
+      }
+
+      /* ─── 4. 카드 overflow 해제 (차트 위로 이동 가능하게) ─── */
+      .card-water,
+      .card-flavor {
+        overflow: visible !important;
+      }
+
+      /* ─── 5. break-inside 제약 해제 ─── */
+      #waterCanvas,
+      #radarCanvas,
+      .card-water,
+      .card-flavor,
+      .card-water .card-inner,
+      .card-flavor .card-inner,
+      .radar-layout {
+        break-inside: auto !important;
+        page-break-inside: auto !important;
+        -webkit-column-break-inside: auto !important;
+      }
+
+      /* ─── 6. 페이지 분할 강제 해제 (모든 카드 한 흐름으로 → CSS 적용 안정화) ─── */
+      .layout-grid > .card-water {
+        page-break-after: auto !important;
+        break-after: auto !important;
+        -webkit-column-break-after: auto !important;
+      }
+      .layout-grid > .card-05,
+      .layout-grid > .card-flavor {
+        page-break-before: auto !important;
+        break-before: auto !important;
+        -webkit-column-break-before: auto !important;
+      }
+
+      /* ─── 7. 차트 위치 조정 (자유롭게 값 변경) ─── */
+      #waterCanvas {
+        position: relative !important;
+        top: -150px !important;   /* ← 워터 차트 위치 */
+      }
+      #radarCanvas {
+        position: relative !important;
+        top: -150px !important;   /* ← 플레이버 차트 위치 */
+      }
+
+      /* ─── 8. card-06 게이지 위치 ─── */
+      .card-06 .gauge-wrap {
+        position: relative !important;
+        top: -80px !important;   /* ← 게이지 위치 */
+      }
+
+      /* ─── 9. card-03 카드 높이 ─── */
+      .layout-grid > .card-03 {
+        height: 10px !important;   /* ← card-03 높이 */
+      }
+
+      /* ─── 사용자 자유 영역 (여기에 추가하세요) ─── */
+      /*
+      .card-07 .field-group {
+        position: relative !important;
+        top: -50px !important;
+      }
+      */
+
     }
-
-    /* 헤더 (iOS) */
-    html.ios-device header > .header-inner {
-      padding: 12px 0 !important;       /* ← iOS 헤더 상하 패딩 */
-    }
-
-    /* 히어로 (iOS) */
-    html.ios-device .hero {
-      margin-bottom: 16px !important;   /* ← iOS 히어로 아래 여백 */
-      padding-bottom: 16px !important;
-    }
-    html.ios-device .hero-title {
-      font-size: 32px !important;       /* ← iOS 히어로 타이틀 크기 */
-      line-height: 1.05 !important;
-    }
-    html.ios-device .hero-title .sub {
-      font-size: 13px !important;       /* ← iOS 히어로 서브타이틀 크기 */
-      margin-top: 10px !important;
-    }
-
-    /* ★ 카드 overflow 해제 - margin 음수로 차트 이동 가능하게 (iOS) */
-    html.ios-device .card-water,
-    html.ios-device .card-flavor {
-      overflow: visible !important;
-    }
-
-    /* ★ break-inside 제약 해제 - margin-top 값이 자유롭게 적용되도록 (iOS)
-       이 규칙 없으면 canvas가 페이지 경계 넘을 때 강제로 위치 고정됨 */
-    html.ios-device #waterCanvas,
-    html.ios-device #radarCanvas,
-    html.ios-device .card-water,
-    html.ios-device .card-flavor,
-    html.ios-device .card-water .card-inner,
-    html.ios-device .card-flavor .card-inner,
-    html.ios-device .radar-layout {
-      break-inside: auto !important;
-      page-break-inside: auto !important;
-      -webkit-column-break-inside: auto !important;
-    }
-
-    /* 워터 차트 위치 (iOS) - position:relative + top 사용 (margin-top 대신)
-       margin-top은 페이지 분할 계산에 영향을 줘서 특정 값에서 고정됨
-       position:relative + top은 페이지 분할에 영향 없이 시각적 위치만 이동 */
-    html.ios-device #waterCanvas {
-      position: relative !important;
-      top: -295px !important;   /* ← 음수면 위로, 양수면 아래로 (자유롭게 조정) */
-    }
-
-/* card-04를 위로 당겨서 card-03 바로 아래에 붙이기 (iOS) */
-html.ios-device .card-04 {
-  position: relative !important;
-  top: -74px   /* ← 음수면 위로 (값 조정) */
-}
-
-    /* 플레이버 차트 위치 (iOS) */
-    html.ios-device #radarCanvas {
-      position: relative !important;
-      top: 5px !important;   /* ← 음수면 위로, 양수면 아래로 */
-    }
-
-    /* page-break 강제 규칙도 iOS에선 해제 (margin/position 자유롭게 작동하도록) */
-    html.ios-device .layout-grid > .card-water {
-      page-break-after: auto !important;
-      break-after: auto !important;
-      -webkit-column-break-after: auto !important;
-    }
-
-    html.ios-device .card-water {
-        max-height: 550px !important;   /* ← 작게 하면 카드 아래 테두리가 위로 올라옴 */
-    }
-
-/* iOS 카드 크기 자유롭게 조정 - min-height 제약 먼저 풀고 max-height 적용 */
-
-/* 1. min-height 제약 해제 */
-html.ios-device .layout-grid > .card-04 {
-  min-height: 0 !important;
-}
-
-/* card-03는 따로 처리 */
-html.ios-device .card-03 {
-  min-height: 235px !important;   /* 키우기 */
-}
-
-/* card-05는 따로 처리 */
-html.ios-device .card-05 {
-  min-height: 444px !important;   /* 키우기 */
-}
-
-/* card-04는 따로 처리 */
-html.ios-device .layout-grid > .card-04 {
-  min-height: 150px !important;   /* ← 숫자 키울수록 카드 커짐 */
-
-html.ios-device .card-06 {
-  background: yellow !important;
-  border: 5px solid red !important;
-}
-
-html.ios-device .card-07 {
-  background: cyan !important;
-  border: 5px solid blue !important;
-}
-
-/* iOS에서 강제 페이지 분할 해제 → 카드 5~7도 페이지 1 흐름에 포함되어 CSS 적용받음 */
-html.ios-device .layout-grid > .card-05,
-html.ios-device .layout-grid > .card-flavor {
-  page-break-before: auto !important;
-  break-before: auto !important;
-  -webkit-column-break-before: auto !important;
-}
-
-/* @media print 안에 */
-html.ios-device .card-06 {
-  background: yellow !important;
-}
-html.ios-device .card-07 {
-  background: cyan !important;
-}
   }
 
 
@@ -1590,7 +1558,7 @@ html.ios-device .card-07 {
           </div>
           <div class="field-group">
             <label class="lbl">종합 의견 및 특이사항</label>
-            <textarea class="inp" id="generalNote" style="resize:vertical;"></textarea></textarea>
+            <textarea class="inp" id="generalNote" style="resize:vertical;min-height:240px;"></textarea>
           </div>
         </div>
       </div>
