@@ -1231,23 +1231,12 @@ html.ios-device .layout-grid > .card-04 {
 
 html.ios-device .card-06 .gauge-wrap {
   position: relative !important;
-  top: -50px !important;
+  top: -150px !important;
 }
 
-/* card-07 field-group을 grid에서 block으로 변경 (iOS) */
 html.ios-device .card-07 .field-group {
-  display: block !important;
-}
-
-/* textarea 완전 제거 */
-html.ios-device #generalNote {
-  display: none !important;
-}
-
-/* card-07 textarea 완전 제거 → card-07, card-06 자연 정렬 */
-html.ios-device textarea.inp,
-html.ios-device #generalNote {
-  display: none !important;
+  position: relative !important;
+  top: -200px !important;   /* ← 음수면 위로 */
 }
   }
 
