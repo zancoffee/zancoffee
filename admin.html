@@ -3,14 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>ZAN Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { color-scheme: light; }
 body {
   font-family: 'Noto Sans KR', sans-serif;
   font-weight: 300;
-  background: #f5f2ed;
+  background: #ffffff;
   color: #1a1814;
   min-height: 100vh;
   word-break: keep-all;
@@ -21,7 +23,7 @@ body {
 .login-wrap {
   display: flex; align-items: center; justify-content: center;
   min-height: 100vh; flex-direction: column; gap: 28px;
-  background: #f5f2ed;
+  background: #ffffff;
 }
 .login-title {
   font-family: 'IBM Plex Mono', monospace;
@@ -425,8 +427,8 @@ body {
   };
 
   // ── STORAGE ──
-  function load(key) { try { var v = localStorage.getItem('theo_' + key); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
-  function save(key, val) { try { localStorage.setItem('theo_' + key, JSON.stringify(val)); } catch(e) {} }
+  function load(key) { try { var v = localStorage.getItem('zan_' + key); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
+  function save(key, val) { try { localStorage.setItem('zan_' + key, JSON.stringify(val)); } catch(e) {} }
   function getData(key) { return load(key) || JSON.parse(JSON.stringify(defaults[key] || [])); }
   function nextId(arr) { return arr.reduce(function(m,i){ return Math.max(m, i.id||0); }, 0) + 1; }
 

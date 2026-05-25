@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Theo — Coffee Roaster</title>
+<title>ZAN — Coffee Roaster</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -58,19 +58,15 @@ body {
   z-index: 100;
 }
 .logo {
-  font-family:'Cormorant Garamond',serif;
-  font-style: italic;
-  font-size: 22px;
-  font-weight: 400;
-  color: var(--ink);
+  display: block;
+  width: 96px;
   margin-bottom: 40px;
   cursor: pointer;
   user-select: none;
-  letter-spacing: -0.02em;
   transition: opacity 0.2s;
-  display: inline-block;
 }
-.logo:hover { opacity: 0.6; }
+.logo:hover { opacity: 0.5; }
+.logo img { width: 100%; display: block; }
 
 .nav { display: flex; flex-direction: column; gap: 2px; }
 .nav a {
@@ -247,20 +243,20 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* ── HOME ── */
-.home-img {
+/* ── HOME HERO ── */
+.home-hero {
   width: 100%;
   aspect-ratio: 16/6;
   overflow: hidden;
   margin-bottom: 28px;
   background: var(--bg-2);
 }
-.home-img img {
+.home-hero img {
   width: 100%; height: 100%;
   object-fit: cover;
   transition: transform 1.5s cubic-bezier(0.22,1,0.36,1);
 }
-.home-img:hover img { transform: scale(1.03); }
+.home-hero:hover img { transform: scale(1.03); }
 
 .home-intro {
   display: grid;
@@ -510,7 +506,7 @@ body {
 
 <!-- LOADER -->
 <div id="loader">
-  <div class="loader-mark">Theo.</div>
+  <div class="loader-mark">ZAN.</div>
   <div class="loader-bar"></div>
 </div>
 
@@ -518,7 +514,7 @@ body {
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
-  <div class="logo" id="logo">Theo.</div>
+  <div class="logo" id="logo"><img src="zan-logo.svg" alt="ZAN"></div>
   <nav class="nav">
     <a class="on" data-p="home">About</a>
     <a data-p="career">Career</a>
@@ -544,13 +540,13 @@ body {
     <div class="page-title">A roaster's <span class="italic">practice.</span></div>
   </div>
 
-  <div class="home-img reveal">
+  <div class="home-hero reveal">
     <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1400&q=85" alt="coffee roasting">
   </div>
 
   <div class="home-intro">
     <div class="home-bio reveal">
-      <p>Theo는 대구를 기반으로 활동하는 커피 로스터입니다.</p>
+      <p>ZAN은 대구를 기반으로 활동하는 커피 로스터입니다.</p>
       <p>커피를 볶고, 과학으로 이해하고, 감성으로 표현하는 일을 합니다. 커피 커뮤니티 잔(ZAN)을 운영하며, 홈카페 유저를 위한 콘텐츠와 디지털 도구를 만들고 있습니다.</p>
     </div>
 
@@ -558,8 +554,8 @@ body {
       <div class="kv-k">Base</div>       <div class="kv-v">Daegu, South Korea</div>
       <div class="kv-k">Work</div>       <div class="kv-v">Roasting · Brewing · Content</div>
       <div class="kv-k">Community</div>  <div class="kv-v">잔 (ZAN) Coffee Crew</div>
-      <div class="kv-k">Email</div>      <div class="kv-v"><a href="mailto:theo@example.com">theo@example.com</a></div>
-      <div class="kv-k">Instagram</div>  <div class="kv-v"><a href="#">@theo.coffee</a></div>
+      <div class="kv-k">Email</div>      <div class="kv-v"><a href="mailto:zan@example.com">zan@example.com</a></div>
+      <div class="kv-k">Instagram</div>  <div class="kv-v"><a href="#">@zan.coffee</a></div>
       <div class="kv-k">Since</div>      <div class="kv-v">2014</div>
     </div>
   </div>
@@ -642,13 +638,13 @@ body {
   </div>
 
   <div class="con-intro">
-    <div class="con-quote reveal">"커피에 대해 이야기 나누고 싶다면 <a href="mailto:theo@example.com">언제든 연락주세요.</a> 로스팅 협업, 콘텐츠 제안, ZAN 합류 문의 모두 환영합니다."</div>
+    <div class="con-quote reveal">"커피에 대해 이야기 나누고 싶다면 <a href="mailto:zan@example.com">언제든 연락주세요.</a> 로스팅 협업, 콘텐츠 제안, ZAN 합류 문의 모두 환영합니다."</div>
     <div></div>
   </div>
 
   <div class="con-kv reveal">
-    <div class="con-k">Email</div>      <div class="con-v"><a href="mailto:theo@example.com">theo@example.com</a></div>
-    <div class="con-k">Instagram</div>  <div class="con-v"><a href="#">@theo.coffee</a></div>
+    <div class="con-k">Email</div>      <div class="con-v"><a href="mailto:zan@example.com">zan@example.com</a></div>
+    <div class="con-k">Instagram</div>  <div class="con-v"><a href="#">@zan.coffee</a></div>
     <div class="con-k">YouTube</div>    <div class="con-v"><a href="#">ZAN Coffee Crew</a></div>
     <div class="con-k">Location</div>   <div class="con-v">Daegu, South Korea</div>
     <div class="con-k">Available</div>  <div class="con-v">로스팅 협업 · 콘텐츠 제안 · ZAN 합류</div>
@@ -693,7 +689,7 @@ body {
     bio: '커피를 볶는 일을 직업으로, 탐구하는 일을 취미로, 그리고 나누는 일을 삶의 방식으로 삼고 있습니다.\n\n10년 넘는 시간 동안 바리스타에서 로스터로, 개인 작업자에서 커뮤니티 빌더로 역할이 넓어져왔습니다.\n\n새로운 배움과 경험을 좋아하고, 일만큼 휴식과 여유를 중요하게 생각합니다.'
   };
 
-  function load(k) { try { var v = localStorage.getItem('theo_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
+  function load(k) { try { var v = localStorage.getItem('zan_' + k); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
   function getData(k) { return load(k) || JSON.parse(JSON.stringify(defaults[k] || [])); }
   function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
