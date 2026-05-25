@@ -1208,7 +1208,16 @@
 
 /* FLAVOR PROFILE 카드 크기 줄이기 */
 .card-flavor {
-  max-height: 440px !important;   /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
+  max-height: 432px !important;   /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
+}
+
+html.ios-device .layout-grid > .card-water {
+  page-break-after: auto !important;   /* always → auto */
+}
+
+html.ios-device #waterCanvas {
+  position: relative !important;
+  top: -350px !important;   /* 음수면 위로 */
 }
       /*
       .card-07 .field-group {
