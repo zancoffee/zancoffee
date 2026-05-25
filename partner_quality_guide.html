@@ -1238,6 +1238,14 @@ html.ios-device .card-07 {
   background: cyan !important;
   border: 5px solid blue !important;
 }
+
+/* iOS에서는 강제 페이지 분할 해제 → 카드 5~7도 CSS 적용받게 */
+html.ios-device .layout-grid > .card-05,
+html.ios-device .layout-grid > .card-flavor {
+  page-break-before: auto !important;
+  break-before: auto !important;
+  -webkit-column-break-before: auto !important;
+}
   }
 
 
