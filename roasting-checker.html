@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roast Level Checker — ZAN Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --black:         #0e0f0c;
+  --green:         #9fe870;
+  --dark-green:    #163300;
+  --mint:          #e2f6d5;
+  --gray:          #868685;
+  --warm-dark:     #454745;
+  --surface:       #f4f6f2;
+  --white:         #ffffff;
+  --border:        rgba(14,15,12,0.10);
+  --border-strong: rgba(14,15,12,0.18);
+  --red:           #c0292e;
+  --yellow:        #b88a00;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--surface);
+  color: var(--black);
+  line-height: 1.65;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.page-header {
+  background: var(--black);
+  padding: 52px 40px 40px;
+}
+.class-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.page-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.8;
+}
+
+/* ── LAYOUT ── */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+.checker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── CARD ── */
+.checker-card {
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 22px 22px 20px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dark-green);
+  background: var(--mint);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+/* ── INPUT ── */
+.field-label {
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 6px;
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.num-input {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 34px;
+  font-weight: 500;
+  width: 120px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: var(--surface);
+  color: var(--black);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  -moz-appearance: textfield;
+}
+.num-input::-webkit-outer-spin-button,
+.num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.num-input:focus {
+  border-color: var(--dark-green);
+  box-shadow: 0 0 0 3px rgba(22,51,0,0.08);
+  background: var(--white);
+}
+.unit-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 20px;
+  color: var(--gray);
+}
+
+/* ── SLIDER ── */
+.slider-wrap { margin-bottom: 2px; }
+.range-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--dark-green);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.range-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.range-slider::-moz-range-thumb {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2.5px solid var(--dark-green);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  cursor: pointer;
+}
+.slider-minmax {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+.slider-minmax span {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: rgba(14,15,12,0.28);
+}
+
+/* ── RESULT ── */
+.result-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  height: 325px;
+  overflow-y: auto;
+  margin-top: 18px;
+}
+.result-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  gap: 6px;
+  color: rgba(14,15,12,0.22);
+  font-size: 12px;
+  text-align: center;
+}
+.result-empty-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(14,15,12,0.12);
+  margin-bottom: 2px;
+}
+.result-content { display: none; }
+.result-content.visible { display: block; }
+
+.result-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.result-bean {
+  width: 52px; height: 66px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: inset 0 -4px 10px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
+  transition: background 0.3s;
+}
+.result-bean::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(-8deg);
+  width: 2px; height: 56%;
+  background: rgba(0,0,0,0.14);
+  border-radius: 2px;
+}
+.result-level {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--black);
+  line-height: 1.15;
+  margin-bottom: 3px;
+}
+.result-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--gray);
+  letter-spacing: 0.03em;
+}
+.result-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 11px;
+}
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.badge-ok     { background: var(--mint);  color: var(--dark-green); }
+.badge-warn   { background: #fff8e1;      color: var(--yellow); }
+.badge-danger { background: #fdecea;      color: var(--red); }
+.result-desc {
+  font-size: 12px;
+  color: var(--warm-dark);
+  line-height: 1.75;
+}
+.note-box {
+  margin-top: 10px;
+  padding: 9px 12px;
+  background: var(--mint);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--dark-green);
+  line-height: 1.6;
+  display: none;
+}
+.note-box.visible { display: block; }
+.note-box.warn-note {
+  background: #fff8e1;
+  color: var(--yellow);
+}
+.note-box.danger-note {
+  background: #fdecea;
+  color: var(--red);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 620px) {
+  .page-header { padding: 36px 20px 28px; }
+  .page-title  { font-size: 26px; }
+  .main        { padding: 24px 16px 60px; }
+  .checker-grid{ grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="class-tag">Roasting Checker</div>
+  <h1 class="page-title">Roast Level Checker</h1>
+  <p class="page-sub">색도(아그트론) 또는 손실률을 입력하면 로스팅 정도를 바로 알려드립니다.</p>
+</header>
+
+<main class="main">
+  <div class="checker-grid">
+
+    <!-- ── 01 색도 ── -->
+    <div class="checker-card">
+      <div class="card-header">
+        <span class="card-num">01</span>
+        <span class="card-title">색도 (아그트론)</span>
+      </div>
+      <div class="field-label">색도계 측정값을 입력하세요 (21 – 115)</div>
+      <div class="input-row">
+        <input class="num-input" id="agtron-input" type="number" min="21" max="115" placeholder="—" autocomplete="off">
+        <span class="unit-label">#</span>
+      </div>
+      <div class="slider-wrap">
+        <input class="range-slider" id="agtron-slider" type="range" min="21" max="115" value="55">
+        <div class="slider-minmax"><span>21</span><span>115</span></div>
+      </div>
+      <div class="result-area">
+        <div class="result-empty" id="agtron-empty">
+          <div class="result-empty-dot"></div>
+          <span>슬라이더를 움직이거나 수치를 입력하세요</span>
+        </div>
+        <div class="result-content" id="agtron-content">
+          <div class="result-top">
+            <div class="result-bean" id="agtron-bean"></div>
+            <div>
+              <div class="result-level" id="agtron-level"></div>
+              <div class="result-sub"  id="agtron-sub"></div>
+            </div>
+          </div>
+          <div class="result-badges" id="agtron-badges"></div>
+          <div class="result-desc"   id="agtron-desc"></div>
+          <div class="note-box"      id="agtron-note"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 02 손실률 ── -->
+    <div class="checker-card">
+      <div class="card-header">
+        <span class="card-num">02</span>
+        <span class="card-title">손실률</span>
+      </div>
+      <div class="field-label">로스팅 전후 무게 감소율을 입력하세요 (5 – 25%)</div>
+      <div class="input-row">
+        <input class="num-input" id="loss-input" type="number" min="5" max="25" step="0.1" placeholder="—" autocomplete="off">
+        <span class="unit-label">%</span>
+      </div>
+      <div class="slider-wrap">
+        <input class="range-slider" id="loss-slider" type="range" min="5" max="25" step="0.1" value="14">
+        <div class="slider-minmax"><span>5%</span><span>25%</span></div>
+      </div>
+      <div class="result-area">
+        <div class="result-empty" id="loss-empty">
+          <div class="result-empty-dot"></div>
+          <span>슬라이더를 움직이거나 수치를 입력하세요</span>
+        </div>
+        <div class="result-content" id="loss-content">
+          <div class="result-top">
+            <div class="result-bean" id="loss-bean"></div>
+            <div>
+              <div class="result-level" id="loss-level"></div>
+              <div class="result-sub"  id="loss-sub"></div>
+            </div>
+          </div>
+          <div class="result-badges" id="loss-badges"></div>
+          <div class="result-desc"   id="loss-desc"></div>
+          <div class="note-box"      id="loss-note"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* ─────────────────────────────────────────
+   아그트론 데이터
+   타일값이 각 구간의 중심, ±5로 경계 설정
+   #95 → 91–100  /  #25 → 21–30
+───────────────────────────────────────── */
+const AGTRON_LEVELS = [
+  {
+    tile: null, min: 101, max: 115,
+    level: 'Extreme Light',
+    badge: 'ok',
+    color: '#f0d4b0',
+    desc: '표준 아그트론 스케일(#95 타일)을 초과하는 매우 밝은 로스팅입니다. 향미 개발이 거의 이루어지지 않은 상태로, 강한 생두 특성과 풀향·곡물향이 두드러집니다. 주로 실험적 로스팅이나 연구 목적으로 적용됩니다.',
+    note: '표준 아그트론 타일 스케일의 측정 범위를 초과한 구간입니다.', noteType: 'warn'
+  },
+  {
+    tile: '#95', min: 91, max: 100,
+    level: 'Very Light',
+    badge: 'ok',
+    color: '#d4a47c',
+    desc: '매우 밝은 로스팅입니다. 강한 산미와 과일·허브 향이 두드러지며, 원두 고유의 원산지 특성이 그대로 살아있습니다. 향미 개발은 초기 단계입니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#85', min: 81, max: 90,
+    level: 'Light',
+    badge: 'ok',
+    color: '#c49060',
+    desc: '밝고 선명한 산미와 과일·꽃향이 지배적입니다. 원산지 특성이 강하게 반영되며 고품질 싱글 오리진에 적합합니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#75', min: 71, max: 80,
+    level: 'Moderately Light',
+    badge: 'ok',
+    color: '#b07840',
+    desc: '산미와 단맛의 균형이 이루어지기 시작합니다. 과일과 카라멜의 복합 풍미가 발달하며, 스페셜티 라이트 로스트의 일반적인 목표 구간입니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#65', min: 61, max: 70,
+    level: 'Medium Light',
+    badge: 'ok',
+    color: '#9a6230',
+    desc: '균형 잡힌 산미와 카라멜 단맛, 견과류 풍미가 조화롭습니다. 스페셜티 에스프레소와 다양한 추출 방식에 잘 맞는 구간입니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#55', min: 51, max: 60,
+    level: 'Medium',
+    badge: 'ok',
+    color: '#7d4e25',
+    desc: '풍부한 바디와 진한 카라멜·초콜릿 풍미를 가집니다. 산미가 줄어들기 시작하며 다양한 추출 방식에 잘 맞습니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#45', min: 41, max: 50,
+    level: 'Moderately Dark',
+    badge: 'ok',
+    color: '#623b1c',
+    desc: '깊은 바디와 강한 초콜릿·스모키 풍미가 두드러집니다. 산미가 거의 사라지고 원두 표면에 오일이 배어 나오기 시작합니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#35', min: 31, max: 40,
+    level: 'Dark',
+    badge: 'warn',
+    color: '#4a2c14',
+    desc: '강한 쓴 맛과 스모키함이 지배적입니다. 무거운 바디와 오일리한 표면이 특징이며, 원산지 특성은 로스팅 특성으로 대체됩니다.',
+    note: null, noteType: null
+  },
+  {
+    tile: '#25', min: 21, max: 30,
+    level: 'Very Dark',
+    badge: 'warn',
+    color: '#321d0c',
+    desc: '강한 탄화 반응이 일어난 상태입니다. 매우 강한 쓴 맛과 탄 향, 오일리한 표면이 특징이며, 이탈리안 스타일 에스프레소에 주로 사용됩니다.',
+    note: '표준 아그트론 스케일의 하한에 해당하는 구간입니다.', noteType: 'warn'
+  },
+];
+
+/* ─────────────────────────────────────────
+   손실률 데이터
+   라이트 11–13% · 미디움 13–16% · 다크 16–18%
+───────────────────────────────────────── */
+const LOSS_LEVELS = [
+  {
+    min: 5, max: 10.9,
+    level: 'Under Roasting',
+    sub: '11% 미만',
+    badge: 'warn',
+    color: '#d4a47c',
+    desc: '손실률이 너무 낮아 충분히 개발되지 않았을 가능성이 있습니다. 풋내, 떫은 맛이 남아 있을 수 있으니 로스팅 프로파일과 개발 시간을 재확인하세요.',
+    note: null, noteType: null
+  },
+  {
+    min: 11, max: 13,
+    level: 'Light Roast',
+    sub: '11 – 13%',
+    badge: 'ok',
+    color: '#c49060',
+    desc: '밝은 산미와 원산지 특성이 잘 보존된 구간입니다. 고품질 싱글 오리진의 개성을 살리는 데 적합합니다.',
+    note: null, noteType: null
+  },
+  {
+    min: 13.1, max: 16,
+    level: 'Medium Roast',
+    sub: '13 – 16%',
+    badge: 'ok',
+    color: '#9a6230',
+    desc: '균형 잡힌 산미와 단맛, 적절한 바디감을 가집니다. 카라멜과 초콜릿 풍미가 잘 발달하며 다양한 추출 방식에 잘 맞습니다.',
+    note: null, noteType: null
+  },
+  {
+    min: 16.1, max: 18,
+    level: 'Dark Roast',
+    sub: '16 – 18%',
+    badge: 'warn',
+    color: '#623b1c',
+    desc: '진한 바디와 초콜릿·스모키 풍미가 강해집니다. 산미가 크게 줄어들며 에스프레소 블렌딩에 자주 사용됩니다.',
+    note: null, noteType: null
+  },
+  {
+    min: 18.1, max: 20,
+    level: 'Very Dark Roast',
+    sub: '18 – 20%',
+    badge: 'warn',
+    color: '#4a2c14',
+    desc: '강한 쓴 맛과 오일리한 원두 표면이 나타납니다. 이탈리안 스타일 에스프레소에 해당하는 구간입니다.',
+    note: null, noteType: null
+  },
+  {
+    min: 20.1, max: 25,
+    level: 'Over Roasting',
+    sub: '20% 초과',
+    badge: 'danger',
+    color: '#321d0c',
+    desc: '손실률이 과도하게 높아 탄화 가능성이 있습니다. 원두의 세포 구조 손상 및 품질 저하가 우려되므로 로스팅 커브를 확인하세요.',
+    note: null, noteType: null
+  },
+];
+
+/* ── 색상 보간 ── */
+function hexToRgb(h) {
+  return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+}
+function rgbToHex(r,g,b) {
+  return '#'+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+}
+function lerp(c1,c2,t) {
+  const [r1,g1,b1]=hexToRgb(c1), [r2,g2,b2]=hexToRgb(c2);
+  return rgbToHex(r1+(r2-r1)*t, g1+(g2-g1)*t, b1+(b2-b1)*t);
+}
+
+/* 아그트론 색상 보간: 타일값 기준 */
+const AG_STOPS = [
+  [115,'#f0d4b0'],[100,'#d9b08e'],[95,'#d4a47c'],[85,'#c49060'],
+  [75,'#b07840'], [65,'#9a6230'],[55,'#7d4e25'],
+  [45,'#623b1c'], [35,'#4a2c14'],[21,'#321d0c']
+];
+function agtronColor(v) {
+  v = Math.max(21, Math.min(115, v));
+  for (let i=0; i<AG_STOPS.length-1; i++) {
+    const [a1,c1]=AG_STOPS[i], [a2,c2]=AG_STOPS[i+1];
+    if (v >= a2 && v <= a1) return lerp(c1,c2,(a1-v)/(a1-a2));
+  }
+  return '#d4a47c';
+}
+
+const LOSS_STOPS = [
+  [5,'#d9b08e'],[11,'#c49060'],[13,'#b07840'],
+  [16,'#9a6230'],[18,'#623b1c'],[20,'#4a2c14'],[25,'#321d0c']
+];
+function lossColor(v) {
+  v = Math.max(5, Math.min(25, v));
+  for (let i=0; i<LOSS_STOPS.length-1; i++) {
+    const [v1,c1]=LOSS_STOPS[i], [v2,c2]=LOSS_STOPS[i+1];
+    if (v >= v1 && v <= v2) return lerp(c1,c2,(v-v1)/(v2-v1));
+  }
+  return '#c49060';
+}
+
+function fillSlider(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.background = `linear-gradient(to right, var(--dark-green) ${pct}%, rgba(14,15,12,0.12) ${pct}%)`;
+}
+function beanStyle(c) {
+  return `radial-gradient(ellipse at 38% 35%, ${lerp(c,'#ffffff',0.22)}, ${c} 55%, ${lerp(c,'#000000',0.18)})`;
+}
+
+/* ── 아그트론 렌더 ── */
+function renderAgtron(val) {
+  const v = parseFloat(val);
+  if (isNaN(v)) { showEmpty('agtron'); return; }
+  const c = Math.max(21, Math.min(115, v));
+  const lv = AGTRON_LEVELS.find(l => c >= l.min && c <= l.max) || AGTRON_LEVELS[AGTRON_LEVELS.length-1];
+  const col = agtronColor(c);
+
+  document.getElementById('agtron-empty').style.display = 'none';
+  document.getElementById('agtron-content').classList.add('visible');
+  document.getElementById('agtron-bean').style.background = beanStyle(col);
+  document.getElementById('agtron-level').textContent = lv.level;
+  document.getElementById('agtron-sub').textContent = lv.tile ? `${lv.tile}  ·  Agtron ${lv.min} – ${lv.max}` : `Agtron ${lv.min}+`;
+  document.getElementById('agtron-badges').innerHTML =
+    `<span class="badge badge-${lv.badge}">Agtron ${lv.min} – ${lv.max}</span>` +
+    (lv.tile ? `<span class="badge badge-ok">${lv.tile}</span>` : '');
+  document.getElementById('agtron-desc').textContent = lv.desc;
+
+  const noteEl = document.getElementById('agtron-note');
+  if (lv.note) {
+    noteEl.textContent = lv.note;
+    noteEl.className = `note-box visible${lv.noteType ? ' ' + lv.noteType + '-note' : ''}`;
+  } else {
+    noteEl.className = 'note-box';
+  }
+}
+
+/* ── 손실률 렌더 ── */
+function renderLoss(val) {
+  const v = parseFloat(val);
+  if (isNaN(v)) { showEmpty('loss'); return; }
+  const c = Math.max(5, Math.min(25, v));
+  const lv = LOSS_LEVELS.find(l => c >= l.min && c <= l.max) || LOSS_LEVELS[LOSS_LEVELS.length-1];
+  const col = lossColor(c);
+
+  document.getElementById('loss-empty').style.display = 'none';
+  document.getElementById('loss-content').classList.add('visible');
+  document.getElementById('loss-bean').style.background = beanStyle(col);
+  document.getElementById('loss-level').textContent = lv.level;
+  document.getElementById('loss-sub').textContent = lv.sub;
+  document.getElementById('loss-badges').innerHTML =
+    `<span class="badge badge-${lv.badge}">${lv.sub}</span>` +
+    `<span class="badge badge-${lv.badge}">${v.toFixed(1)}%</span>`;
+  document.getElementById('loss-desc').textContent = lv.desc;
+
+  const noteEl = document.getElementById('loss-note');
+  if (lv.note) {
+    noteEl.textContent = lv.note;
+    noteEl.className = `note-box visible${lv.noteType ? ' ' + lv.noteType + '-note' : ''}`;
+  } else {
+    noteEl.className = 'note-box';
+  }
+}
+
+function showEmpty(id) {
+  document.getElementById(`${id}-empty`).style.display = '';
+  document.getElementById(`${id}-content`).classList.remove('visible');
+}
+
+/* ── 입력 연결 ── */
+const aI = document.getElementById('agtron-input');
+const aS = document.getElementById('agtron-slider');
+aI.addEventListener('input', () => {
+  const v = parseFloat(aI.value);
+  if (!isNaN(v) && v >= 21 && v <= 115) { aS.value = v; fillSlider(aS); }
+  renderAgtron(aI.value);
+});
+aS.addEventListener('input', () => {
+  aI.value = aS.value; fillSlider(aS); renderAgtron(aS.value);
+});
+
+const lI = document.getElementById('loss-input');
+const lS = document.getElementById('loss-slider');
+lI.addEventListener('input', () => {
+  const v = parseFloat(lI.value);
+  if (!isNaN(v) && v >= 5 && v <= 25) { lS.value = v; fillSlider(lS); }
+  renderLoss(lI.value);
+});
+lS.addEventListener('input', () => {
+  lI.value = parseFloat(lS.value).toFixed(1); fillSlider(lS); renderLoss(lS.value);
+});
+
+fillSlider(aS);
+fillSlider(lS);
+</script>
+</body>
+</html>
