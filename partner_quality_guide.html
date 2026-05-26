@@ -1245,6 +1245,17 @@ html.ios-device .card-04 {
   top: -67px !important;   /* ← 음수면 위로 (값 조정) */
 }
 
+/* card-04 콘텐츠 위쪽 정렬 강제 */
+.card-04 {
+  align-self: start !important;
+}
+.card-04 .card-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+}
+
 /* card-06 BEVERAGE TDS 게이지 위로 당기기 (iOS) */
 html.ios-device .card-06 .gauge-wrap {
   position: relative !important;
