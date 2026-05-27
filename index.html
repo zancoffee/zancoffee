@@ -107,6 +107,17 @@ body {
   line-height: 1.9;
   letter-spacing: 0.06em;
 }
+.copyright {
+  font-family:'IBM Plex Mono', monospace;
+  font-size: 8px;
+  color: var(--muted-3);
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  user-select: none;
+}
 
 /* ── CONTENT ── */
 .content { margin-left: 180px; flex: 1; overflow: hidden; }
@@ -495,6 +506,7 @@ body {
   .nav a { padding: 4px 0; }
   .nav a:hover, .nav a.on { transform: none; }
   .sidebar-foot { display: none; }
+  .copyright { display: none; }
   .content { margin-left: 0; width: 100%; }
   .pg { padding: 24px 18px 60px; }
   .grid3, .grid2 { grid-template-columns: 1fr 1fr; }
@@ -524,6 +536,11 @@ body {
     <a data-p="contact">Contact</a>
   </nav>
   <div class="sidebar-foot" id="sidebar-foot"></div>
+  <div class="copyright">
+    © 2025 ZAN.<br>
+    All rights reserved.<br>
+    콘텐츠 무단 복제 금지.
+  </div>
 </aside>
 
 <!-- CONTENT -->
