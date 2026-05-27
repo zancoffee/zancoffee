@@ -523,11 +523,7 @@ body {
     <a data-p="zan">ZAN</a>
     <a data-p="contact">Contact</a>
   </nav>
-  <div class="sidebar-foot">
-    Daegu<br>
-    South Korea<br>
-    Est. 2014
-  </div>
+  <div class="sidebar-foot" id="sidebar-foot"></div>
 </aside>
 
 <!-- CONTENT -->
@@ -537,27 +533,16 @@ body {
 <div class="pg on" id="pg-home">
   <div class="page-head">
     <div class="page-num">[ 01 / About ]</div>
-    <div class="page-title">A roaster's <span class="italic">practice.</span></div>
+    <div class="page-title" id="pg-home-title"></div>
   </div>
 
   <div class="home-hero reveal">
-    <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1400&q=85" alt="coffee roasting">
+    <img id="home-hero-img" src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1400&q=85" alt="coffee roasting">
   </div>
 
   <div class="home-intro">
-    <div class="home-bio reveal">
-      <p>ZAN은 대구를 기반으로 활동하는 커피 로스터입니다.</p>
-      <p>커피를 볶고, 과학으로 이해하고, 감성으로 표현하는 일을 합니다. 커피 커뮤니티 잔(ZAN)을 운영하며, 홈카페 유저를 위한 콘텐츠와 디지털 도구를 만들고 있습니다.</p>
-    </div>
-
-    <div class="kv reveal">
-      <div class="kv-k">Base</div>       <div class="kv-v">Daegu, South Korea</div>
-      <div class="kv-k">Work</div>       <div class="kv-v">Roasting · Brewing · Content</div>
-      <div class="kv-k">Community</div>  <div class="kv-v">잔 (ZAN) Coffee Crew</div>
-      <div class="kv-k">Email</div>      <div class="kv-v"><a href="mailto:zan@example.com">zan@example.com</a></div>
-      <div class="kv-k">Instagram</div>  <div class="kv-v"><a href="#">@zan.coffee</a></div>
-      <div class="kv-k">Since</div>      <div class="kv-v">2014</div>
-    </div>
+    <div class="home-bio reveal" id="home-bio-wrap"></div>
+    <div class="kv reveal" id="home-kv-wrap"></div>
   </div>
 </div>
 
@@ -575,13 +560,7 @@ body {
   <div class="tl" id="tl-section"></div>
 
   <div class="sh">Skills</div>
-  <div class="tl">
-    <div class="tl-y">Roasting</div>    <div class="tl-i"><div class="tl-d">생두 선별, 열전달 제어, 프로파일 설계 및 배치 비교</div></div>
-    <div class="tl-y">Extraction</div>  <div class="tl-i"><div class="tl-d">TDS 측정, 수율 계산, 변수 분리 실험</div></div>
-    <div class="tl-y">Sensory</div>     <div class="tl-i"><div class="tl-d">SCA 커핑, 향미 묘사, 결점두 식별</div></div>
-    <div class="tl-y">Content</div>     <div class="tl-i"><div class="tl-d">유튜브 쇼츠 기획·촬영·편집, 인스타그램 운영</div></div>
-    <div class="tl-y">Community</div>   <div class="tl-i"><div class="tl-d">잔(ZAN) 운영, 스터디 기획, 대회 참가 지원</div></div>
-  </div>
+  <div class="tl" id="skills-section"></div>
 </div>
 
 <!-- TOOLS -->
@@ -613,17 +592,12 @@ body {
 
   <div class="zan-cover reveal">
     <div class="zan-name">ZAN<span class="italic">.</span></div>
-    <div class="zan-sub">잔(盞) · Coffee Crew · Daegu · Est. 2025</div>
+    <div class="zan-sub" id="zan-cover-sub"></div>
   </div>
 
   <div class="zan-intro">
-    <div class="zan-desc reveal">"잔(盞)을 나눈다는 것은 자리를 나눈다는 뜻이다. 우리는 커피와 함께 시간을, 그리고 배움을 나눈다."</div>
-    <dl class="zan-meta reveal">
-      <dt>Type</dt>      <dd>Coffee Community</dd>
-      <dt>Founded</dt>   <dd>2025</dd>
-      <dt>Base</dt>      <dd>Daegu, South Korea</dd>
-      <dt>Activities</dt><dd>Study · Tours · Content</dd>
-    </dl>
+    <div class="zan-desc reveal" id="zan-quote"></div>
+    <dl class="zan-meta reveal" id="zan-meta"></dl>
   </div>
 
   <div class="sh">Activities <span class="sh-num" id="zan-count"></span></div>
@@ -638,17 +612,11 @@ body {
   </div>
 
   <div class="con-intro">
-    <div class="con-quote reveal">"커피에 대해 이야기 나누고 싶다면 <a href="mailto:zan@example.com">언제든 연락주세요.</a> 로스팅 협업, 콘텐츠 제안, ZAN 합류 문의 모두 환영합니다."</div>
+    <div class="con-quote reveal" id="contact-quote"></div>
     <div></div>
   </div>
 
-  <div class="con-kv reveal">
-    <div class="con-k">Email</div>      <div class="con-v"><a href="mailto:zan@example.com">zan@example.com</a></div>
-    <div class="con-k">Instagram</div>  <div class="con-v"><a href="#">@zan.coffee</a></div>
-    <div class="con-k">YouTube</div>    <div class="con-v"><a href="#">ZAN Coffee Crew</a></div>
-    <div class="con-k">Location</div>   <div class="con-v">Daegu, South Korea</div>
-    <div class="con-k">Available</div>  <div class="con-v">로스팅 협업 · 콘텐츠 제안 · ZAN 합류</div>
-  </div>
+  <div class="con-kv reveal" id="contact-kv"></div>
 </div>
 
 </div>
@@ -657,6 +625,37 @@ body {
 <script>
 (function() {
   'use strict';
+
+  // ── STATIC DEFAULTS ──
+  var siteDefaults = {
+    homeTitle: "A roaster's practice.",
+    homeHero: 'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1400&q=85',
+    homeBio1: 'ZAN은 대구를 기반으로 활동하는 커피 로스터입니다.',
+    homeBio2: '커피를 볶고, 과학으로 이해하고, 감성으로 표현하는 일을 합니다. 커피 커뮤니티 잔(ZAN)을 운영하며, 홈카페 유저를 위한 콘텐츠와 디지털 도구를 만들고 있습니다.',
+    kvBase: 'Daegu, South Korea', kvWork: 'Roasting · Brewing · Content',
+    kvCommunity: '잔 (ZAN) Coffee Crew', kvEmail: 'zan@example.com',
+    kvInstagram: '@zan.coffee', kvSince: '2014',
+    footLocation: 'Daegu', footCountry: 'South Korea', footEst: 'Est. 2014'
+  };
+  var zanInfoDefaults = {
+    coverSub: '잔(盞) · Coffee Crew · Daegu · Est. 2025',
+    quote: '잔(盞)을 나눈다는 것은 자리를 나눈다는 뜻이다. 우리는 커피와 함께 시간을, 그리고 배움을 나눈다.',
+    metaType: 'Coffee Community', metaFounded: '2025',
+    metaBase: 'Daegu, South Korea', metaActivities: 'Study · Tours · Content'
+  };
+  var contactDefaults = {
+    quote: '커피에 대해 이야기 나누고 싶다면 언제든 연락주세요. 로스팅 협업, 콘텐츠 제안, ZAN 합류 문의 모두 환영합니다.',
+    email: 'zan@example.com', instagram: '@zan.coffee',
+    youtube: 'ZAN Coffee Crew', location: 'Daegu, South Korea',
+    available: '로스팅 협업 · 콘텐츠 제안 · ZAN 합류'
+  };
+  var skillsDefaults = [
+    { id:1, cat:'Roasting',   desc:'생두 선별, 열전달 제어, 프로파일 설계 및 배치 비교' },
+    { id:2, cat:'Extraction', desc:'TDS 측정, 수율 계산, 변수 분리 실험' },
+    { id:3, cat:'Sensory',    desc:'SCA 커핑, 향미 묘사, 결점두 식별' },
+    { id:4, cat:'Content',    desc:'유튜브 쇼츠 기획·촬영·편집, 인스타그램 운영' },
+    { id:5, cat:'Community',  desc:'잔(ZAN) 운영, 스터디 기획, 대회 참가 지원' }
+  ];
 
   // ── DATA ──
   var defaults = {
@@ -716,6 +715,56 @@ body {
       + '</div>'
       + '<div class="cbody"><div class="ct">' + esc(item.title) + '</div><div class="cs">' + esc(item.sub || '') + '</div></div>'
       + '</a>';
+  }
+
+  // ── STATIC RENDER ──
+  function renderSite() {
+    var s = load('site') || siteDefaults;
+    var t = document.getElementById('pg-home-title'); if (t) t.textContent = s.homeTitle;
+    var img = document.getElementById('home-hero-img'); if (img) img.src = s.homeHero;
+    var bio = document.getElementById('home-bio-wrap');
+    if (bio) bio.innerHTML = '<p>' + esc(s.homeBio1) + '</p><p>' + esc(s.homeBio2) + '</p>';
+    var kv = document.getElementById('home-kv-wrap');
+    if (kv) kv.innerHTML =
+      '<div class="kv-k">Base</div><div class="kv-v">' + esc(s.kvBase) + '</div>' +
+      '<div class="kv-k">Work</div><div class="kv-v">' + esc(s.kvWork) + '</div>' +
+      '<div class="kv-k">Community</div><div class="kv-v">' + esc(s.kvCommunity) + '</div>' +
+      '<div class="kv-k">Email</div><div class="kv-v"><a href="mailto:' + esc(s.kvEmail) + '">' + esc(s.kvEmail) + '</a></div>' +
+      '<div class="kv-k">Instagram</div><div class="kv-v"><a href="#">' + esc(s.kvInstagram) + '</a></div>' +
+      '<div class="kv-k">Since</div><div class="kv-v">' + esc(s.kvSince) + '</div>';
+    var foot = document.getElementById('sidebar-foot');
+    if (foot) foot.innerHTML = esc(s.footLocation) + '<br>' + esc(s.footCountry) + '<br>' + esc(s.footEst);
+  }
+  function renderZanInfo() {
+    var z = load('zanInfo') || zanInfoDefaults;
+    var sub = document.getElementById('zan-cover-sub'); if (sub) sub.textContent = z.coverSub;
+    var q = document.getElementById('zan-quote'); if (q) q.textContent = '“' + z.quote + '”';
+    var m = document.getElementById('zan-meta');
+    if (m) m.innerHTML =
+      '<dt>Type</dt><dd>' + esc(z.metaType) + '</dd>' +
+      '<dt>Founded</dt><dd>' + esc(z.metaFounded) + '</dd>' +
+      '<dt>Base</dt><dd>' + esc(z.metaBase) + '</dd>' +
+      '<dt>Activities</dt><dd>' + esc(z.metaActivities) + '</dd>';
+  }
+  function renderContact() {
+    var c = load('contact') || contactDefaults;
+    var q = document.getElementById('contact-quote');
+    if (q) q.textContent = '“' + c.quote + '”';
+    var kv = document.getElementById('contact-kv');
+    if (kv) kv.innerHTML =
+      '<div class="con-k">Email</div><div class="con-v"><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></div>' +
+      '<div class="con-k">Instagram</div><div class="con-v"><a href="#">' + esc(c.instagram) + '</a></div>' +
+      '<div class="con-k">YouTube</div><div class="con-v"><a href="#">' + esc(c.youtube) + '</a></div>' +
+      '<div class="con-k">Location</div><div class="con-v">' + esc(c.location) + '</div>' +
+      '<div class="con-k">Available</div><div class="con-v">' + esc(c.available) + '</div>';
+  }
+  function renderSkills() {
+    var data = load('skills') || skillsDefaults;
+    var el = document.getElementById('skills-section'); if (!el) return;
+    el.innerHTML = data.map(function(item) {
+      return '<div class="tl-y">' + esc(item.cat) + '</div>' +
+        '<div class="tl-i"><div class="tl-d">' + esc(item.desc) + '</div></div>';
+    }).join('');
   }
 
   // ── RENDER ──
@@ -810,6 +859,10 @@ body {
   }
 
   // ── INIT ──
+  renderSite();
+  renderZanInfo();
+  renderContact();
+  renderSkills();
   renderBlog();
   renderTools();
   renderZan();

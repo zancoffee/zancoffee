@@ -306,10 +306,12 @@ body {
     <div class="admin-logo-label">Admin</div>
     <div class="admin-logo-name">ZAN<span>.</span></div>
     <div class="admin-nav">
-      <div class="admin-nav-item on" data-panel="journal">Journal</div>
-      <div class="admin-nav-item" data-panel="crew">Crew</div>
+      <div class="admin-nav-item on" data-panel="home">홈 설정</div>
+      <div class="admin-nav-item" data-panel="journal">Journal</div>
+      <div class="admin-nav-item" data-panel="crew">Crew / ZAN</div>
       <div class="admin-nav-item" data-panel="tools">Tools</div>
       <div class="admin-nav-item" data-panel="career">Career / Bio</div>
+      <div class="admin-nav-item" data-panel="contact">Contact</div>
     </div>
     <div class="admin-sidebar-foot">
       <a class="goto-site" href="./index.html" target="_blank">↗ 홈페이지 보기</a>
@@ -319,8 +321,34 @@ body {
 
   <div class="admin-content">
 
+    <!-- HOME -->
+    <div class="panel on" id="panel-home">
+      <div class="panel-header">
+        <div><div class="panel-meta">Settings</div><div class="panel-heading">홈 설정</div></div>
+        <button class="save-btn" id="saveHomeBtn" style="max-width:90px;flex:none">저장</button>
+      </div>
+      <div class="section-divider">페이지 타이틀</div>
+      <div class="form-group"><label class="form-label">타이틀 문구</label><input class="form-input" id="h-title" placeholder="A roaster's practice."></div>
+      <div class="section-divider">히어로 이미지</div>
+      <div class="form-group"><label class="form-label">이미지 URL</label><input class="form-input" id="h-hero" placeholder="https://images.unsplash.com/..."><div class="form-hint">Unsplash 등 직접 링크</div></div>
+      <div class="section-divider">소개글</div>
+      <div class="form-group"><label class="form-label">첫 번째 문단 (굵은 인트로)</label><input class="form-input" id="h-bio1" placeholder="ZAN은 대구를 기반으로 활동하는 커피 로스터입니다."></div>
+      <div class="form-group"><label class="form-label">두 번째 문단</label><textarea class="form-textarea" id="h-bio2" placeholder="커피를 볶고, 과학으로 이해하고..."></textarea></div>
+      <div class="section-divider">정보 테이블 (About)</div>
+      <div class="form-group"><label class="form-label">Base</label><input class="form-input" id="h-base" placeholder="Daegu, South Korea"></div>
+      <div class="form-group"><label class="form-label">Work</label><input class="form-input" id="h-work" placeholder="Roasting · Brewing · Content"></div>
+      <div class="form-group"><label class="form-label">Community</label><input class="form-input" id="h-community" placeholder="잔 (ZAN) Coffee Crew"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="h-email" placeholder="zan@example.com"></div>
+      <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="h-instagram" placeholder="@zan.coffee"></div>
+      <div class="form-group"><label class="form-label">Since</label><input class="form-input" id="h-since" placeholder="2014"></div>
+      <div class="section-divider">사이드바 하단</div>
+      <div class="form-group"><label class="form-label">도시</label><input class="form-input" id="h-foot-loc" placeholder="Daegu"></div>
+      <div class="form-group"><label class="form-label">국가</label><input class="form-input" id="h-foot-country" placeholder="South Korea"></div>
+      <div class="form-group"><label class="form-label">설립</label><input class="form-input" id="h-foot-est" placeholder="Est. 2014"></div>
+    </div>
+
     <!-- JOURNAL -->
-    <div class="panel on" id="panel-journal">
+    <div class="panel" id="panel-journal">
       <div class="panel-header">
         <div>
           <div class="panel-meta">Content</div>
@@ -331,15 +359,24 @@ body {
       <div class="item-list" id="list-journal"></div>
     </div>
 
-    <!-- CREW -->
+    <!-- CREW / ZAN -->
     <div class="panel" id="panel-crew">
       <div class="panel-header">
         <div>
           <div class="panel-meta">Community</div>
-          <div class="panel-heading">Crew 활동 관리</div>
+          <div class="panel-heading">Crew / ZAN 관리</div>
         </div>
+        <button class="save-btn" id="saveZanInfoBtn" style="max-width:100px;flex:none;margin-right:8px">ZAN저장</button>
         <button class="add-btn" data-type="crew">+ 새 활동</button>
       </div>
+      <div class="section-divider">ZAN 페이지 정보</div>
+      <div class="form-group"><label class="form-label">커버 서브텍스트</label><input class="form-input" id="z-cover-sub" placeholder="잔(盞) · Coffee Crew · Daegu · Est. 2025"></div>
+      <div class="form-group"><label class="form-label">소개 문구 (따옴표 자동 추가)</label><textarea class="form-textarea" id="z-quote" placeholder="잔(盞)을 나눈다는 것은..."></textarea></div>
+      <div class="form-group"><label class="form-label">Type</label><input class="form-input" id="z-meta-type" placeholder="Coffee Community"></div>
+      <div class="form-group"><label class="form-label">Founded</label><input class="form-input" id="z-meta-founded" placeholder="2025"></div>
+      <div class="form-group"><label class="form-label">Base</label><input class="form-input" id="z-meta-base" placeholder="Daegu, South Korea"></div>
+      <div class="form-group"><label class="form-label">Activities</label><input class="form-input" id="z-meta-activities" placeholder="Study · Tours · Content"></div>
+      <div class="section-divider">활동 카드</div>
       <div class="item-list" id="list-crew"></div>
     </div>
 
@@ -372,6 +409,26 @@ body {
       </div>
       <div class="section-divider">Timeline</div>
       <div class="item-list" id="list-career"></div>
+      <div class="section-divider" style="margin-top:36px">
+        Skills
+        <button class="add-btn" data-type="skills" style="font-size:10px;padding:5px 12px">+ 추가</button>
+      </div>
+      <div class="item-list" id="list-skills"></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="panel" id="panel-contact">
+      <div class="panel-header">
+        <div><div class="panel-meta">Contact</div><div class="panel-heading">Contact 수정</div></div>
+        <button class="save-btn" id="saveContactBtn" style="max-width:90px;flex:none">저장</button>
+      </div>
+      <div class="form-group"><label class="form-label">소개 문구</label><textarea class="form-textarea tall" id="c-quote" placeholder="커피에 대해 이야기 나누고 싶다면..."></textarea></div>
+      <div class="section-divider">연락처 정보</div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email" placeholder="zan@example.com"></div>
+      <div class="form-group"><label class="form-label">Instagram</label><input class="form-input" id="c-instagram" placeholder="@zan.coffee"></div>
+      <div class="form-group"><label class="form-label">YouTube</label><input class="form-input" id="c-youtube" placeholder="ZAN Coffee Crew"></div>
+      <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="c-location" placeholder="Daegu, South Korea"></div>
+      <div class="form-group"><label class="form-label">Available (협업 분야)</label><input class="form-input" id="c-available" placeholder="로스팅 협업 · 콘텐츠 제안 · ZAN 합류"></div>
     </div>
 
   </div>
@@ -394,7 +451,36 @@ body {
 <script>
 (function () {
 
-  var PW = 'theo2026';
+  var PW = '0506';
+
+  var siteDefaults = {
+    homeTitle: "A roaster's practice.", homeHero: 'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1400&q=85',
+    homeBio1: 'ZAN은 대구를 기반으로 활동하는 커피 로스터입니다.',
+    homeBio2: '커피를 볶고, 과학으로 이해하고, 감성으로 표현하는 일을 합니다. 커피 커뮤니티 잔(ZAN)을 운영하며, 홈카페 유저를 위한 콘텐츠와 디지털 도구를 만들고 있습니다.',
+    kvBase: 'Daegu, South Korea', kvWork: 'Roasting · Brewing · Content',
+    kvCommunity: '잔 (ZAN) Coffee Crew', kvEmail: 'zan@example.com',
+    kvInstagram: '@zan.coffee', kvSince: '2014',
+    footLocation: 'Daegu', footCountry: 'South Korea', footEst: 'Est. 2014'
+  };
+  var zanInfoDefaults = {
+    coverSub: '잔(盞) · Coffee Crew · Daegu · Est. 2025',
+    quote: '잔(盞)을 나눈다는 것은 자리를 나눈다는 뜻이다. 우리는 커피와 함께 시간을, 그리고 배움을 나눈다.',
+    metaType: 'Coffee Community', metaFounded: '2025',
+    metaBase: 'Daegu, South Korea', metaActivities: 'Study · Tours · Content'
+  };
+  var contactDefaults = {
+    quote: '커피에 대해 이야기 나누고 싶다면 언제든 연락주세요. 로스팅 협업, 콘텐츠 제안, ZAN 합류 문의 모두 환영합니다.',
+    email: 'zan@example.com', instagram: '@zan.coffee',
+    youtube: 'ZAN Coffee Crew', location: 'Daegu, South Korea',
+    available: '로스팅 협업 · 콘텐츠 제안 · ZAN 합류'
+  };
+  var skillsDefaults = [
+    { id:1, cat:'Roasting',   desc:'생두 선별, 열전달 제어, 프로파일 설계 및 배치 비교' },
+    { id:2, cat:'Extraction', desc:'TDS 측정, 수율 계산, 변수 분리 실험' },
+    { id:3, cat:'Sensory',    desc:'SCA 커핑, 향미 묘사, 결점두 식별' },
+    { id:4, cat:'Content',    desc:'유튜브 쇼츠 기획·촬영·편집, 인스타그램 운영' },
+    { id:5, cat:'Community',  desc:'잔(ZAN) 운영, 스터디 기획, 대회 참가 지원' }
+  ];
 
   var defaults = {
     journal: [
@@ -430,6 +516,7 @@ body {
   function load(key) { try { var v = localStorage.getItem('zan_' + key); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
   function save(key, val) { try { localStorage.setItem('zan_' + key, JSON.stringify(val)); } catch(e) {} }
   function getData(key) { return load(key) || JSON.parse(JSON.stringify(defaults[key] || [])); }
+  function getObj(key, def) { return load(key) || JSON.parse(JSON.stringify(def)); }
   function nextId(arr) { return arr.reduce(function(m,i){ return Math.max(m, i.id||0); }, 0) + 1; }
 
   // ── TOAST ──
@@ -712,6 +799,127 @@ body {
   }
 
   // ══════════════════════════════
+  // HOME
+  // ══════════════════════════════
+  function v(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+  function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; }
+
+  function loadHomePanel() {
+    var s = getObj('site', siteDefaults);
+    setVal('h-title', s.homeTitle); setVal('h-hero', s.homeHero);
+    setVal('h-bio1', s.homeBio1);  setVal('h-bio2', s.homeBio2);
+    setVal('h-base', s.kvBase);    setVal('h-work', s.kvWork);
+    setVal('h-community', s.kvCommunity); setVal('h-email', s.kvEmail);
+    setVal('h-instagram', s.kvInstagram); setVal('h-since', s.kvSince);
+    setVal('h-foot-loc', s.footLocation); setVal('h-foot-country', s.footCountry);
+    setVal('h-foot-est', s.footEst);
+  }
+  document.getElementById('saveHomeBtn').addEventListener('click', function() {
+    save('site', {
+      homeTitle: v('h-title'), homeHero: v('h-hero'),
+      homeBio1: v('h-bio1'),   homeBio2: v('h-bio2'),
+      kvBase: v('h-base'),     kvWork: v('h-work'),
+      kvCommunity: v('h-community'), kvEmail: v('h-email'),
+      kvInstagram: v('h-instagram'), kvSince: v('h-since'),
+      footLocation: v('h-foot-loc'), footCountry: v('h-foot-country'), footEst: v('h-foot-est')
+    });
+    showToast('홈 설정이 저장되었습니다');
+  });
+
+  // ══════════════════════════════
+  // ZAN INFO
+  // ══════════════════════════════
+  function loadZanInfoPanel() {
+    var z = getObj('zanInfo', zanInfoDefaults);
+    setVal('z-cover-sub', z.coverSub); setVal('z-quote', z.quote);
+    setVal('z-meta-type', z.metaType); setVal('z-meta-founded', z.metaFounded);
+    setVal('z-meta-base', z.metaBase); setVal('z-meta-activities', z.metaActivities);
+  }
+  document.getElementById('saveZanInfoBtn').addEventListener('click', function() {
+    save('zanInfo', {
+      coverSub: v('z-cover-sub'), quote: v('z-quote'),
+      metaType: v('z-meta-type'), metaFounded: v('z-meta-founded'),
+      metaBase: v('z-meta-base'), metaActivities: v('z-meta-activities')
+    });
+    showToast('ZAN 정보가 저장되었습니다');
+  });
+
+  // ══════════════════════════════
+  // CONTACT
+  // ══════════════════════════════
+  function loadContactPanel() {
+    var c = getObj('contact', contactDefaults);
+    setVal('c-quote', c.quote); setVal('c-email', c.email);
+    setVal('c-instagram', c.instagram); setVal('c-youtube', c.youtube);
+    setVal('c-location', c.location); setVal('c-available', c.available);
+  }
+  document.getElementById('saveContactBtn').addEventListener('click', function() {
+    save('contact', {
+      quote: v('c-quote'), email: v('c-email'),
+      instagram: v('c-instagram'), youtube: v('c-youtube'),
+      location: v('c-location'), available: v('c-available')
+    });
+    showToast('Contact 정보가 저장되었습니다');
+  });
+
+  // ══════════════════════════════
+  // SKILLS
+  // ══════════════════════════════
+  function getSkills() { return load('skills') || JSON.parse(JSON.stringify(skillsDefaults)); }
+
+  function renderSkills() {
+    var data = getSkills();
+    var list = document.getElementById('list-skills');
+    if (!data.length) { list.innerHTML = emptyState('스킬이 없습니다'); return; }
+    list.innerHTML = data.map(function(item) {
+      return '<div class="item-row">' +
+        '<div class="item-row-info">' +
+          '<div class="item-row-title">' + item.cat + '</div>' +
+          '<div class="item-row-sub">' + (item.desc || '') + '</div>' +
+        '</div>' +
+        '<div class="item-row-actions">' +
+          '<button class="edit-btn" data-type="skills" data-id="' + item.id + '">수정</button>' +
+          '<button class="del-btn"  data-type="skills" data-id="' + item.id + '">삭제</button>' +
+        '</div></div>';
+    }).join('');
+  }
+
+  function skillsForm(item) {
+    item = item || {};
+    return '<div class="form-group"><label class="form-label">분야</label><input class="form-input" id="f-cat" value="' + (item.cat||'') + '" placeholder="Roasting"></div>' +
+      '<div class="form-group"><label class="form-label">설명</label><textarea class="form-textarea" id="f-desc">' + (item.desc||'') + '</textarea></div>';
+  }
+
+  function addSkills() {
+    openModal('스킬 추가', skillsForm(), function() {
+      var cat = document.getElementById('f-cat').value.trim();
+      if (!cat) { showToast('분야를 입력해주세요'); return; }
+      var data = getSkills();
+      data.push({ id: nextId(data), cat: cat, desc: document.getElementById('f-desc').value });
+      save('skills', data); renderSkills(); closeModal(); showToast('추가되었습니다');
+    });
+  }
+
+  function editSkills(id) {
+    var data = getSkills();
+    var item = data.find(function(i) { return i.id == id; });
+    if (!item) return;
+    openModal('스킬 수정', skillsForm(item), function() {
+      var cat = document.getElementById('f-cat').value.trim();
+      if (!cat) { showToast('분야를 입력해주세요'); return; }
+      item.cat  = cat;
+      item.desc = document.getElementById('f-desc').value;
+      save('skills', data); renderSkills(); closeModal(); showToast('수정되었습니다');
+    });
+  }
+
+  function delSkills(id) {
+    if (!confirm('삭제할까요?')) return;
+    save('skills', getSkills().filter(function(i) { return i.id != id; }));
+    renderSkills(); showToast('삭제되었습니다');
+  }
+
+  // ══════════════════════════════
   // CAREER
   // ══════════════════════════════
   function renderCareer() {
@@ -785,6 +993,7 @@ body {
       else if(t==='crew') addCrew();
       else if(t==='tools') addTools();
       else if(t==='career') addCareer();
+      else if(t==='skills') addSkills();
     });
   });
 
@@ -797,16 +1006,32 @@ body {
       else if(type==='crew') editCrew(id);
       else if(type==='tools') editTools(id);
       else if(type==='career') editCareer(id);
+      else if(type==='skills') editSkills(id);
     }
     if(btn.classList.contains('del-btn')){
       if(type==='journal') delJournal(id);
       else if(type==='crew') delCrew(id);
       else if(type==='tools') delTools(id);
       else if(type==='career') delCareer(id);
+      else if(type==='skills') delSkills(id);
     }
   });
 
-  function renderAll(){ renderJournal(); renderCrew(); renderTools(); renderCareer(); }
+  // ── 패널 전환 시 폼 값 로드 ──
+  document.querySelectorAll('.admin-nav-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      var panel = this.getAttribute('data-panel');
+      if(panel === 'home') loadHomePanel();
+      if(panel === 'crew') loadZanInfoPanel();
+      if(panel === 'contact') loadContactPanel();
+    });
+  });
+
+  function renderAll(){
+    loadHomePanel();
+    renderJournal(); renderCrew(); renderTools(); renderCareer(); renderSkills();
+    loadZanInfoPanel(); loadContactPanel();
+  }
 
 }());
 </script>
