@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=IBM+Plex+Mono:wght@300;400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { -webkit-user-select: none; -ms-user-select: none; user-select: none; }
+img, a { -webkit-user-drag: none; user-drag: none; }
 
 :root {
   --bg: #ffffff;
@@ -889,6 +891,11 @@ body {
     observeReveal();
     staggerCards(document.querySelector('.pg.on'));
   }, 80);
+
+  // ── 우클릭 · 드래그 차단 ──
+  document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
+  document.addEventListener('selectstart', function(e) { e.preventDefault(); });
 
   window.addEventListener('load', function() {
     setTimeout(function() {
