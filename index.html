@@ -367,23 +367,29 @@ a.con-val:hover { color: var(--dg); }
   .brand-block { padding: 10px 16px; }
   .brand-block svg { width: 44px !important; }
 
-  /* 네비게이션: 가로 스크롤 바 */
+  /* 네비게이션: 3열 × 2행 그리드 — 스와이프 없이 한 화면에 전체 표시 */
   .nav {
-    flex-direction: row; flex-wrap: nowrap; flex: unset;
-    overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    flex: unset; overflow: visible;
     padding: 0; gap: 0;
     border-top: 1px solid var(--line);
   }
-  .nav::-webkit-scrollbar { display: none; }
   .nav a {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.1em;
-    padding: 11px 16px;
-    white-space: nowrap; flex-shrink: 0;
-    border-bottom: 2px solid transparent;
+    font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em; text-align: center;
+    padding: 12px 4px;
+    white-space: nowrap;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.15s, color 0.15s;
   }
-  .nav a:hover { padding-left: 16px; background: rgba(200,255,133,0.18); }
-  .nav a.on { background: var(--green); border-bottom-color: var(--dg); }
+  /* 오른쪽 끝 항목 border 제거 */
+  .nav a:nth-child(3n) { border-right: none; }
+  /* 하단 행 border 제거 */
+  .nav a:nth-child(n+4) { border-bottom: none; }
+  .nav a:hover { padding-left: 4px; background: rgba(200,255,133,0.22); color: var(--dg); }
+  .nav a.on { background: var(--green); color: var(--dg); }
 
   .sb-foot { display: none; }
   .content { margin-left: 0; }
