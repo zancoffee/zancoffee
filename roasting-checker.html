@@ -1,7 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8"><meta name="author" content="Jung Sang Ju">
+<meta name="copyright" content="© 2025 ZAN Coffee. All rights reserved.">
+<!-- © 2025 ZAN Coffee — Made by Jung Sang Ju. All rights reserved. 무단 복제 금지. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Roast Level Checker — ZAN Coffee</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,12 +13,13 @@
 
 :root {
   --black:         #0e0f0c;
-  --green:         #9fe870;
+  --panel:         #d4d7cf;
+  --green:         #c8ff85;
   --dark-green:    #163300;
   --mint:          #e2f6d5;
   --gray:          #868685;
   --warm-dark:     #454745;
-  --surface:       #f4f6f2;
+  --surface:       #f5f6f3;
   --white:         #ffffff;
   --border:        rgba(14,15,12,0.10);
   --border-strong: rgba(14,15,12,0.18);
@@ -36,8 +39,7 @@ body {
 }
 
 /* ── HEADER ── */
-.page-header {
-  background: var(--black);
+.page-header { background: var(--panel);
   padding: 52px 40px 40px;
 }
 .class-tag {
@@ -53,12 +55,12 @@ body {
   font-size: 36px;
   font-weight: 400;
   letter-spacing: -0.02em;
-  color: var(--white);
+  color: var(--black);
   margin-bottom: 12px;
 }
 .page-sub {
   font-size: 13px;
-  color: rgba(255,255,255,0.42);
+  color: #7a7268;
   line-height: 1.8;
 }
 
@@ -93,7 +95,7 @@ body {
   font-size: 12px;
   font-weight: 700;
   color: var(--dark-green);
-  background: var(--mint);
+  background: var(--green);
   padding: 3px 10px;
   border-radius: 20px;
 }
@@ -181,7 +183,7 @@ body {
 .slider-minmax span {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 10px;
-  color: rgba(14,15,12,0.28);
+  color: rgba(58,54,49,0.28);
 }
 
 /* ── RESULT ── */
@@ -201,14 +203,14 @@ body {
   justify-content: center;
   height: 100px;
   gap: 6px;
-  color: rgba(14,15,12,0.22);
+  color: rgba(58,54,49,0.22);
   font-size: 12px;
   text-align: center;
 }
 .result-empty-dot {
   width: 28px; height: 28px;
   border-radius: 50%;
-  border: 2px solid rgba(14,15,12,0.12);
+  border: 2px solid rgba(58,54,49,0.12);
   margin-bottom: 2px;
 }
 .result-content { display: none; }
@@ -567,7 +569,7 @@ function lossColor(v) {
 
 function fillSlider(el) {
   const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
-  el.style.background = `linear-gradient(to right, var(--dark-green) ${pct}%, rgba(14,15,12,0.12) ${pct}%)`;
+  el.style.background = `linear-gradient(to right, var(--dark-green) ${pct}%, rgba(58,54,49,0.12) ${pct}%)`;
 }
 function beanStyle(c) {
   return `radial-gradient(ellipse at 38% 35%, ${lerp(c,'#ffffff',0.22)}, ${c} 55%, ${lerp(c,'#000000',0.18)})`;
@@ -667,5 +669,10 @@ document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
 document.addEventListener('selectstart', function(e) { e.preventDefault(); });
 </script>
+
+<!-- ── Copyright Footer ───────────────────────── -->
+<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#868685;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
+  Made by <strong style="color:#163300;font-weight:600;letter-spacing:0.08em;">Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 Jung Sang Ju &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 무단 복제 금지
+</footer>
 </body>
 </html>

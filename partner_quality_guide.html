@@ -14,6 +14,9 @@
 })();
 </script>
 <meta charset="UTF-8">
+<meta name="author" content="Jung Sang Ju">
+<meta name="copyright" content="© 2025 ZAN Coffee. All rights reserved.">
+<!-- © 2025 ZAN Coffee — Made by Jung Sang Ju. All rights reserved. 무단 복제 금지. -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deep Coffee Roasters — Partner Quality Guide</title>
 <style>
@@ -55,12 +58,12 @@
 
   :root {
     --black:      #0e0f0c;
-    --green:      #9fe870;
+    --green:      #c8ff85;
     --dark-green: #163300;
     --mint:       #e2f6d5;
     --gray:       #868685;
     --warm-dark:  #454745;
-    --surface:    #f4f6f2;
+    --surface:    #f5f6f3;
     --white:      #ffffff;
     --border:     rgba(14,15,12,0.10);
     --border-strong: rgba(14,15,12,0.18);
@@ -265,7 +268,7 @@
     font-size: 10px;
     font-weight: 700;
     color: var(--dark-green);
-    background: var(--mint);
+    background: var(--green);
     padding: 3px 8px;
     border-radius: 4px;
     letter-spacing: 1px;
@@ -893,7 +896,7 @@
   /* ── PASSWORD OVERLAY ── */
   #pwOverlay {
     position: fixed; inset: 0; z-index: 9999;
-    background: #0e0f0c;
+    background: #f5f6f3;
     display: flex; align-items: center; justify-content: center;
     flex-direction: column;
   }
@@ -902,9 +905,9 @@
     gap: 28px; width: 100%; max-width: 360px; padding: 0 32px;
   }
   .pw-logo { text-align: center; }
-  .pw-logo-main { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
-  .pw-logo-sub  { font-size: 10px; font-weight: 400; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
-  .pw-title { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #fff; text-align: center; line-height: 1.1; }
+  .pw-logo-main { font-size: 16px; font-weight: 700; color: #163300; letter-spacing: 0.3px; }
+  .pw-logo-sub  { font-size: 10px; font-weight: 400; color: #868685; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
+  .pw-title { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #0e0f0c; text-align: center; line-height: 1.1; }
   .pw-input-wrap { width: 100%; display: flex; flex-direction: column; gap: 10px; }
   #pwInput {
     width: 100%; padding: 14px 18px; border: 1px solid rgba(255,255,255,0.15);
@@ -914,7 +917,7 @@
     outline: none; transition: border 0.2s;
     -webkit-text-security: disc;
   }
-  #pwInput:focus { border-color: rgba(159,232,112,0.5); }
+  #pwInput:focus { border-color: #163300; }
   #pwInput.pw-error { border-color: #c0292e; animation: pwShake 0.35s; }
   @keyframes pwShake {
     0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 60%{transform:translateX(8px)}
@@ -922,7 +925,7 @@
   #pwError { font-size: 12px; font-weight: 600; color: #c0292e; text-align: center; min-height: 18px; }
   .pw-btn {
     width: 100%; padding: 14px; border-radius: 10px; border: none;
-    background: #9fe870; color: #163300; font-family: 'Noto Sans KR', sans-serif;
+    background: #c8ff85; color: #163300; font-family: 'Noto Sans KR', sans-serif;
     font-size: 14px; font-weight: 700; cursor: pointer;
     transition: transform 0.14s cubic-bezier(.34,1.56,.64,1);
   }
@@ -985,7 +988,7 @@
     background: none; border: none; cursor: pointer; padding: 0;
     transition: color 0.15s;
   }
-  .qc-back-btn:hover { color: #9fe870; }
+  .qc-back-btn:hover { color: #c8ff85; }
   .qc-back-btn svg { width: 14px; height: 14px; }
 
   /* ══════════════════════════════════════════════════════════════
@@ -1296,7 +1299,7 @@ html.ios-device .card-06 .gauge-wrap {
     <div class="portal-grid">
       <div class="tool-card" onclick="openTool('qcApp')">
         <div class="tool-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#9fe870" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c8ff85" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
             <rect x="9" y="3" width="6" height="4" rx="1"/>
             <path d="M9 12h6M9 16h4"/>
@@ -1645,7 +1648,7 @@ function drawRadar(){
     ctx.strokeStyle = r===3 ? 'rgba(22,51,0,0.12)' : 'rgba(14,15,12,0.06)';
     ctx.lineWidth=1;
     ctx.stroke();
-    if(r===3){ ctx.fillStyle='rgba(159,232,112,0.05)'; ctx.fill(); }
+    if(r===3){ ctx.fillStyle='rgba(200,255,133,0.05)'; ctx.fill(); }
   }
 
   // axes
@@ -1672,7 +1675,7 @@ function drawRadar(){
     const a=(Math.PI*2*i/N)-Math.PI/2;
     const r=maxR*(vals[i]/MAX);
     ctx.beginPath(); ctx.arc(cx+r*Math.cos(a),cy+r*Math.sin(a),4.5,0,Math.PI*2);
-    ctx.fillStyle='#9fe870'; ctx.fill();
+    ctx.fillStyle='#c8ff85'; ctx.fill();
     ctx.strokeStyle='#163300'; ctx.lineWidth=1.5; ctx.stroke();
   }
 
@@ -2385,5 +2388,10 @@ document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
 document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
 document.addEventListener('selectstart', function(e) { e.preventDefault(); });
 </script>
+
+<!-- ── Copyright Footer ───────────────────────── -->
+<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#868685;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
+  Made by <strong style="color:#163300;font-weight:600;letter-spacing:0.08em;">Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 Jung Sang Ju &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 무단 복제 금지
+</footer>
 </body>
 </html>

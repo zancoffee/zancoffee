@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Jung Sang Ju">
+<meta name="copyright" content="© 2025 ZAN Coffee. All rights reserved.">
+<!-- © 2025 ZAN Coffee — Made by Jung Sang Ju. All rights reserved. 무단 복제 금지. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>음료 레시피 — ZAN Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #f5f6f3;
+  --card:        #ffffff;
+  --ink:         #0e0f0c;
+  --green:       #c8ff85;
+  --dg:          #163300;
+  --mid:         #454745;
+  --muted:       #868685;
+  --line:        #d4d7cf;
+  --mint:        #c8ff85;
+  --border:      rgba(212,215,207,0.9);
+  --border-strong: rgba(150,148,140,0.4);
+  --red:         #c0292e;
+  --yellow:      #b88a00;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 400;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  min-height: 100vh;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+img { -webkit-user-drag: none; user-drag: none; }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+
+/* ── LOADER ── */
+#loader {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+#loader.out { opacity: 0; visibility: hidden; }
+.ld-logo { width: 120px; opacity: 0; animation: ldIn 0.5s 0.1s ease forwards; }
+.ld-bar { width: 68px; height: 1px; background: var(--line); overflow: hidden; }
+.ld-bar::after {
+  content: ''; display: block; height: 100%;
+  background: var(--ink);
+  transform: scaleX(0); transform-origin: left;
+  animation: ldBar 0.9s 0.5s cubic-bezier(0.65,0,0.35,1) forwards;
+}
+@keyframes ldIn  { to { opacity: 1; } }
+@keyframes ldBar { to { transform: scaleX(1); } }
+
+/* ── SITE BAR ── */
+.site-bar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 200;
+}
+.site-bar-inner {
+  display: flex; align-items: stretch; height: 54px;
+  max-width: 1160px; margin: 0 auto; padding: 0;
+}
+.site-logo-block {
+  background: var(--green);
+  display: flex; align-items: center;
+  padding: 0 22px; flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.site-logo-block:hover { background: #aee870; }
+.site-logo-block svg { display: block; width: 72px; height: auto; }
+.site-bar-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  align-self: center; padding-left: 24px;
+}
+.site-back {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; align-self: center;
+  padding: 6px 14px; margin-right: 20px;
+  border: 1px solid var(--line);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.site-back:hover { color: var(--dg); border-color: var(--dg); background: rgba(200,255,133,0.1); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--bg);
+  padding: 36px 0 28px;
+  border-bottom: 1px solid var(--line);
+}
+.page-hd-inner {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 24px;
+}
+.page-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  letter-spacing: 0.18em; margin-bottom: 10px;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 40px; font-weight: 400;
+  color: var(--ink); letter-spacing: -0.015em; line-height: 1.1;
+  margin-bottom: 7px;
+}
+.page-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 300; color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.search-wrap { flex-shrink: 0; position: relative; align-self: flex-end; }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: var(--muted); }
+#searchInput {
+  background: var(--card); border: 1px solid var(--line);
+  color: var(--ink); padding: 9px 14px 9px 34px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 300;
+  width: 256px; outline: none; transition: border-color 0.15s, background 0.15s;
+  -webkit-appearance: none; border-radius: 0;
+  letter-spacing: 0.06em;
+}
+#searchInput::placeholder { color: var(--muted); letter-spacing: 0.06em; }
+#searchInput:focus { border-color: var(--dg); background: rgba(200,255,133,0.05); }
+
+/* ── CATEGORY NAV ── */
+.cat-nav { background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: 54px; z-index: 100; }
+.cat-inner { display: flex; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.cat-inner::-webkit-scrollbar { display: none; }
+.cat-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); background: none; border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 16px; cursor: pointer; white-space: nowrap;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.cat-btn:hover { color: var(--ink); }
+.cat-btn.active { color: var(--dg); border-bottom-color: var(--green); }
+
+/* ── MAIN ── */
+.main-section { padding: 28px 0 80px; }
+.results-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; color: var(--muted);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+/* ── RECIPE CARD ── */
+.recipe-card { background: var(--card); border: 1px solid var(--line); cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; overflow: hidden; }
+.recipe-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); border-color: var(--border-strong); }
+.card-accent { height: 2px; background: var(--green); }
+.card-thumb { width: 100%; height: 140px; overflow: hidden; background: var(--bg); }
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.recipe-card:hover .card-thumb img { transform: scale(1.04); }
+.card-body { padding: 17px 17px 13px; }
+.card-tags { display: flex; align-items: center; gap: 5px; margin-bottom: 11px; flex-wrap: wrap; }
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 0;
+}
+.tag-cat  { background: var(--mint); color: var(--dg); }
+.tag-hot  { background: rgba(192,41,46,0.08); color: #8a2025; }
+.tag-iced { background: rgba(0,60,100,0.08); color: #1a3060; }
+.card-name { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.2; margin-bottom: 2px; }
+.card-en {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 300; color: var(--muted);
+  letter-spacing: 0.08em; margin-bottom: 9px;
+}
+.card-desc { font-size: 12.5px; color: var(--mid); line-height: 1.65; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-footer { padding: 10px 17px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+.card-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 300; color: var(--muted);
+  display: flex; gap: 12px; letter-spacing: 0.04em;
+}
+.card-arrow { font-size: 14px; color: var(--border-strong); transition: color 0.15s, transform 0.15s; }
+.recipe-card:hover .card-arrow { color: var(--dg); transform: translateX(2px); }
+.no-results { grid-column: 1 / -1; text-align: center; padding: 64px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; }
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(14,15,12,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; visibility: hidden; transition: opacity 0.2s, visibility 0.2s; }
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal { background: var(--card); width: 100%; max-width: 700px; max-height: 88vh; overflow-y: auto; transform: translateY(12px); transition: transform 0.2s; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-header { background: var(--bg); padding: 26px 30px 22px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid var(--line); }
+.modal-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
+.modal-cat-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--dg);
+}
+.modal-controls { display: flex; align-items: center; gap: 8px; }
+.btn-reset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; color: var(--muted);
+  background: none; border: 1px solid var(--line);
+  padding: 5px 12px; cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase;
+  transition: color 0.15s, border-color 0.15s;
+}
+.btn-reset:hover { color: var(--ink); border-color: var(--muted); }
+.modal-close-btn { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 2px 4px; line-height: 1; transition: color 0.15s; }
+.modal-close-btn:hover { color: var(--ink); }
+
+.modal-name { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; color: var(--ink); line-height: 1.1; margin-bottom: 3px; }
+.modal-en {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 300; letter-spacing: 0.1em;
+  color: var(--muted); margin-bottom: 9px;
+}
+.modal-desc { font-size: 13px; font-weight: 300; color: var(--mid); line-height: 1.72; margin-bottom: 14px; }
+.modal-meta-strip { display: flex; gap: 22px; padding-top: 13px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.meta-item { display: flex; flex-direction: column; gap: 3px; }
+.meta-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.meta-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; font-weight: 500; color: var(--dg);
+  letter-spacing: 0.04em;
+}
+
+/* Modal body */
+.modal-body { padding: 22px 30px 30px; }
+.modal-section { margin-bottom: 22px; }
+.modal-section:last-child { margin-bottom: 0; }
+.section-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.section-title::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0;
+  width: 20px; height: 2px; background: var(--green);
+}
+
+/* ── PHOTO SECTION ── */
+.photo-area {
+  width: 100%; height: 200px;
+  background: var(--bg);
+  border: 2px dashed var(--line);
+  overflow: hidden; cursor: pointer; position: relative;
+  transition: border-color 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.photo-area:hover { border-color: var(--dg); }
+.photo-area.has-photo { border-style: solid; border-color: var(--line); }
+.photo-preview { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+.photo-area.has-photo .photo-preview { display: block; }
+.photo-area.has-photo .photo-empty { display: none; }
+.photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--muted); pointer-events: none; }
+.photo-empty svg { opacity: 0.45; }
+.photo-empty span { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+.photo-hover-overlay {
+  position: absolute; inset: 0;
+  background: rgba(14,15,12,0.45);
+  color: #fff; font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; font-weight: 400; letter-spacing: 0.1em;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.15s; pointer-events: none;
+}
+.photo-area.has-photo:hover .photo-hover-overlay { opacity: 1; }
+.photo-del-btn {
+  position: absolute; top: 8px; right: 8px;
+  width: 28px; height: 28px;
+  background: rgba(14,15,12,0.6); color: #fff;
+  border: none; border-radius: 50%;
+  font-size: 14px; line-height: 1;
+  cursor: pointer; display: none;
+  align-items: center; justify-content: center;
+  z-index: 2; transition: background 0.12s;
+}
+.photo-del-btn:hover { background: var(--red); }
+.photo-area.has-photo .photo-del-btn { display: flex; }
+
+/* ── INGREDIENT LIST ── */
+.ing-col-header { display: grid; grid-template-columns: 1fr 108px 28px; gap: 6px; padding: 0 0 6px; }
+.ing-col-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; color: var(--muted);
+  letter-spacing: 0.1em; text-transform: uppercase; padding: 0 6px;
+}
+
+.ing-list { list-style: none; }
+.ing-item { border-bottom: 1px solid var(--line); padding: 8px 0 10px; }
+.ing-item:last-child { border-bottom: none; }
+
+.ing-row1 { display: grid; grid-template-columns: 1fr 108px 28px; gap: 6px; align-items: center; margin-bottom: 6px; }
+
+.ing-input {
+  background: var(--bg); border: 1px solid transparent; color: var(--ink);
+  padding: 6px 8px; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 400;
+  outline: none; border-radius: 0; width: 100%; transition: border-color 0.15s, background 0.15s;
+}
+.ing-input:focus { border-color: var(--dg); background: var(--card); }
+.ing-input::placeholder { color: var(--muted); font-weight: 300; font-size: 12px; }
+
+.ing-remove-btn {
+  width: 26px; height: 26px; background: none; border: 1px solid var(--line);
+  color: var(--muted); font-size: 16px; cursor: pointer; border-radius: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  padding: 0; flex-shrink: 0; line-height: 1;
+}
+.ing-remove-btn:hover { background: rgba(192,41,46,0.08); color: var(--red); border-color: rgba(192,41,46,0.2); }
+
+/* Row 2: Cost calculation */
+.ing-row2 {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--bg); padding: 7px 10px; flex-wrap: wrap;
+}
+.r2-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 400; color: var(--muted); flex-shrink: 0; margin-right: 2px; letter-spacing: 0.08em; text-transform: uppercase; }
+.r2-unit  { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); flex-shrink: 0; }
+.r2-sep   { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--border-strong); flex-shrink: 0; margin: 0 3px; }
+.r2-sym   { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 300; color: var(--muted); flex-shrink: 0; }
+
+.ing-buy-input {
+  background: var(--card); border: 1px solid var(--line); color: var(--ink);
+  padding: 4px 6px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 400;
+  width: 68px; text-align: right; border-radius: 0; outline: none;
+  -moz-appearance: textfield; transition: border-color 0.15s;
+}
+.ing-buy-input::-webkit-inner-spin-button, .ing-buy-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.ing-buy-input:focus { border-color: var(--dg); }
+.ing-buy-input::placeholder { color: var(--muted); }
+
+/* Formula display */
+.ing-formula {
+  display: none; align-items: center; gap: 4px;
+  margin-left: 6px; padding-left: 8px;
+  border-left: 2px solid var(--line);
+  flex-wrap: wrap;
+}
+.fmla-arrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); }
+.fmla-unit  { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; color: var(--mid); }
+.fmla-times { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+.fmla-amt   { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; color: var(--mid); }
+.fmla-eq    { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); }
+.fmla-result { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; color: var(--dg); }
+
+/* Ingredient footer */
+.ing-footer { display: flex; align-items: flex-start; justify-content: space-between; margin-top: 12px; gap: 16px; }
+.btn-add-ing {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 400; color: var(--dg);
+  background: var(--green); border: none; padding: 10px 18px;
+  cursor: pointer; border-radius: 0; letter-spacing: 0.1em;
+  text-transform: uppercase; transition: opacity 0.15s; white-space: nowrap;
+}
+.btn-add-ing:hover { opacity: 0.85; }
+
+/* Cost panel */
+.cost-panel { background: var(--bg); border: 1px solid var(--line); padding: 12px 14px; display: flex; flex-direction: column; gap: 9px; min-width: 210px; flex-shrink: 0; }
+.cost-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cost-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 400; color: var(--muted); white-space: nowrap; letter-spacing: 0.1em; text-transform: uppercase; }
+.cost-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700; color: var(--dg); letter-spacing: -0.01em; }
+.cost-divider { height: 1px; background: var(--line); }
+.cost-input-wrap { display: flex; align-items: center; gap: 4px; }
+.cost-selling {
+  background: var(--card); border: 1px solid var(--line); color: var(--ink);
+  padding: 5px 7px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 400;
+  width: 80px; text-align: right; border-radius: 0; outline: none;
+  -moz-appearance: textfield; transition: border-color 0.15s;
+}
+.cost-selling::-webkit-inner-spin-button, .cost-selling::-webkit-outer-spin-button { -webkit-appearance: none; }
+.cost-selling:focus { border-color: var(--dg); }
+.cost-unit { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 300; color: var(--muted); }
+.ratio-good { color: var(--dg); }
+.ratio-mid  { color: var(--yellow); }
+.ratio-bad  { color: var(--red); }
+
+/* Steps */
+.step-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.step-item { display: flex; gap: 12px; align-items: flex-start; }
+.step-num {
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 400; color: var(--dg);
+  background: var(--green); width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px; border-radius: 0;
+}
+.step-text { font-size: 13.5px; font-weight: 400; color: var(--mid); line-height: 1.7; padding-top: 1px; }
+.step-badge {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; font-weight: 400; letter-spacing: 0.1em;
+  padding: 2px 6px; margin-right: 6px; border-radius: 0;
+  vertical-align: middle; position: relative; top: -1px;
+}
+.sbadge-hot  { background: rgba(192,41,46,0.1); color: #8a2025; }
+.sbadge-iced { background: rgba(0,60,100,0.1);  color: #1a3060; }
+
+/* Notes */
+.notes-box { background: var(--mint); border-left: 3px solid var(--dg); padding: 12px 14px; }
+.notes-text { font-size: 12.5px; font-weight: 400; color: var(--dg); line-height: 1.78; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 22px 0 20px;
+}
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+}
+.footer-brand {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  letter-spacing: 0.12em; text-transform: uppercase;
+}
+.footer-copy {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8px; color: var(--line);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  text-align: right;
+}
+.footer-copy strong { color: var(--muted); font-weight: 400; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .wrap { padding: 0 16px; }
+  .page-title { font-size: 28px; }
+  .page-hd-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  #searchInput { width: 100%; }
+  .search-wrap { width: 100%; }
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal { max-width: 100%; max-height: 92vh; }
+  .modal-header { padding: 20px 20px 16px; }
+  .modal-body { padding: 18px 20px 24px; }
+  .modal-name { font-size: 22px; }
+  .ing-col-header { grid-template-columns: 1fr 90px 28px; }
+  .ing-row1 { grid-template-columns: 1fr 90px 28px; }
+  .ing-footer { flex-direction: column; align-items: stretch; }
+  .cost-panel { min-width: unset; }
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .footer-copy { text-align: left; }
+  .site-bar-label { display: none; }
+}
+@media (max-width: 480px) {
+  .cat-btn { padding: 12px 12px; font-size: 8px; }
+  .recipe-grid { grid-template-columns: 1fr; }
+  .ing-buy-input { width: 56px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOADER ── -->
+<div id="loader">
+  <svg class="ld-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 200">
+    <defs><style>.ll{fill:none;stroke:#163300;stroke-linecap:square;stroke-linejoin:miter;}</style></defs>
+    <line class="ll" stroke-width="10" x1="30" y1="30" x2="170" y2="30"/>
+    <line class="ll" stroke-width="10" x1="170" y1="30" x2="30" y2="170"/>
+    <line class="ll" stroke-width="10" x1="30" y1="170" x2="170" y2="170"/>
+    <line class="ll" stroke-width="10" x1="205" y1="170" x2="275" y2="30"/>
+    <line class="ll" stroke-width="10" x1="275" y1="30" x2="345" y2="170"/>
+    <line class="ll" stroke-width="10" x1="380" y1="170" x2="380" y2="30"/>
+    <line class="ll" stroke-width="10" x1="380" y1="30" x2="520" y2="170"/>
+    <line class="ll" stroke-width="10" x1="520" y1="30" x2="520" y2="170"/>
+  </svg>
+  <div class="ld-bar"></div>
+</div>
+
+<!-- ── SITE BAR ── -->
+<div class="site-bar">
+  <div class="site-bar-inner">
+    <a class="site-logo-block" href="index 2.html" aria-label="ZAN Coffee 홈으로">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 200">
+        <defs><style>.bl{fill:none;stroke:#163300;stroke-linecap:square;stroke-linejoin:miter;}</style></defs>
+        <line class="bl" stroke-width="10" x1="30" y1="30" x2="170" y2="30"/>
+        <line class="bl" stroke-width="10" x1="170" y1="30" x2="30" y2="170"/>
+        <line class="bl" stroke-width="10" x1="30" y1="170" x2="170" y2="170"/>
+        <line class="bl" stroke-width="10" x1="205" y1="170" x2="275" y2="30"/>
+        <line class="bl" stroke-width="10" x1="275" y1="30" x2="345" y2="170"/>
+        <line class="bl" stroke-width="10" x1="380" y1="170" x2="380" y2="30"/>
+        <line class="bl" stroke-width="10" x1="380" y1="30" x2="520" y2="170"/>
+        <line class="bl" stroke-width="10" x1="520" y1="30" x2="520" y2="170"/>
+      </svg>
+    </a>
+    <span class="site-bar-label">Tools &nbsp;·&nbsp; Recipe Book</span>
+    <a class="site-back" href="index 2.html">← Back</a>
+  </div>
+</div>
+
+<!-- ── PAGE HEADER ── -->
+<header class="page-header">
+  <div class="wrap">
+    <div class="page-hd-inner">
+      <div>
+        <div class="page-num">[ 03 / Recipe ]</div>
+        <h1 class="page-title">음료 레시피</h1>
+        <p class="page-sub">바리스타를 위한 표준 제조 가이드</p>
+      </div>
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="6.5" cy="6.5" r="4"/><path d="M10 10l3 3" stroke-linecap="round"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search recipe..." autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── CATEGORY NAV ── -->
+<nav class="cat-nav">
+  <div class="wrap">
+    <div class="cat-inner">
+      <button class="cat-btn active" data-cat="all">All</button>
+      <button class="cat-btn" data-cat="esp">Espresso</button>
+      <button class="cat-btn" data-cat="milk">Milk Drinks</button>
+      <button class="cat-btn" data-cat="cold">Cold</button>
+      <button class="cat-btn" data-cat="tea">Tea &amp; Non-Coffee</button>
+      <button class="cat-btn" data-cat="season">Seasonal</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main-section">
+  <div class="wrap">
+    <div class="results-meta" id="resultsMeta"></div>
+    <div class="recipe-grid" id="recipeGrid"></div>
+  </div>
+</main>
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <span class="modal-cat-tag" id="modalCatTag"></span>
+        <div class="modal-controls">
+          <button class="btn-reset" id="resetIngBtn">Reset</button>
+          <button class="modal-close-btn" id="modalCloseBtn" aria-label="닫기">✕</button>
+        </div>
+      </div>
+      <h2 class="modal-name" id="modalName"></h2>
+      <div class="modal-en" id="modalEn"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-meta-strip" id="modalMetaStrip"></div>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- 사진 -->
+      <section class="modal-section">
+        <div class="section-title">Photo</div>
+        <div class="photo-area" id="photoArea">
+          <img class="photo-preview" id="photoPreview" alt="음료 사진">
+          <div class="photo-empty" id="photoEmpty">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <span>Click to Upload</span>
+          </div>
+          <div class="photo-hover-overlay">Click to Change</div>
+          <button class="photo-del-btn" id="photoDelBtn" title="사진 삭제" aria-label="사진 삭제">✕</button>
+        </div>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+      </section>
+
+      <!-- 재료 -->
+      <section class="modal-section">
+        <div class="section-title">재료</div>
+        <div class="ing-col-header">
+          <span class="ing-col-label">재료명</span>
+          <span class="ing-col-label">레시피 용량</span>
+          <span></span>
+        </div>
+        <ul class="ing-list" id="ingList"></ul>
+        <div class="ing-footer">
+          <button class="btn-add-ing" id="addIngBtn">+ Add</button>
+          <div class="cost-panel">
+            <div class="cost-row">
+              <span class="cost-label">원재료 원가</span>
+              <span class="cost-value" id="costTotal">—</span>
+            </div>
+            <div class="cost-divider"></div>
+            <div class="cost-row">
+              <span class="cost-label">판매가</span>
+              <div class="cost-input-wrap">
+                <input type="number" class="cost-selling" id="sellingPrice" placeholder="0" min="0">
+                <span class="cost-unit">원</span>
+              </div>
+            </div>
+            <div class="cost-row" id="ratioRow" style="display:none">
+              <span class="cost-label">원가율</span>
+              <span class="cost-value" id="costRatio"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 제조 방법 -->
+      <section class="modal-section">
+        <div class="section-title">제조 방법</div>
+        <ol class="step-list" id="stepList"></ol>
+      </section>
+
+      <!-- Notes -->
+      <section class="modal-section" id="notesSection">
+        <div class="section-title">Notes</div>
+        <div class="notes-box"><p class="notes-text" id="notesText"></p></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS = {
+  esp:    { label: '에스프레소' },
+  milk:   { label: '밀크 드링크' },
+  cold:   { label: '콜드' },
+  tea:    { label: '티 & 논커피' },
+  season: { label: '시즌' },
+};
+
+const RECIPES = [
+  { id:1,  cat:'esp',    name:'에스프레소',        en:'Espresso',             temp:['hot'],        time:'약 2분',    serve:'30–36 ml',
+    desc:'원두 본연의 향미를 고압으로 농축 추출한 모든 커피의 베이스',
+    ing:[['에스프레소 원두','18 g'],['정수','추출용']],
+    steps:['포터필터에 원두 18g을 도징하고 레벨링한다.','15–20 kg 압력으로 균일하게 탬핑한다.','그룹헤드를 2–3초 플러싱하여 온도를 안정시킨다.','추출 시작 — 목표 25–30초, 수율 36g (1:2).','예열된 데미타세 잔에 즉시 서빙한다.'],
+    notes:'추출 온도 93°C / 머신 압력 9 bar / 수율은 원두·로스팅 포인트에 따라 조정' },
+  { id:2,  cat:'esp',    name:'아메리카노',         en:'Americano',            temp:['hot','iced'], time:'약 3분',    serve:'270 ml',
+    desc:'에스프레소에 물을 더해 부드럽게 늘린 클래식 블랙 커피',
+    ing:[['에스프레소 원두','18 g'],['뜨거운 물 (핫)','240 ml'],['찬물 + 얼음 (아이스)','각 적량']],
+    steps:['에스프레소 더블샷(36g)을 추출한다.','【핫】 예열된 잔에 뜨거운 물 240ml를 먼저 담는다.','【핫】 에스프레소를 물 위에 천천히 붓는다.','【아이스】 컵에 얼음을 채우고 찬물 140ml를 넣는다.','【아이스】 에스프레소를 얼음 위에 천천히 붓는다.','크레마가 표면에 고르게 형성됐는지 확인하고 서빙한다.'],
+    notes:'물을 먼저 담는 방식(롱 블랙 순서)으로 크레마를 더 잘 보존할 수 있다.' },
+  { id:3,  cat:'esp',    name:'롱 블랙',            en:'Long Black',           temp:['hot'],        time:'약 3분',    serve:'200 ml',
+    desc:'뜨거운 물 위에 에스프레소를 올려 크레마를 최대로 보존한 강렬한 블랙커피',
+    ing:[['에스프레소 원두','18 g'],['뜨거운 물','160 ml']],
+    steps:['예열된 잔에 뜨거운 물(95°C 이상) 160ml를 먼저 담는다.','에스프레소 더블샷(36g)을 추출하여 물 위에 천천히 붓는다.','크레마가 표면 전체에 고르게 퍼지는지 확인한다.','절대 젓지 않고 그대로 서빙한다.'],
+    notes:'크레마를 온전히 보존하는 것이 핵심. 물 온도 95°C 이상 필수.' },
+  { id:4,  cat:'esp',    name:'리스트레토',         en:'Ristretto',            temp:['hot'],        time:'약 2분',    serve:'20 ml',
+    desc:'에스프레소보다 짧게 추출해 단맛과 바디감을 극대화한 농밀한 원샷',
+    ing:[['에스프레소 원두','18 g'],['정수','추출용']],
+    steps:['포터필터에 원두 18g을 도징하고 레벨링한다.','15–20 kg 압력으로 균일하게 탬핑한다.','추출 시작 — 목표 20–25초, 수율 20g (1:1)에서 멈춘다.','예열된 데미타세 잔에 즉시 서빙한다.'],
+    notes:'짧은 추출로 쓴맛 성분(클로로겐산) 비율 최소화. 라떼 베이스로 사용 시 원두 개성이 선명하게 드러난다.' },
+  { id:5,  cat:'milk',   name:'카페라떼',           en:'Café Latte',           temp:['hot','iced'], time:'약 4분',    serve:'350 ml',
+    desc:'에스프레소에 부드러운 스팀 밀크를 더한 대표적인 밀크 커피',
+    ing:[['에스프레소 원두','18 g'],['우유 (핫)','280 ml'],['우유 + 얼음 (아이스)','230 ml']],
+    steps:['에스프레소 더블샷(36g)을 추출한다.','【핫】 우유 280ml를 62–65°C, 마이크로폼으로 스티밍한다.','【핫】 잔에 에스프레소를 담고 스팀 밀크를 라떼아트를 그리듯 붓는다.','【아이스】 컵에 얼음을 채우고 차가운 우유 230ml를 붓는다.','【아이스】 에스프레소를 천천히 위에 붓는다.'],
+    notes:'스팀 밀크 온도 65°C 초과 시 단맛 감소. 마이크로폼 두께 약 5mm 목표.' },
+  { id:6,  cat:'milk',   name:'카푸치노',           en:'Cappuccino',           temp:['hot'],        time:'약 4분',    serve:'180 ml',
+    desc:'에스프레소·스팀밀크·드라이폼을 균형 있게 쌓은 클래식 이탈리안 커피',
+    ing:[['에스프레소 원두','18 g'],['우유','120 ml']],
+    steps:['에스프레소 더블샷(36g)을 추출한다.','우유 120ml를 드라이 폼으로 스티밍 — 목표 68–72°C.','예열된 170ml 잔에 에스프레소를 담는다.','스팀 밀크를 붓고 드라이 폼이 상단 1/3을 채우도록 마무리한다.','기호에 따라 코코아 파우더를 표면에 고르게 뿌린다.'],
+    notes:'폼 층 두께 최소 1cm 이상. 컵은 반드시 예열한다.' },
+  { id:7,  cat:'milk',   name:'플랫 화이트',        en:'Flat White',           temp:['hot'],        time:'약 4분',    serve:'180 ml',
+    desc:'리스트레토 베이스에 얇은 마이크로폼을 더한 강렬하고 실키한 밀크 커피',
+    ing:[['에스프레소 원두 (리스트레토)','18 g'],['우유','140 ml']],
+    steps:['리스트레토 더블(수율 약 40g)을 추출한다.','우유 140ml를 매우 얇고 실키한 마이크로폼으로 스티밍 — 목표 62–65°C.','잔에 리스트레토를 담는다.','높은 위치에서 가늘게 부어 밀크와 에스프레소를 균일하게 블렌딩한다.'],
+    notes:'폼 두께 약 3–4mm. 작은 세라믹 컵 사용 권장.' },
+  { id:8,  cat:'milk',   name:'코르타도',           en:'Cortado',              temp:['hot'],        time:'약 3분',    serve:'120 ml',
+    desc:'에스프레소와 스팀 밀크를 1:1로 섞어 산미와 달콤함의 균형을 잡은 소형 밀크 커피',
+    ing:[['에스프레소 원두','18 g'],['우유','60 ml']],
+    steps:['에스프레소 더블샷(36g)을 추출한다.','우유 60ml를 마이크로폼으로 스티밍 — 목표 62°C.','코르타도 잔(유리 권장)에 에스프레소를 담는다.','스팀 밀크를 위에 균일하게 붓는다.'],
+    notes:'에스프레소 강도를 유지하면서 산미를 부드럽게 눌러줌. 폼은 최소화.' },
+  { id:9,  cat:'milk',   name:'카라멜 마키아토',    en:'Caramel Macchiato',    temp:['hot','iced'], time:'약 5분',    serve:'350 ml',
+    desc:'바닐라 시럽과 스팀 밀크 위에 에스프레소·카라멜 소스를 올린 달콤한 시그니처',
+    ing:[['에스프레소 원두','18 g'],['우유','280 ml'],['바닐라 시럽','15 ml'],['카라멜 소스','15 g']],
+    steps:['잔 하단에 바닐라 시럽 15ml를 넣는다.','【핫】 우유를 마이크로폼으로 스티밍 후 시럽 위에 붓는다.','【핫】 에스프레소를 추출하여 폼 위에 천천히 붓는다.','【아이스】 컵에 얼음을 채우고 차가운 우유 230ml를 붓는다.','【아이스】 에스프레소를 추출하여 위에 붓는다.','카라멜 소스를 지그재그 패턴으로 표면에 뿌린다.'],
+    notes:'에스프레소를 마지막에 올리는 것이 마키아토(표시하다)의 본래 의미.' },
+  { id:10, cat:'cold',   name:'콜드 브루',          en:'Cold Brew',            temp:['iced'],       time:'12–18시간', serve:'240 ml',
+    desc:'저온 장시간 침출로 쓴맛 없이 부드럽고 달콤하게 추출한 콜드 브루 원액',
+    ing:[['원두 (굵은 분쇄)','80 g'],['정수','640 ml'],['얼음','서빙용']],
+    steps:['원두를 프렌치 프레스 굵기로 거칠게 분쇄한다.','분쇄 원두와 정수를 1:8 비율(80g:640ml)로 용기에 넣는다.','가볍게 섞은 뒤 냉장고에서 12–18시간 침출한다.','고운 필터로 원두 찌꺼기를 완전히 거른다.','얼음이 담긴 잔에 원액 120ml와 정수 120ml를 1:1로 희석하여 서빙한다.'],
+    notes:'원액 냉장 보관 최대 7일. 희석 후 TDS 1.3–1.5% 권장.' },
+  { id:11, cat:'cold',   name:'콜드 브루 밀크',     en:'Cold Brew Milk',       temp:['iced'],       time:'약 1분',    serve:'300 ml',
+    desc:'콜드 브루 원액에 차가운 우유를 더해 부드럽고 마일드한 밀크 커피',
+    ing:[['콜드 브루 원액','120 ml'],['우유','180 ml'],['얼음','적량']],
+    steps:['잔에 얼음을 가득 채운다.','콜드 브루 원액 120ml를 붓는다.','차가운 우유 180ml를 천천히 붓는다.','바 스푼으로 1–2회 가볍게 저어 섞는다.'],
+    notes:'우유 대신 오트 밀크 사용 시 더 가벼운 바디감.' },
+  { id:12, cat:'cold',   name:'아이스 샤켄 에스프레소', en:'Iced Shaken Espresso', temp:['iced'],  time:'약 3분',    serve:'270 ml',
+    desc:'에스프레소를 얼음과 셰이킹해 연한 폼을 만든 시원하고 강렬한 커피',
+    ing:[['에스프레소 원두','18 g'],['얼음 (셰이킹용)','적량'],['얼음 (서빙용)','적량'],['심플 시럽','10 ml']],
+    steps:['에스프레소 더블샷(36g)을 추출한다.','셰이커에 얼음, 에스프레소, 시럽을 넣는다.','10–15초간 힘차게 셰이킹한다 — 연한 폼이 생길 때까지.','서빙 잔에 새 얼음을 채운다.','스트레이너로 걸러 얼음 위에 붓는다.'],
+    notes:'셰이킹 폼은 금방 사라지므로 즉시 서빙.' },
+  { id:13, cat:'cold',   name:'더치 라떼',          en:'Dutch Latte',          temp:['iced'],       time:'약 2분',    serve:'350 ml',
+    desc:'콜드 브루 원액과 오트 밀크를 레이어링한 비주얼과 맛 모두 매력적인 메뉴',
+    ing:[['콜드 브루 원액','100 ml'],['오트 밀크','200 ml'],['심플 시럽','10 ml'],['얼음','적량']],
+    steps:['잔에 얼음을 가득 채운다.','심플 시럽 10ml를 넣는다.','차가운 오트 밀크 200ml를 붓는다.','바 스푼을 잔 가장자리에 대고 콜드 브루 원액을 천천히 레이어링한다.'],
+    notes:'레이어 완성 즉시 서빙. 마시기 전 잘 섞어 음용.' },
+  { id:14, cat:'tea',    name:'말차 라떼',          en:'Matcha Latte',         temp:['hot','iced'], time:'약 4분',    serve:'300 ml',
+    desc:'일본식 말차 파우더와 스팀 밀크를 블렌딩한 깔끔하고 풍부한 그린 라떼',
+    ing:[['말차 파우더','4 g'],['뜨거운 물 (70–80°C)','30 ml'],['우유 (핫)','250 ml'],['우유 + 얼음 (아이스)','200 ml']],
+    steps:['말차 4g과 뜨거운 물 30ml를 볼에서 덩어리 없이 잘 풀어준다.','【핫】 우유 250ml를 62–65°C로 스티밍한다.','【핫】 잔에 말차 베이스를 넣고 스팀 밀크를 붓는다.','【아이스】 컵에 얼음을 채우고 차가운 우유 200ml를 붓는다.','【아이스】 말차 베이스를 위에 붓고 가볍게 저어 섞는다.'],
+    notes:'말차 파우더 품질이 맛에 직결. 세례모노 등급 이상 권장. 물 온도 70–80°C (끓는 물 금지).' },
+  { id:15, cat:'tea',    name:'런던 포그',          en:'London Fog',           temp:['hot'],        time:'약 5분',    serve:'300 ml',
+    desc:'진하게 우린 얼그레이 홍차와 바닐라 스팀 밀크를 레이어링한 영국식 밀크 티',
+    ing:[['얼그레이 티백','2개'],['뜨거운 물','80 ml'],['우유','200 ml'],['바닐라 시럽','15 ml']],
+    steps:['뜨거운 물 80ml에 얼그레이 티백 2개를 넣고 3–4분 충분히 우린다.','우유 200ml에 바닐라 시럽 15ml를 넣고 65°C로 스티밍한다.','예열된 잔에 진한 얼그레이 홍차를 먼저 붓는다.','바닐라 스팀 밀크를 천천히 부어 층을 만든다.'],
+    notes:'차를 충분히 우려 진하게 만드는 것이 핵심. 베르가못 향이 바닐라와 잘 어울린다.' },
+  { id:16, cat:'tea',    name:'차이 라떼',          en:'Chai Latte',           temp:['hot','iced'], time:'약 6분',    serve:'300 ml',
+    desc:'마살라 스파이스와 홍차를 블렌딩한 인도식 향신료 밀크 티',
+    ing:[['차이 티백','2개'],['뜨거운 물','80 ml'],['우유','200 ml'],['시나몬 파우더','약간']],
+    steps:['차이 티백을 뜨거운 물 80ml에 4분간 우린다.','우유 200ml를 65°C로 스티밍한다.','【핫】 잔에 차이 베이스를 담고 스팀 밀크를 붓는다.','【아이스】 컵에 얼음을 채우고 차이 베이스와 차가운 우유를 붓는다.','시나몬 파우더를 표면에 가볍게 뿌린다.'],
+    notes:'루이보스 베이스로 대체 시 카페인 제로 버전 가능.' },
+  { id:17, cat:'tea',    name:'핫 초콜릿',          en:'Hot Chocolate',        temp:['hot'],        time:'약 5분',    serve:'300 ml',
+    desc:'다크 초콜릿을 직접 녹여 풍부하고 깊은 맛을 내는 수제 핫초코',
+    ing:[['다크 초콜릿 70%','30 g'],['우유','260 ml'],['설탕','10 g'],['코코아 파우더','가니시용']],
+    steps:['초콜릿 30g을 잘게 쪼개 두꺼운 소스팬에 넣는다.','우유 260ml를 약불에서 데우며 초콜릿을 완전히 녹인다 — 절대 끓이지 않는다.','설탕을 취향에 따라 넣고 잘 저어 녹인다.','거품기나 스팀으로 부드러운 거품을 만든다.','예열된 잔에 붓고 코코아 파우더를 뿌린다.'],
+    notes:'카카오 함량이 높을수록 단맛 감소, 쓴맛 증가.' },
+  { id:18, cat:'season', name:'유자 레몬 에이드',   en:'Yuja Lemon Ade',       temp:['iced'],       time:'약 2분',    serve:'350 ml',
+    desc:'상큼한 유자청과 레몬즙을 탄산수에 담은 새콤달콤한 여름 에이드',
+    ing:[['유자청','40 g'],['레몬즙 (생착즙)','15 ml'],['탄산수','250 ml'],['얼음','적량'],['레몬 슬라이스','가니시']],
+    steps:['잔에 얼음을 가득 채운다.','유자청 40g과 레몬즙 15ml를 넣는다.','탄산수 250ml를 얼음을 따라 천천히 따른다.','바 스푼으로 아래서 위로 1–2회 가볍게 젓는다.','레몬 슬라이스를 잔 가장자리에 꽂아 서빙한다.'],
+    notes:'탄산수는 따르기 직전 냉장 제품 사용 필수. 단도는 유자청 양으로 조절.' },
+  { id:19, cat:'season', name:'스파이스 애플 티',   en:'Spiced Apple Tea',     temp:['hot'],        time:'약 7분',    serve:'280 ml',
+    desc:'계피와 팔각으로 향을 입힌 사과즙과 홍차를 블렌딩한 향긋한 가을 따뜻한 음료',
+    ing:[['착즙 사과주스 100%','150 ml'],['얼그레이 (또는 아쌈)','6 g'],['시나몬 스틱','1개'],['팔각','1/2개'],['뜨거운 물','80 ml']],
+    steps:['소스팬에 사과주스, 시나몬 스틱, 팔각을 넣고 약불로 5분 끓여 향을 우린다.','동시에 뜨거운 물 80ml에 홍차 6g을 3분간 우린다.','스파이스 사과즙을 체로 걸러 홍차와 혼합한다.','예열된 잔에 담고 계피가루를 가볍게 뿌린다.'],
+    notes:'착즙 100% 사과주스 사용 필수. 당도가 낮으면 꿀로 보정 가능.' },
+  { id:20, cat:'season', name:'딸기 말차',          en:'Strawberry Matcha',    temp:['iced'],       time:'약 5분',    serve:'350 ml',
+    desc:'딸기 퓨레와 말차 라떼를 레이어링한 비주얼과 맛 모두 매력적인 시즌 메뉴',
+    ing:[['딸기 퓨레 (또는 딸기 시럽)','50 ml'],['우유','180 ml'],['말차 파우더','4 g'],['뜨거운 물 (베이스)','30 ml'],['얼음','적량']],
+    steps:['말차 4g을 뜨거운 물 30ml로 덩어리 없이 풀어 말차 베이스를 만든다.','잔 하단에 딸기 퓨레 50ml를 넣는다.','얼음을 가득 채운다.','차가운 우유 180ml를 천천히 붓는다.','바 스푼을 이용해 말차 베이스를 가장 위에 레이어링한다.'],
+    notes:'딸기 레드와 말차 그린의 층이 선명하게 보이도록 천천히 따르는 것이 핵심. 완성 즉시 서빙.' },
+];
+
+// ─────────────────────────────────────────
+let activeCat = 'all', searchQuery = '', currentId = null;
+const ingState = {};
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── 재료 용량에서 숫자와 단위 파싱
+function parseAmt(str) {
+  const m = String(str||'').match(/([\d.]+)\s*([^\d\s]*)/);
+  return m ? { num: parseFloat(m[1]), unit: m[2].trim() } : { num: null, unit: '' };
+}
+
+// ── 원가 계산
+function calcCost(ing) {
+  const { num: recipeNum, unit } = parseAmt(ing.amount);
+  const buyAmt   = parseFloat(ing.buyAmount);
+  const buyPrice = parseFloat(ing.buyPrice);
+  if (isNaN(buyAmt) || isNaN(buyPrice) || buyAmt <= 0) return { unitCost: null, useCost: null, unit };
+  const unitCost = buyPrice / buyAmt;
+  const useCost  = recipeNum !== null ? recipeNum * unitCost : null;
+  return { unitCost, useCost, unit, recipeNum };
+}
+
+function fmtCostNum(v) {
+  if (v < 1) return v.toFixed(2);
+  if (v < 100) return v.toFixed(1);
+  return Math.round(v).toLocaleString();
+}
+
+// ── 재료 공식 셀 업데이트 (재렌더 없이)
+function updateIngFormula(id, idx) {
+  const ing = (ingState[id] || [])[idx];
+  const item = document.querySelector(`.ing-item[data-idx="${idx}"]`);
+  if (!ing || !item) return;
+
+  const { unit } = parseAmt(ing.amount);
+  const unitLbl = item.querySelector('.r2-unit-lbl');
+  if (unitLbl) unitLbl.textContent = unit || 'g/ml';
+
+  const fmla = item.querySelector('.ing-formula');
+  const { unitCost, useCost, recipeNum } = calcCost(ing);
+
+  if (unitCost !== null) {
+    fmla.style.display = 'flex';
+    item.querySelector('.fmla-unit').textContent  = '₩' + fmtCostNum(unitCost) + (unit ? '/' + unit : '/단위');
+    item.querySelector('.fmla-amt').textContent   = recipeNum !== null ? recipeNum + (unit || '') : '?';
+    item.querySelector('.fmla-result').textContent = useCost !== null ? '₩' + Math.round(useCost).toLocaleString() : '—';
+  } else {
+    fmla.style.display = 'none';
+  }
+}
+
+// ── 원가 합계 패널 업데이트
+function updateCostPanel(id) {
+  const ings = ingState[id] || [];
+  let total = 0, hasAny = false;
+  ings.forEach(ing => {
+    const { useCost } = calcCost(ing);
+    if (useCost !== null) { total += useCost; hasAny = true; }
+  });
+
+  const totalEl = document.getElementById('costTotal');
+  if (totalEl) totalEl.textContent = hasAny ? Math.round(total).toLocaleString() + '원' : '—';
+
+  const selling = parseFloat((document.getElementById('sellingPrice')||{}).value||'');
+  const ratioRow = document.getElementById('ratioRow');
+  const ratioEl  = document.getElementById('costRatio');
+  if (hasAny && !isNaN(selling) && selling > 0) {
+    const r = (total / selling * 100);
+    ratioEl.textContent = r.toFixed(1) + '%';
+    ratioEl.className = 'cost-value ' + (r < 30 ? 'ratio-good' : r <= 40 ? 'ratio-mid' : 'ratio-bad');
+    ratioRow.style.display = 'flex';
+  } else if (ratioRow) {
+    ratioRow.style.display = 'none';
+  }
+}
+
+// ── 재료 상태 초기화
+function getIng(id) {
+  if (!ingState[id]) {
+    const r = RECIPES.find(x => x.id === id);
+    ingState[id] = (r ? r.ing : []).map(([name, amount]) => ({ name, amount, buyAmount:'', buyPrice:'' }));
+  }
+  return ingState[id];
+}
+
+// ── 재료 목록 렌더
+function renderIng(id) {
+  const ings = getIng(id);
+  document.getElementById('ingList').innerHTML = ings.map((ing, i) => {
+    const { unit } = parseAmt(ing.amount);
+    return `<li class="ing-item" data-idx="${i}">
+      <div class="ing-row1">
+        <input class="ing-input" type="text" value="${esc(ing.name)}" placeholder="재료명" data-i="${i}" data-f="name">
+        <input class="ing-input" type="text" value="${esc(ing.amount)}" placeholder="레시피 용량" data-i="${i}" data-f="amount">
+        <button class="ing-remove-btn" data-i="${i}" aria-label="삭제">−</button>
+      </div>
+      <div class="ing-row2">
+        <span class="r2-label">구매</span>
+        <input class="ing-buy-input" type="number" value="${esc(ing.buyAmount)}" placeholder="용량" min="0" step="any" data-i="${i}" data-f="buyAmount">
+        <span class="r2-unit-lbl r2-unit">${unit||'g/ml'}</span>
+        <span class="r2-sep">/</span>
+        <span class="r2-sym">₩</span>
+        <input class="ing-buy-input" type="number" value="${esc(ing.buyPrice)}" placeholder="금액" min="0" step="1" data-i="${i}" data-f="buyPrice">
+        <span class="r2-unit">원</span>
+        <div class="ing-formula">
+          <span class="fmla-arrow">→</span>
+          <span class="fmla-unit"></span>
+          <span class="fmla-times">×</span>
+          <span class="fmla-amt"></span>
+          <span class="fmla-eq">=</span>
+          <strong class="fmla-result"></strong>
+        </div>
+      </div>
+    </li>`;
+  }).join('');
+
+  ings.forEach((_, i) => updateIngFormula(id, i));
+  updateCostPanel(id);
+}
+
+// ── 사진 ──────────────────────────────────
+function PKEY(id) { return `zan_photo_${id}`; }
+function loadPhoto(id) { try { return localStorage.getItem(PKEY(id)); } catch(e) { return null; } }
+function savePhoto(id, data) { try { localStorage.setItem(PKEY(id), data); } catch(e) {} }
+function deletePhoto(id) { try { localStorage.removeItem(PKEY(id)); } catch(e) {} }
+
+function compressImage(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 900;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) { const r = Math.min(MAX/w, MAX/h); w = Math.round(w*r); h = Math.round(h*r); }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL('image/jpeg', 0.78));
+    };
+    img.src = dataUrl;
+  });
+}
+
+function updatePhotoUI(id) {
+  const data = loadPhoto(id);
+  const area  = document.getElementById('photoArea');
+  const prev  = document.getElementById('photoPreview');
+  if (!area || !prev) return;
+  if (data) {
+    prev.src = data;
+    area.classList.add('has-photo');
+  } else {
+    prev.src = '';
+    area.classList.remove('has-photo');
+  }
+}
+
+// ── 그리드 ────────────────────────────────
+function getFiltered() {
+  const q = searchQuery.trim().toLowerCase();
+  return RECIPES.filter(r => {
+    const catOk = activeCat === 'all' || r.cat === activeCat;
+    const qOk = !q || r.name.includes(q) || r.en.toLowerCase().includes(q) || r.desc.includes(q);
+    return catOk && qOk;
+  });
+}
+
+function renderGrid() {
+  const grid = document.getElementById('recipeGrid');
+  const meta = document.getElementById('resultsMeta');
+  const list = getFiltered();
+  if (!list.length) {
+    grid.innerHTML = '<div class="no-results">검색 결과가 없습니다.</div>';
+    meta.textContent = '';
+    return;
+  }
+  meta.textContent = list.length + '개 레시피 — ' + (activeCat === 'all' ? '전체' : CATS[activeCat].label);
+  grid.innerHTML = list.map(r => {
+    const photo = loadPhoto(r.id);
+    const thumbHtml = photo ? `<div class="card-thumb"><img src="${photo}" alt="${esc(r.name)}"></div>` : '';
+    const temps = r.temp.map(t => t==='hot' ? '<span class="tag tag-hot">Hot</span>' : '<span class="tag tag-iced">Iced</span>').join('');
+    return `<article class="recipe-card" data-id="${r.id}" role="button" tabindex="0">
+      <div class="card-accent"></div>
+      ${thumbHtml}
+      <div class="card-body">
+        <div class="card-tags"><span class="tag tag-cat">${CATS[r.cat].label}</span>${temps}</div>
+        <div class="card-name">${r.name}</div>
+        <div class="card-en">${r.en}</div>
+        <p class="card-desc">${r.desc}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta"><span>${r.serve}</span><span>${r.time}</span></div>
+        <span class="card-arrow">→</span>
+      </div>
+    </article>`;
+  }).join('');
+  grid.querySelectorAll('.recipe-card').forEach(c => {
+    c.addEventListener('click', () => openModal(+c.dataset.id));
+    c.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); openModal(+c.dataset.id); } });
+  });
+}
+
+// ── 모달 ──────────────────────────────────
+function openModal(id) {
+  const r = RECIPES.find(x => x.id === id);
+  if (!r) return;
+  currentId = id;
+
+  document.getElementById('modalCatTag').textContent = CATS[r.cat].label;
+  document.getElementById('modalName').textContent   = r.name;
+  document.getElementById('modalEn').textContent     = r.en;
+  document.getElementById('modalDesc').textContent   = r.desc;
+  document.getElementById('modalMetaStrip').innerHTML =
+    `<div class="meta-item"><span class="meta-label">Serve</span><span class="meta-val">${r.serve}</span></div>
+     <div class="meta-item"><span class="meta-label">Time</span><span class="meta-val">${r.time}</span></div>
+     <div class="meta-item"><span class="meta-label">Temp</span><span class="meta-val">${r.temp.map(t=>t==='hot'?'Hot':'Iced').join(' / ')}</span></div>`;
+
+  updatePhotoUI(id);
+  renderIng(id);
+
+  const sp = document.getElementById('sellingPrice');
+  if (sp) sp.value = '';
+  const rr = document.getElementById('ratioRow');
+  if (rr) rr.style.display = 'none';
+
+  document.getElementById('stepList').innerHTML = r.steps.map((s, i) => {
+    let badge = '', text = s;
+    if (s.startsWith('【핫】'))   { badge = '<span class="step-badge sbadge-hot">HOT</span>';  text = s.slice(4).trim(); }
+    if (s.startsWith('【아이스】')) { badge = '<span class="step-badge sbadge-iced">ICED</span>'; text = s.slice(6).trim(); }
+    return `<li class="step-item"><span class="step-num">${String(i+1).padStart(2,'0')}</span><span class="step-text">${badge}${text}</span></li>`;
+  }).join('');
+
+  const ns = document.getElementById('notesSection');
+  document.getElementById('notesText').textContent = r.notes || '';
+  ns.style.display = r.notes ? '' : 'none';
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal').scrollTop = 0;
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentId = null;
+}
+
+// ── 이벤트: 재료 목록 ─────────────────────
+const ingListEl = document.getElementById('ingList');
+ingListEl.addEventListener('input', e => {
+  const f = e.target.dataset.f, i = +e.target.dataset.i;
+  if (!f || isNaN(i) || !currentId) return;
+  ingState[currentId][i][f] = e.target.value;
+  if (['amount','buyAmount','buyPrice'].includes(f)) updateIngFormula(currentId, i);
+  updateCostPanel(currentId);
+});
+ingListEl.addEventListener('click', e => {
+  if (!e.target.classList.contains('ing-remove-btn')) return;
+  const i = +e.target.dataset.i;
+  if (isNaN(i) || !currentId) return;
+  ingState[currentId].splice(i, 1);
+  renderIng(currentId);
+});
+
+document.getElementById('addIngBtn').addEventListener('click', () => {
+  if (!currentId) return;
+  getIng(currentId).push({ name:'', amount:'', buyAmount:'', buyPrice:'' });
+  renderIng(currentId);
+  const last = ingListEl.querySelectorAll('input[data-f="name"]');
+  if (last.length) last[last.length-1].focus();
+});
+
+document.getElementById('resetIngBtn').addEventListener('click', () => {
+  if (!currentId) return;
+  delete ingState[currentId];
+  renderIng(currentId);
+  const sp = document.getElementById('sellingPrice');
+  if (sp) sp.value = '';
+  updateCostPanel(currentId);
+});
+
+document.getElementById('sellingPrice').addEventListener('input', () => {
+  if (currentId) updateCostPanel(currentId);
+});
+
+// ── 이벤트: 사진 ──────────────────────────
+const photoArea  = document.getElementById('photoArea');
+const photoInput = document.getElementById('photoInput');
+
+photoArea.addEventListener('click', e => {
+  if (e.target.closest('.photo-del-btn')) return;
+  photoInput.click();
+});
+photoInput.addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file || !currentId) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const compressed = await compressImage(ev.target.result);
+    savePhoto(currentId, compressed);
+    updatePhotoUI(currentId);
+    renderGrid();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+document.getElementById('photoDelBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  if (!currentId) return;
+  deletePhoto(currentId);
+  updatePhotoUI(currentId);
+  renderGrid();
+});
+
+// ── 이벤트: 모달 열기/닫기 ───────────────
+document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── 이벤트: 카테고리 / 검색 ──────────────
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    renderGrid();
+  });
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  renderGrid();
+});
+
+renderGrid();
+
+// ── 로더 ──────────────────────────────────
+window.addEventListener('load', function() {
+  setTimeout(function() { var l = document.getElementById('loader'); if (l) l.classList.add('out'); }, 400);
+});
+setTimeout(function() { var l = document.getElementById('loader'); if (l) l.classList.add('out'); }, 1500);
+
+// ── 저작권 보호 ───────────────────────────
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
+document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+</script>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">ZAN Coffee &nbsp;·&nbsp; Recipe Book &nbsp;·&nbsp; Daegu, South Korea</div>
+    <div class="footer-copy">
+      Made by <strong>Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 ZAN Coffee &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 콘텐츠 무단 복제 금지
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

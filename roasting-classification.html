@@ -1,0 +1,788 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="author" content="Jung Sang Ju">
+<meta name="copyright" content="© 2025 ZAN Coffee. All rights reserved.">
+<!-- © 2025 ZAN Coffee — Made by Jung Sang Ju. All rights reserved. 무단 복제 금지. -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로스팅 정도 분류 기준 — ZAN Coffee</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --black:         #3a3631;
+  --panel:         #dad7d0;
+  --green:         #9fe870;
+  --dark-green:    #163300;
+  --mint:          #e2f6d5;
+  --gray:          #8a847a;
+  --warm-dark:     #454745;
+  --surface:       #f4f6f2;
+  --white:         #ffffff;
+  --border:        rgba(58,54,49,0.10);
+  --border-strong: rgba(58,54,49,0.18);
+  --red:           #c0292e;
+  --yellow:        #b88a00;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--surface);
+  color: var(--black);
+  line-height: 1.65;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+
+/* ── HEADER ── */
+.page-header { background: var(--panel);
+  padding: 56px 40px 44px;
+}
+.class-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--black);
+  margin-bottom: 18px;
+}
+.page-note {
+  font-size: 13px;
+  color: #7a7268;
+  line-height: 1.85;
+  border-left: 2px solid var(--green);
+  padding-left: 16px;
+  max-width: 520px;
+}
+
+/* ── LAYOUT ── */
+.main {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 44px 24px 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* ── SECTION CARD ── */
+.section {
+  background: var(--white);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.section-header {
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--green);
+  background: var(--dark-green);
+  padding: 3px 9px;
+  border-radius: 4px;
+}
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--black);
+}
+.section-body {
+  padding: 24px;
+}
+
+/* ── 01 BEAN SWATCHES ── */
+.bean-row {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.bean-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+.bean-shape {
+  width: 44px;
+  height: 56px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: inset 0 -3px 8px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.12);
+}
+.bean-shape::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
+  width: 2px;
+  height: 60%;
+  background: rgba(0,0,0,0.18);
+  border-radius: 2px;
+}
+.bean-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  color: var(--gray);
+  text-align: center;
+  line-height: 1.5;
+}
+.bean-hint {
+  font-size: 11px;
+  color: rgba(58,54,49,0.35);
+  text-align: center;
+  margin-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+/* ── 02 CLASSIFICATION TABLE ── */
+.class-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+.class-table th { background: var(--panel);
+  color: #7a7268;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  padding: 9px 8px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.class-table th:first-child {
+  text-align: left;
+  padding-left: 16px;
+  color: rgba(255,255,255,0.3);
+}
+.class-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border: 1px solid var(--border-strong);
+  color: var(--warm-dark);
+}
+.class-table .row-label {
+  background: var(--mint);
+  color: var(--dark-green);
+  font-weight: 700;
+  font-size: 11px;
+  text-align: left;
+  padding-left: 16px;
+  white-space: nowrap;
+}
+.agtron-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--black);
+}
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── 03 LOSS RATE BAR ── */
+.loss-wrap { padding-bottom: 8px; }
+.loss-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1px;
+  margin-bottom: 7px;
+}
+.loss-tick {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--gray);
+}
+.loss-bar {
+  height: 38px;
+  border-radius: 7px;
+  background: linear-gradient(to right,
+    #d9ae88 0%,
+    #cc9e74 10%,
+    #bf8e60 20%,
+    #ae7a4a 30%,
+    #9a6535 40%,
+    #855024 50%,
+    #6e3d1a 60%,
+    #5a2f13 70%,
+    #48240e 80%,
+    #38190a 90%,
+    #2a1007 100%
+  );
+  position: relative;
+}
+.loss-labels {
+  position: relative;
+  height: 60px;
+  margin-top: 4px;
+}
+.loss-label {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding-top: 6px;
+}
+.loss-label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 5px;
+  background: var(--border-strong);
+}
+.loss-pct {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--gray);
+}
+.loss-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--black);
+  white-space: nowrap;
+}
+.loss-range-bar {
+  position: absolute;
+  top: 0;
+  height: 38px;
+  border-left: 1px dashed rgba(255,255,255,0.4);
+  border-right: 1px dashed rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.1);
+  pointer-events: none;
+}
+.loss-note {
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── 04 SENSORY CARDS ── */
+.sensory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.sensory-card {
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.sensory-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
+}
+.sensory-roast-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.sensory-compound {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 10px;
+}
+.sensory-desc {
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.7;
+}
+.sensory-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+.stag {
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* ── 05 TOOLS ── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.tool-card {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.tool-type-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  color: var(--green);
+  background: var(--dark-green);
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 9px;
+}
+.tool-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--black);
+  margin-bottom: 4px;
+}
+.tool-products {
+  font-size: 12px;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+/* ── INSTRUCTOR BOX ── */
+.instructor-box { background: var(--panel);
+  border-radius: 12px;
+  padding: 24px 28px;
+}
+.instructor-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.instructor-tag::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(159,232,112,0.15);
+}
+.prep-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.prep-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+.prep-arrow {
+  color: var(--green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.prep-sub {
+  list-style: none;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.prep-sub li {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  padding-left: 14px;
+  position: relative;
+}
+.prep-sub li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  color: var(--green);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .page-header { padding: 40px 20px 32px; }
+  .page-title { font-size: 28px; }
+  .main { padding: 28px 16px 60px; }
+  .bean-row { grid-template-columns: repeat(4, 1fr); }
+  .sensory-grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .class-table { font-size: 10px; }
+  .class-table td, .class-table th { padding: 7px 5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="page-header">
+  <div class="class-tag">Roasting Class #7</div>
+  <h1 class="page-title">로스팅 정도 분류 기준</h1>
+  <p class="page-note">
+    흔하게는 라이트, 미디움, 다크라고 편하게 표현하지만,<br>
+    통용되는 기준이란 것은 없다.
+  </p>
+</header>
+
+<main class="main">
+
+  <!-- 01 컬러 구분 -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">컬러 구분</h2>
+    </div>
+    <div class="section-body">
+      <div class="bean-row">
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #e8c09a, #d4a47c 55%, #b88a5e);"></div>
+          <span class="bean-label">Light<br><span style="color:var(--black);font-weight:500;">#95</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #d8a87a, #c49060 55%, #a87a46);"></div>
+          <span class="bean-label">Cinnamon<br><span style="color:var(--black);font-weight:500;">#85</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #c49060, #b07840 55%, #94622a);"></div>
+          <span class="bean-label">Medium<br><span style="color:var(--black);font-weight:500;">#75</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #ae7e4a, #9a6230 55%, #7e4e1c);"></div>
+          <span class="bean-label">High<br><span style="color:var(--black);font-weight:500;">#65</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #956038, #7d4e25 55%, #623c14);"></div>
+          <span class="bean-label">City<br><span style="color:var(--black);font-weight:500;">#55</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #7a4d2e, #623b1c 55%, #4c2c0e);"></div>
+          <span class="bean-label">Full City<br><span style="color:var(--black);font-weight:500;">#45</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #5e3820, #4a2c14 55%, #361e08);"></div>
+          <span class="bean-label">French<br><span style="color:var(--black);font-weight:500;">#35</span></span>
+        </div>
+        <div class="bean-swatch">
+          <div class="bean-shape" style="background:radial-gradient(ellipse at 38% 35%, #422618, #321d0c 55%, #1e1006);"></div>
+          <span class="bean-label">Italian<br><span style="color:var(--black);font-weight:500;">#25</span></span>
+        </div>
+      </div>
+      <p class="bean-hint">← 밝음 · Agtron 수치 높음 &nbsp;&nbsp;|&nbsp;&nbsp; 어두움 · Agtron 수치 낮음 →</p>
+    </div>
+  </section>
+
+  <!-- 02 아그트론 수치 구분 -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">아그트론 수치 구분</h2>
+    </div>
+    <div class="section-body">
+      <div style="overflow-x:auto;">
+        <table class="class-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding-left:16px;min-width:80px;">분류</th>
+              <th>1단계</th>
+              <th>2단계</th>
+              <th>3단계</th>
+              <th>4단계</th>
+              <th>5단계</th>
+              <th>6단계</th>
+              <th>7단계</th>
+              <th>8단계</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">일본식</td>
+              <td>Light</td>
+              <td>Cinnamon</td>
+              <td>Medium</td>
+              <td>High</td>
+              <td>City</td>
+              <td>Full City</td>
+              <td>French</td>
+              <td>Italian</td>
+            </tr>
+            <tr>
+              <td class="row-label">SCAA</td>
+              <td style="font-size:10.5px;">Extremely Light</td>
+              <td style="font-size:10.5px;">Very Light</td>
+              <td style="font-size:10.5px;">Light</td>
+              <td style="font-size:10.5px;">Medium Light</td>
+              <td style="font-size:10.5px;">Medium</td>
+              <td style="font-size:10.5px;">Medium Dark</td>
+              <td style="font-size:10.5px;">Dark</td>
+              <td style="font-size:10.5px;">Very Dark</td>
+            </tr>
+            <tr>
+              <td class="row-label">Agtron #</td>
+              <td><span class="agtron-num">95</span></td>
+              <td><span class="agtron-num">85</span></td>
+              <td><span class="agtron-num">75</span></td>
+              <td><span class="agtron-num">65</span></td>
+              <td><span class="agtron-num">55</span></td>
+              <td><span class="agtron-num">45</span></td>
+              <td><span class="agtron-num">35</span></td>
+              <td><span class="agtron-num">25</span></td>
+            </tr>
+            <tr>
+              <td class="row-label">컬러</td>
+              <td><span class="color-dot" style="background:#d4a47c;"></span></td>
+              <td><span class="color-dot" style="background:#c49060;"></span></td>
+              <td><span class="color-dot" style="background:#b07840;"></span></td>
+              <td><span class="color-dot" style="background:#9a6230;"></span></td>
+              <td><span class="color-dot" style="background:#7d4e25;"></span></td>
+              <td><span class="color-dot" style="background:#623b1c;"></span></td>
+              <td><span class="color-dot" style="background:#4a2c14;"></span></td>
+              <td><span class="color-dot" style="background:#321d0c;"></span></td>
+            </tr>
+            <tr>
+              <td class="row-label">수분율</td>
+              <td>10%</td>
+              <td>11%</td>
+              <td>12%</td>
+              <td>13%</td>
+              <td>15%</td>
+              <td>17%</td>
+              <td>19%</td>
+              <td>20%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 손실률 구분 -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">손실률 구분</h2>
+    </div>
+    <div class="section-body">
+      <div class="loss-wrap">
+        <!-- Tick marks -->
+        <div class="loss-ticks">
+          <span class="loss-tick">10%</span>
+          <span class="loss-tick">12%</span>
+          <span class="loss-tick">14%</span>
+          <span class="loss-tick">16%</span>
+          <span class="loss-tick">18%</span>
+          <span class="loss-tick">20%</span>
+          <span class="loss-tick">22%</span>
+        </div>
+
+        <!-- Gradient color bar -->
+        <div style="position:relative;">
+          <div class="loss-bar"></div>
+          <!-- range highlight overlays -->
+          <!-- 라이트: 11~13% → (1/12)~(3/12) = 8.33%~25% -->
+          <div class="loss-range-bar" style="left:8.33%;width:16.67%;"></div>
+          <!-- 미디움: 14~16% → (4/12)~(6/12) = 33.33%~50% -->
+          <div class="loss-range-bar" style="left:33.33%;width:16.67%;"></div>
+          <!-- 다크: 17~18% → (7/12)~(8/12) = 58.33%~66.67% -->
+          <div class="loss-range-bar" style="left:58.33%;width:8.34%;"></div>
+        </div>
+
+        <!-- Labels -->
+        <div class="loss-labels">
+          <!-- 라이트 center at 12% → (2/12)=16.67% -->
+          <div class="loss-label" style="left:16.67%;">
+            <span class="loss-pct">11 – 13%</span>
+            <span class="loss-name">라이트 로스트</span>
+          </div>
+          <!-- 미디움 center at 15% → (5/12)=41.67% -->
+          <div class="loss-label" style="left:41.67%;">
+            <span class="loss-pct">14 – 16%</span>
+            <span class="loss-name">미디움 로스트</span>
+          </div>
+          <!-- 다크 center at 17.5% → (7.5/12)=62.5% -->
+          <div class="loss-label" style="left:62.5%;">
+            <span class="loss-pct">17 – 18%</span>
+            <span class="loss-name">다크 로스트</span>
+          </div>
+        </div>
+
+        <p class="loss-note">
+          손실률은 생두 대비 로스팅 후 무게 감소 비율이다. 수분 증발 및 유기물 연소로 발생하며,<br>
+          로스팅이 진행될수록 손실률이 높아지고 색도는 어두워진다.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 센서리 구분 -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">센서리 구분</h2>
+    </div>
+    <div class="section-body">
+      <p style="font-size:12px;color:var(--gray);margin-bottom:18px;line-height:1.7;">
+        커핑 후 감지되는 주요 화학 물질의 비율 변화로 로스팅 정도를 구분한다.<br>
+        로스팅이 진행됨에 따라 물질의 조성이 유기물 → 카라멜화 반응물 → 탄화물 순으로 이동한다.
+      </p>
+      <div class="sensory-grid">
+
+        <div class="sensory-card">
+          <div class="sensory-accent" style="background:#d4a47c;"></div>
+          <div class="sensory-roast-tag">라이트 로스트 주도</div>
+          <div class="sensory-compound">유기 물질</div>
+          <div class="sensory-desc">생두가 지닌 원산지 특성이 그대로 반영된다.</div>
+          <div class="sensory-tags">
+            <span class="stag" style="background:#fff4ec;color:#a0643a;">산미</span>
+            <span class="stag" style="background:#fff4ec;color:#a0643a;">과일향</span>
+            <span class="stag" style="background:#fff4ec;color:#a0643a;">허브·꽃향</span>
+          </div>
+        </div>
+
+        <div class="sensory-card">
+          <div class="sensory-accent" style="background:#9a6230;"></div>
+          <div class="sensory-roast-tag">미디움 로스트 주도</div>
+          <div class="sensory-compound">카라멜화 반응 물질</div>
+          <div class="sensory-desc">당류가 열에 의해 분해·중합되어 생성된다.</div>
+          <div class="sensory-tags">
+            <span class="stag" style="background:#fdf5e6;color:#8a6000;">단맛</span>
+            <span class="stag" style="background:#fdf5e6;color:#8a6000;">초콜릿</span>
+            <span class="stag" style="background:#fdf5e6;color:#8a6000;">견과류</span>
+          </div>
+        </div>
+
+        <div class="sensory-card">
+          <div class="sensory-accent" style="background:#321d0c;"></div>
+          <div class="sensory-roast-tag">다크 로스트 주도</div>
+          <div class="sensory-compound">탄화 물질</div>
+          <div class="sensory-desc">고온으로 유기물이 분해·탄화되어 생성된다.</div>
+          <div class="sensory-tags">
+            <span class="stag" style="background:#f5ede8;color:#6b3020;">쓴맛</span>
+            <span class="stag" style="background:#f5ede8;color:#6b3020;">스모키</span>
+            <span class="stag" style="background:#f5ede8;color:#6b3020;">탄 향</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 색도를 구별하는 도구 -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">색도를 구별하는 도구</h2>
+    </div>
+    <div class="section-body">
+      <div class="tools-grid">
+
+        <div class="tool-card">
+          <span class="tool-type-badge">VISUAL</span>
+          <div class="tool-name">눈 (육안 판별)</div>
+          <div class="tool-products">가장 직관적이나 개인차와 조명 조건에 따라 오차 발생 가능</div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-type-badge">TILE</span>
+          <div class="tool-name">타일 (아그트론 타일)</div>
+          <div class="tool-products">아그트론 표준 컬러 타일과 원두를 비교하여 판별</div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-type-badge">PORTABLE</span>
+          <div class="tool-name">포터블 색도계</div>
+          <div class="tool-products">
+            로아미 (Roastaroma) &nbsp;·&nbsp; 라이텔스 (Lighttells)<br>
+            디플루이드 (DiFluid)
+          </div>
+        </div>
+
+        <div class="tool-card">
+          <span class="tool-type-badge">LAB</span>
+          <div class="tool-name">연구용 색도계</div>
+          <div class="tool-products">
+            아그트론 (Agtron) &nbsp;·&nbsp; 자발리틱스 (Javalytics)<br>
+            컬러트랙 (ColorTrack)
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 강사 준비물 -->
+  <div class="instructor-box">
+    <div class="instructor-tag">강사 준비물</div>
+    <ul class="prep-list">
+      <li class="prep-item">
+        <span class="prep-arrow">→</span>
+        <span>저울, 색도계</span>
+      </li>
+      <li class="prep-item">
+        <span class="prep-arrow">→</span>
+        <div>
+          로스팅 정도가 다른 원두 3종 &nbsp;<span style="color:rgba(255,255,255,0.3);font-size:12px;">(커핑용)</span>
+          <ul class="prep-sub">
+            <li>홀빈 라이트 — 내부 다크</li>
+            <li>홀빈 다크 — 내부 라이트</li>
+            <li>미디움 — 미디움</li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</main>
+<!-- ── Copyright & Protection ─────────────────── -->
+<div style="text-align:center;padding:28px 20px 20px;font-size:11px;color:#a8a297;letter-spacing:0.08em;border-top:1px solid rgba(58,54,49,0.1);margin-top:48px;">
+  Made by <strong style="color:#7a7268;font-weight:500;">Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 ZAN Coffee &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 무단 복제 금지
+</div>
+<style>
+body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
+img  { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
+</style>
+<script>
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
+document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+</script>
+</body>
+</html>

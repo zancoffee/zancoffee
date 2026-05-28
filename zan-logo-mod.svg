@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 200" width="550" height="200">
+  <defs>
+    <style>
+      .stroke { fill: none; stroke: #1a1814; stroke-linecap: square; stroke-linejoin: miter; }
+    </style>
+  </defs>
+
+  <!-- Z -->
+  <!-- top bar -->
+  <line class="stroke" stroke-width="10" x1="30" y1="30" x2="170" y2="30"/>
+  <!-- diagonal -->
+  <line class="stroke" stroke-width="10" x1="170" y1="30" x2="30" y2="170"/>
+  <!-- bottom bar -->
+  <line class="stroke" stroke-width="10" x1="30" y1="170" x2="170" y2="170"/>
+
+  <!-- A (crossbar removed, shifted left 25px: center 275 was 300) -->
+  <!-- left leg -->
+  <line class="stroke" stroke-width="10" x1="205" y1="170" x2="275" y2="30"/>
+  <!-- right leg -->
+  <line class="stroke" stroke-width="10" x1="275" y1="30" x2="345" y2="170"/>
+
+  <!-- N (shifted left 50px: was 430–570, now 380–520) -->
+  <!-- left vertical -->
+  <line class="stroke" stroke-width="10" x1="380" y1="170" x2="380" y2="30"/>
+  <!-- diagonal -->
+  <line class="stroke" stroke-width="10" x1="380" y1="30" x2="520" y2="170"/>
+  <!-- right vertical -->
+  <line class="stroke" stroke-width="10" x1="520" y1="30" x2="520" y2="170"/>
+
+</svg>
