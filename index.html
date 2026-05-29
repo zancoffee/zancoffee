@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+img { -webkit-touch-callout: none; }
 img { -webkit-user-drag: none; user-drag: none; }
 
 :root {
@@ -20,7 +20,7 @@ img { -webkit-user-drag: none; user-drag: none; }
   --green: #c8ff85;
   --dg:    #163300;
   --mid:   #454745;
-  --muted: #868685;
+  --muted: #636463;
   --line:  #d4d7cf;
   --sb:    260px;
 }
@@ -34,6 +34,21 @@ body {
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   overflow-wrap: break-word;
+}
+
+/* ── PAPER TEXTURE (수채화 종이 결 — 배경에만, 아주 미세) ── */
+/* body 배경에만 깔아 콘텐츠·사진·폰트 위에는 올라가지 않음 */
+body {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.22' numOctaves='3' seed='3' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='white' surfaceScale='0.5' diffuseConstant='1' result='l'%3E%3CfeDistantLight azimuth='235' elevation='52'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.7' intercept='-0.56'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.22' numOctaves='3' seed='3' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='white' surfaceScale='0.5' diffuseConstant='1' result='l'%3E%3CfeDistantLight azimuth='235' elevation='52'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.4' intercept='-0.096'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  background-size: 260px 260px, 260px 260px;
+  background-repeat: repeat, repeat;
+  background-attachment: fixed, fixed;
+}
+/* 데스크톱: 사이드바도 같은 종이 배경이 비치도록 투명 (모바일 드로어는 불투명 유지) */
+@media (min-width: 641px) {
+  aside.sidebar { background: transparent; }
 }
 
 /* ── LOADER ── */
@@ -111,6 +126,84 @@ body {
 }
 .nav a:hover { color: var(--dg); background: rgba(159,232,112,0.18); padding-left: 30px; }
 .nav a.on { color: var(--dg); background: var(--green); }
+.nav a:focus-visible {
+  outline: 2px solid var(--dg);
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+
+/* ── SNAP DOTS ── */
+.snap-dots {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  z-index: 300;
+}
+.snap-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: none;
+  padding: 0;
+  display: block;
+}
+.snap-dots .dot:hover { background: var(--mid); transform: scale(1.3); }
+.snap-dots .dot.on { background: var(--ink); transform: scale(1.4); }
+
+/* ── TOOL OVERLAY (사이드바 유지한 채 도구 iframe 표시) ── */
+#tool-overlay {
+  position: fixed;
+  left: var(--sb); right: 0; top: 0; bottom: 0;
+  z-index: 1500;
+  background: var(--bg);
+  display: none;
+}
+#tool-overlay.on { display: block; }
+#tool-iframe {
+  width: 100%; height: 100%;
+  border: none; display: block;
+}
+#tool-back {
+  position: absolute; top: 16px; left: 16px;
+  z-index: 10;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  color: var(--dg);
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s, color 0.15s;
+}
+#tool-back:hover { background: var(--green); color: var(--dg); }
+
+/* ── MOBILE TOP BAR + DRAWER (데스크톱에서는 숨김) ── */
+.m-topbar { display: none; }
+.nav-backdrop { display: none; }
+.m-burger {
+  width: 40px; height: 40px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer;
+  padding: 0; margin: 0;
+}
+.m-burger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--dg); border-radius: 2px;
+  transition: transform 0.3s, opacity 0.2s;
+}
+.m-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.m-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.m-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .sb-foot {
   padding: 16px 24px;
@@ -130,10 +223,23 @@ body {
 }
 
 /* ── CONTENT ── */
-.content { margin-left: var(--sb); flex: 1; }
+.content {
+  position: fixed;
+  left: var(--sb); right: 0; top: 0;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+.content::-webkit-scrollbar { display: none; }
+.content { -ms-overflow-style: none; scrollbar-width: none; }
 
-.pg { display: none; }
-.pg.on { display: block; animation: pgIn 0.4s cubic-bezier(0.22,1,0.36,1); }
+.pg {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
 @keyframes pgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* ── PAGE HEADER ── */
@@ -355,44 +461,82 @@ a.con-val:hover { color: var(--dg); }
   :root { --sb: 0px; }
   .wrap { flex-direction: column; }
 
-  /* 사이드바 → 상단 고정 네비게이션 바 */
-  .sidebar {
-    width: 100%; height: auto;
-    position: sticky; top: 0;
-    flex-direction: column;
-    border-right: none; border-bottom: 1px solid var(--line);
+  /* 상단 고정 바 + 햄버거 */
+  .m-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 52px; padding: 0 12px 0 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    z-index: 800;
   }
+  .m-brand { cursor: pointer; display: flex; align-items: center; }
 
-  /* 브랜드 블록: 작은 로고 한 줄 */
-  .brand-block { padding: 10px 16px; }
-  .brand-block svg { width: 44px !important; }
+  /* 사이드바 → 좌측 슬라이드 드로어 */
+  .sidebar {
+    width: 78%; max-width: 300px; height: 100%;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    flex-direction: column;
+    border-right: 1px solid var(--line); border-bottom: none;
+    transform: translateX(-100%);
+    transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
 
-  /* 네비게이션: 3열 × 2행 그리드 — 스와이프 없이 한 화면에 전체 표시 */
+  /* 드로어 백드롭 */
+  .nav-backdrop {
+    display: block;
+    position: fixed; inset: 0;
+    background: rgba(14,15,12,0.45);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 900;
+  }
+  .nav-backdrop.show { opacity: 1; visibility: visible; }
+
+  /* 브랜드 블록: 드로어 상단 로고 */
+  .brand-block { padding: 16px 20px 13px; }
+  .brand-block svg { width: 56% !important; }
+
+  /* 네비게이션: 드로어 내 세로 리스트 (항목 개수 무관) */
   .nav {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    flex: unset; overflow: visible;
-    padding: 0; gap: 0;
-    border-top: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    flex: 1; overflow-y: auto;
+    padding: 10px 0; gap: 0;
+    border-top: none;
   }
   .nav a {
-    font-size: 10px; font-weight: 500;
-    letter-spacing: 0.1em; text-align: center;
-    padding: 12px 4px;
+    font-size: 15px; font-weight: 500;
+    letter-spacing: 0.08em; text-align: left;
+    padding: 12px 24px;
     white-space: nowrap;
-    border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    transition: background 0.15s, color 0.15s;
+    border: none;
+    transition: background 0.15s, color 0.15s, padding-left 0.2s;
   }
-  /* 오른쪽 끝 항목 border 제거 */
-  .nav a:nth-child(3n) { border-right: none; }
-  /* 하단 행 border 제거 */
-  .nav a:nth-child(n+4) { border-bottom: none; }
-  .nav a:hover { padding-left: 4px; background: rgba(200,255,133,0.22); color: var(--dg); }
+  .nav a:hover { padding-left: 30px; background: rgba(159,232,112,0.18); color: var(--dg); }
   .nav a.on { background: var(--green); color: var(--dg); }
 
-  .sb-foot { display: none; }
-  .content { margin-left: 0; }
+  .sb-foot { display: block; }
+  .snap-dots { display: none; }
+  #tool-overlay { left: 0; }
+  .content {
+    position: static;
+    height: auto;
+    overflow-y: visible;
+    scroll-snap-type: none;
+    margin-left: 0;
+    margin-top: 52px;
+  }
+  .pg {
+    display: none;
+    height: auto;
+    overflow-y: visible;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+  .pg.on { display: block; animation: pgIn 0.4s cubic-bezier(0.22,1,0.36,1); }
   .pg-hd, .sl { padding-left: 20px; padding-right: 20px; }
   .sl::after { left: 20px; }
   .about-info, .career-wrap, .tools-wrap, .writing-wrap, .zan-wrap, .con-wrap, .mini-wrap { padding-left: 20px; padding-right: 20px; }
@@ -422,6 +566,27 @@ a.con-val:hover { color: var(--dg); }
 
 <div class="wrap">
 
+<!-- MOBILE TOP BAR (≤640px) -->
+<header class="m-topbar">
+  <a class="m-brand" id="m-brand" aria-label="ZAN 홈">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 200" style="display:block;height:22px;width:auto;">
+      <defs><style>.ml{fill:none;stroke:#163300;stroke-linecap:square;stroke-linejoin:miter;}</style></defs>
+      <line class="ml" stroke-width="14" x1="30" y1="30" x2="170" y2="30"/>
+      <line class="ml" stroke-width="14" x1="170" y1="30" x2="30" y2="170"/>
+      <line class="ml" stroke-width="14" x1="30" y1="170" x2="170" y2="170"/>
+      <line class="ml" stroke-width="14" x1="205" y1="170" x2="275" y2="30"/>
+      <line class="ml" stroke-width="14" x1="275" y1="30" x2="345" y2="170"/>
+      <line class="ml" stroke-width="14" x1="380" y1="170" x2="380" y2="30"/>
+      <line class="ml" stroke-width="14" x1="380" y1="30" x2="520" y2="170"/>
+      <line class="ml" stroke-width="14" x1="520" y1="30" x2="520" y2="170"/>
+    </svg>
+  </a>
+  <button class="m-burger" id="m-burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="main-nav">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+<div class="nav-backdrop" id="nav-backdrop" aria-hidden="true"></div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="brand-block" id="brand-block">
@@ -438,18 +603,30 @@ a.con-val:hover { color: var(--dg); }
     </svg>
   </div>
   <nav class="nav" id="main-nav">
-    <a class="on" data-p="about">ABOUT.</a>
-    <a data-p="career">CAREER.</a>
-    <a data-p="tools">TOOLS.</a>
-    <a data-p="writing">WRITING.</a>
-    <a data-p="zan">CREW.</a>
-    <a data-p="contact">CONTACT.</a>
+    <a class="on" data-p="about" tabindex="0" aria-current="page">ABOUT.</a>
+    <a data-p="career" tabindex="0">CAREER.</a>
+    <a data-p="class" tabindex="0">CLASS.</a>
+    <a data-p="tools" tabindex="0">TOOLS.</a>
+    <a data-p="writing" tabindex="0">WRITING.</a>
+    <a data-p="zan" tabindex="0">CREW.</a>
+    <a data-p="contact" tabindex="0">CONTACT.</a>
   </nav>
   <div class="sb-foot">
     <div class="sb-loc" id="sb-loc">Daegu<br>South Korea<br>Est. 2014</div>
     <div class="sb-copy">© 2025 ZAN. All rights reserved.<br>콘텐츠 무단 복제 금지.</div>
   </div>
 </aside>
+
+<!-- SNAP DOTS -->
+<div class="snap-dots" id="snap-dots" aria-hidden="true">
+  <span class="dot on" data-p="about"></span>
+  <span class="dot" data-p="career"></span>
+  <span class="dot" data-p="class"></span>
+  <span class="dot" data-p="tools"></span>
+  <span class="dot" data-p="writing"></span>
+  <span class="dot" data-p="zan"></span>
+  <span class="dot" data-p="contact"></span>
+</div>
 
 <!-- CONTENT -->
 <main class="content">
@@ -462,7 +639,7 @@ a.con-val:hover { color: var(--dg); }
   </div>
   <div class="about-hero rv d1">
     <div class="about-photo">
-      <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=85" alt="Coffee Roasting">
+      <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=800&q=85" alt="ZAN Coffee 로스터가 드럼 로스터 앞에서 커피를 로스팅하는 모습, 대구">
       <div class="photo-lbl">ZAN Coffee · Daegu</div>
     </div>
     <div class="about-info">
@@ -489,10 +666,21 @@ a.con-val:hover { color: var(--dg); }
   </div>
 </div>
 
+<!-- ── CLASS ── -->
+<div class="pg" id="pg-class">
+  <div class="pg-hd rv">
+    <span class="pg-num">[ 03 / Class ]</span>
+    <h2 class="pg-title">Learn by <em>the cup.</em></h2>
+  </div>
+  <div class="tools-wrap rv d1">
+    <div class="art-grid" id="class-grid"></div>
+  </div>
+</div>
+
 <!-- ── TOOLS ── -->
 <div class="pg" id="pg-tools">
   <div class="pg-hd rv">
-    <span class="pg-num">[ 03 / Tools ]</span>
+    <span class="pg-num">[ 04 / Tools ]</span>
     <h2 class="pg-title">Tools &amp; <em>experiments.</em></h2>
   </div>
   <div class="tools-wrap rv d1">
@@ -503,7 +691,7 @@ a.con-val:hover { color: var(--dg); }
 <!-- ── WRITING ── -->
 <div class="pg" id="pg-writing">
   <div class="pg-hd rv">
-    <span class="pg-num">[ 04 / Writing ]</span>
+    <span class="pg-num">[ 05 / Writing ]</span>
     <h2 class="pg-title">Notes on <em>coffee.</em></h2>
   </div>
   <div class="writing-wrap rv d1">
@@ -514,7 +702,7 @@ a.con-val:hover { color: var(--dg); }
 <!-- ── ZAN ── -->
 <div class="pg" id="pg-zan">
   <div class="pg-hd rv">
-    <span class="pg-num">[ 05 / Community ]</span>
+    <span class="pg-num">[ 06 / Community ]</span>
     <h2 class="pg-title">ZAN — <em>a cup, shared.</em></h2>
   </div>
   <div class="zan-wrap">
@@ -534,7 +722,7 @@ a.con-val:hover { color: var(--dg); }
 <!-- ── CONTACT ── -->
 <div class="pg" id="pg-contact">
   <div class="pg-hd rv">
-    <span class="pg-num">[ 06 / Contact ]</span>
+    <span class="pg-num">[ 07 / Contact ]</span>
     <h2 class="pg-title">Let's <em>talk.</em></h2>
   </div>
   <div class="con-wrap">
@@ -544,6 +732,12 @@ a.con-val:hover { color: var(--dg); }
 </div>
 
 </main>
+
+<!-- TOOL OVERLAY (iframe로 도구 페이지를 콘텐츠 영역에 표시) -->
+<div id="tool-overlay" aria-hidden="true">
+  <button id="tool-back" type="button" aria-label="도구 닫고 돌아가기">← 돌아가기</button>
+  <iframe id="tool-iframe" title="도구" src="about:blank"></iframe>
+</div>
 </div>
 
 <script>
@@ -589,6 +783,13 @@ a.con-val:hover { color: var(--dg); }
       { cat: 'Recipe', title: 'Beverage Recipe Book', sub: 'Espresso · Filter · Signature', link: 'recipe.html', img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=800&q=80' },
       { cat: 'Coming Soon', title: '추출 계산기', sub: 'TDS · Yield · Ratio · 준비 중', soon: true, img: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=800&q=80' },
       { cat: 'Coming Soon', title: '그라인드 분석기', sub: 'Particle · Distribution · 준비 중', soon: true, img: 'https://images.unsplash.com/photo-1611174743420-3d7df880ce32?w=800&q=80' }
+    ],
+    class: [
+      { cat: 'Beginner', title: '핸드드립 입문 클래스', sub: '3시간 · 1:1 또는 소그룹', img: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800&q=80' },
+      { cat: 'Roasting', title: '홈 로스팅 베이직', sub: '4시간 · 생두 이해 + 실습', img: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=800&q=80' },
+      { cat: 'Espresso', title: '에스프레소 다이얼인', sub: '3시간 · 추출 변수 제어', img: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=800&q=80' },
+      { cat: 'Sensory', title: '센서리 트레이닝', sub: '2시간 · 향미 평가 훈련', img: 'https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=800&q=80' },
+      { cat: 'Coming Soon', title: '라떼아트 워크숍', sub: 'Steaming · Pouring · 준비 중', soon: true, img: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?w=800&q=80' }
     ],
     zan: [
       { sub: 'STUDY', title: '에스프레소 추출 압력, 9bar의 의미', img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80' },
@@ -670,7 +871,27 @@ a.con-val:hover { color: var(--dg); }
     if (!el) return;
     el.innerHTML = data.map(function(item, i) {
       var sc = item.soon ? ' soon' : '';
-      var oc = item.link && !item.soon ? ' onclick="window.location.href=\'' + esc(item.link) + '\'"' : '';
+      var oc = item.link && !item.soon ? ' onclick="openTool(\'' + esc(item.link) + '\')"' : '';
+      return '<a class="art-card' + sc + '"' + oc + '>'
+        + '<div class="art-thumb">'
+        + (item.img ? '<img src="' + esc(item.img) + '" alt="' + esc(item.title) + '" loading="lazy">' : '')
+        + (item.cat ? '<div class="art-thumb-cat">' + esc(item.cat) + '</div>' : '')
+        + '<div class="art-thumb-num">— ' + pad(i + 1) + ' / ' + pad(data.length) + '</div>'
+        + '</div>'
+        + '<div class="art-body">'
+        + '<div class="art-title">' + esc(item.title) + '</div>'
+        + '<div class="art-date">' + esc(item.sub) + '</div>'
+        + '</div></a>';
+    }).join('');
+  }
+
+  function renderClass() {
+    var data = get('class');
+    var el = document.getElementById('class-grid');
+    if (!el) return;
+    el.innerHTML = data.map(function(item, i) {
+      var sc = item.soon ? ' soon' : '';
+      var oc = item.link && !item.soon ? ' onclick="openTool(\'' + esc(item.link) + '\')"' : '';
       return '<a class="art-card' + sc + '"' + oc + '>'
         + '<div class="art-thumb">'
         + (item.img ? '<img src="' + esc(item.img) + '" alt="' + esc(item.title) + '" loading="lazy">' : '')
@@ -747,59 +968,153 @@ a.con-val:hover { color: var(--dg); }
   }
 
   /* ── NAV ── */
-  function show(id) {
-    document.querySelectorAll('.pg').forEach(function(p) { p.classList.remove('on'); });
-    document.querySelectorAll('.nav a').forEach(function(a) { a.classList.remove('on'); });
-    var pg = document.getElementById('pg-' + id);
-    var nav = document.querySelector('.nav a[data-p="' + id + '"]');
-    if (pg) pg.classList.add('on');
-    if (nav) nav.classList.add('on');
-    window.scrollTo(0, 0);
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        if (pg) pg.querySelectorAll('.rv:not(.vis)').forEach(function(el) { el.classList.add('vis'); });
-      });
+  var contentEl = document.querySelector('.content');
+  var isDesktop = function() { return window.innerWidth > 640; };
+
+  function setActiveNav(id) {
+    document.querySelectorAll('.nav a').forEach(function(a) {
+      a.classList.remove('on');
+      a.removeAttribute('aria-current');
     });
+    document.querySelectorAll('.snap-dots .dot').forEach(function(d) { d.classList.remove('on'); });
+    var navLink = document.querySelector('.nav a[data-p="' + id + '"]');
+    var dot = document.querySelector('.snap-dots .dot[data-p="' + id + '"]');
+    if (navLink) { navLink.classList.add('on'); navLink.setAttribute('aria-current', 'page'); }
+    if (dot) dot.classList.add('on');
+  }
+
+  /* ── TOOL OVERLAY (iframe) ── */
+  var toolOverlay = document.getElementById('tool-overlay');
+  var toolIframe = document.getElementById('tool-iframe');
+  window.openTool = function(src) {
+    if (!src) return;
+    toolIframe.src = src;
+    toolOverlay.classList.add('on');
+    toolOverlay.setAttribute('aria-hidden', 'false');
+  };
+  function closeTool() {
+    if (!toolOverlay.classList.contains('on')) return;
+    toolOverlay.classList.remove('on');
+    toolOverlay.setAttribute('aria-hidden', 'true');
+    toolIframe.src = 'about:blank';
+  }
+  document.getElementById('tool-back').addEventListener('click', closeTool);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeTool();
+  });
+
+  function show(id) {
+    closeTool();
+    var pg  = document.getElementById('pg-' + id);
+    if (!isDesktop()) {
+      /* 모바일: 기존 탭 방식 */
+      document.querySelectorAll('.pg').forEach(function(p) { p.classList.remove('on'); });
+      if (pg)  pg.classList.add('on');
+      setActiveNav(id);
+      window.scrollTo(0, 0);
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          if (pg) pg.querySelectorAll('.rv:not(.vis)').forEach(function(el) { el.classList.add('vis'); });
+        });
+      });
+    } else {
+      /* 데스크톱: 스냅 스크롤 */
+      setActiveNav(id);
+      if (pg) {
+        var sections = Array.from(document.querySelectorAll('.pg'));
+        var idx = sections.indexOf(pg);
+        contentEl.scrollTo({ top: idx * contentEl.clientHeight, behavior: 'smooth' });
+      }
+    }
   }
 
   document.querySelectorAll('.nav a').forEach(function(a) {
-    a.addEventListener('click', function(e) { e.preventDefault(); show(this.getAttribute('data-p')); });
+    a.addEventListener('click', function(e) { e.preventDefault(); show(this.getAttribute('data-p')); closeDrawer(); });
+    a.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(this.getAttribute('data-p')); closeDrawer(); }
+    });
   });
-  document.getElementById('brand-block').addEventListener('click', function() { show('about'); });
+  document.querySelectorAll('.snap-dots .dot').forEach(function(dot) {
+    dot.addEventListener('click', function() { show(this.getAttribute('data-p')); });
+  });
+  document.getElementById('brand-block').addEventListener('click', function() { show('about'); closeDrawer(); });
+
+  /* ── MOBILE DRAWER ── */
+  var burgerEl = document.getElementById('m-burger');
+  var backdropEl = document.getElementById('nav-backdrop');
+  var sidebarEl = document.querySelector('.sidebar');
+  function openDrawer() {
+    sidebarEl.classList.add('open');
+    backdropEl.classList.add('show');
+    burgerEl.setAttribute('aria-expanded', 'true');
+    burgerEl.setAttribute('aria-label', '메뉴 닫기');
+  }
+  function closeDrawer() {
+    sidebarEl.classList.remove('open');
+    backdropEl.classList.remove('show');
+    burgerEl.setAttribute('aria-expanded', 'false');
+    burgerEl.setAttribute('aria-label', '메뉴 열기');
+  }
+  burgerEl.addEventListener('click', function() {
+    if (sidebarEl.classList.contains('open')) closeDrawer(); else openDrawer();
+  });
+  backdropEl.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && sidebarEl.classList.contains('open')) closeDrawer();
+  });
+  var mBrandEl = document.getElementById('m-brand');
+  if (mBrandEl) mBrandEl.addEventListener('click', function() { show('about'); closeDrawer(); });
 
   /* ── REVEAL ── */
   var io = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) { entry.target.classList.add('vis'); io.unobserve(entry.target); }
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+  }, { root: isDesktop() ? contentEl : null, threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
 
-  function observeReveal() {
-    document.querySelectorAll('.pg.on .rv:not(.vis)').forEach(function(el) { io.observe(el); });
-  }
+  /* ── NAV ACTIVE (데스크톱 스크롤 추적) ── */
+  contentEl.addEventListener('scroll', function() {
+    if (!isDesktop()) return;
+    var mid = contentEl.scrollTop + contentEl.clientHeight * 0.5;
+    var sections = Array.from(document.querySelectorAll('.pg'));
+    var active = sections.reduce(function(best, sec, i) {
+      var top = i * contentEl.clientHeight;
+      return (mid >= top) ? sec : best;
+    }, sections[0]);
+    if (active) {
+      setActiveNav(active.id.replace('pg-', ''));
+    }
+  });
 
   /* ── LOADER ── */
   window.addEventListener('load', function() { setTimeout(function() { document.getElementById('loader').classList.add('out'); }, 500); });
   setTimeout(function() { document.getElementById('loader').classList.add('out'); }, 1800);
 
-  /* ── BLOCK ── */
-  document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-  document.addEventListener('dragstart', function(e) { e.preventDefault(); });
-  document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+  /* ── BLOCK (이미지만 보호) ── */
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.tagName === 'IMG' || e.target.tagName === 'svg' || e.target.closest('svg')) e.preventDefault();
+  });
 
   /* ── INIT ── */
   renderAbout();
   renderCareer();
   renderTools();
+  renderClass();
   renderWriting();
   renderZan();
   renderContact();
-  requestAnimationFrame(function() {
+  if (isDesktop()) {
+    /* 데스크톱: 모든 .rv 요소를 content 기준으로 감시 */
+    document.querySelectorAll('.rv').forEach(function(el) { io.observe(el); });
+  } else {
+    /* 모바일: 초기 활성 페이지만 즉시 표시 */
     requestAnimationFrame(function() {
-      var pg = document.querySelector('.pg.on');
-      if (pg) pg.querySelectorAll('.rv:not(.vis)').forEach(function(el) { el.classList.add('vis'); });
+      requestAnimationFrame(function() {
+        var pg = document.querySelector('.pg.on');
+        if (pg) pg.querySelectorAll('.rv:not(.vis)').forEach(function(el) { el.classList.add('vis'); });
+      });
     });
-  });
+  }
 })();
 </script>
 </body>

@@ -61,7 +61,7 @@
     --green:      #c8ff85;
     --dark-green: #163300;
     --mint:       #e2f6d5;
-    --gray:       #868685;
+    --gray:       #636463;
     --warm-dark:  #454745;
     --surface:    #f5f6f3;
     --white:      #ffffff;
@@ -159,31 +159,32 @@
 
   /* ── PAGE HERO ── */
   .hero {
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border-strong);
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 24px;
+    background: #d4d7cf;
+    margin: -48px -28px 48px;
+    padding: 52px 40px 40px;
+    text-align: center;
+    display: block;
+    border-bottom: none;
   }
 
   .hero-title {
-    font-size: 52px;
-    font-weight: 900;
-    line-height: 0.88;
-    letter-spacing: -2.5px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0;
     color: var(--black);
   }
 
   .hero-title .sub {
     display: block;
-    font-size: 17px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
     font-weight: 400;
-    letter-spacing: -0.3px;
-    color: var(--gray);
-    margin-top: 14px;
-    line-height: 1.4;
+    letter-spacing: 0;
+    color: #7a7268;
+    margin-top: 12px;
+    line-height: 1.8;
   }
 
   /* ── SCORE BAR ── */
@@ -1258,6 +1259,8 @@ html.ios-device .card-06 .gauge-wrap {
   /* print-value: 화면에서는 항상 숨김 */
   .print-value, .print-value-textarea { display: none; }
   </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -1279,65 +1282,14 @@ html.ios-device .card-06 .gauge-wrap {
   </div>
 </div>
 
-<!-- PORTAL VIEW -->
-<div id="portalView">
-  <div class="portal-header">
-    <div class="portal-header-inner">
-      <div>
-        <div class="portal-logo-main">Deep Coffee Roasters</div>
-        <div class="portal-logo-sub">Internal Tools</div>
-      </div>
-      <button class="portal-lock-btn" onclick="lockPortal()">잠금</button>
-    </div>
-  </div>
-  <div class="portal-body">
-    <div class="portal-hero">
-      <div class="portal-hero-title">Tools</div>
-      <div class="portal-hero-sub">내부 업무 도구 모음</div>
-    </div>
-    <div class="portal-cat-label">TOOL</div>
-    <div class="portal-grid">
-      <div class="tool-card" onclick="openTool('qcApp')">
-        <div class="tool-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#c8ff85" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
-            <rect x="9" y="3" width="6" height="4" rx="1"/>
-            <path d="M9 12h6M9 16h4"/>
-          </svg>
-        </div>
-        <div>
-          <div class="tool-card-name">파트너 퀄리티 가이드</div>
-          <div class="tool-card-desc">파트너사 방문 시 에스프레소 품질 점검 체크리스트.<br>레시피, 수질, 맛 평가까지 종합 기록.</div>
-        </div>
-        <div class="tool-card-tag">QC Checklist</div>
-      </div>
-    </div>
-  </div>
-</div>
 <div id="qcApp">
-<header>
-  <div class="header-inner">
-    <div class="logo-mark">
-      <div class="logo-main">Deep Coffee Roasters</div>
-      <div class="logo-sub">Partner Quality Guide</div>
-    </div>
-      <button class="qc-back-btn" onclick="backToPortal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-        목록으로
-      </button>
-    <div class="header-right">
-      <span class="header-tag">QC Checklist</span>
-      <div class="header-dot"></div>
-    </div>
-  </div>
-</header>
 
 <div class="container">
 
   <!-- Hero -->
   <div class="hero">
     <div>
-      <div class="hero-title">Partner <br>Quality Guide
+      <div class="hero-title">Partner Quality Guide
         <span class="sub">파트너사 방문 품질 점검 체크리스트</span>
       </div>
     </div>
@@ -2341,13 +2293,14 @@ setupPrintValues();
 </div><!-- /qcApp -->
 
 <script>
-// ── Portal & Password ──
+// ── Password ──
 const PW_HASH = btoa('0506');
 function checkPw(){
   if(btoa(document.getElementById('pwInput').value) === PW_HASH){
     sessionStorage.setItem('dcr_auth','1');
     document.getElementById('pwOverlay').style.display = 'none';
-    showPortal();
+    document.getElementById('qcApp').style.display = 'block';
+    window.scrollTo(0,0);
     document.getElementById('pwInput').value = '';
   } else {
     const inp = document.getElementById('pwInput');
@@ -2356,41 +2309,29 @@ function checkPw(){
     setTimeout(()=> inp.classList.remove('pw-error'), 400);
   }
 }
-function showPortal(){
-  document.getElementById('portalView').style.display = 'block';
-  document.getElementById('qcApp').style.display = 'none';
-}
-function openTool(id){
-  document.getElementById('portalView').style.display = 'none';
-  document.getElementById(id).style.display = 'block';
-  window.scrollTo(0,0);
-}
-function backToPortal(){ showPortal(); window.scrollTo(0,0); }
 function lockPortal(){
   sessionStorage.removeItem('dcr_auth');
-  document.getElementById('portalView').style.display = 'none';
   document.getElementById('qcApp').style.display = 'none';
   document.getElementById('pwOverlay').style.display = 'flex';
 }
 (function(){
   if(sessionStorage.getItem('dcr_auth')==='1'){
     document.getElementById('pwOverlay').style.display = 'none';
-    showPortal();
+    document.getElementById('qcApp').style.display = 'block';
   }
 })();
 </script>
 <style>
-body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
 img  { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
 </style>
 <script>
-document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
-document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG' || e.target.tagName === 'svg' || e.target.closest('svg')) e.preventDefault();
+});
 </script>
 
 <!-- ── Copyright Footer ───────────────────────── -->
-<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#868685;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
+<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#636463;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
   Made by <strong style="color:#163300;font-weight:600;letter-spacing:0.08em;">Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 Jung Sang Ju &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 무단 복제 금지
 </footer>
 </body>

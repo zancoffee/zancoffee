@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Roast Level Checker — ZAN Coffee</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
@@ -17,7 +17,7 @@
   --green:         #c8ff85;
   --dark-green:    #163300;
   --mint:          #e2f6d5;
-  --gray:          #868685;
+  --gray:          #636463;
   --warm-dark:     #454745;
   --surface:       #f5f6f3;
   --white:         #ffffff;
@@ -39,22 +39,17 @@ body {
 }
 
 /* ── HEADER ── */
-.page-header { background: var(--panel);
+.page-header {
+  background: var(--panel);
   padding: 52px 40px 40px;
-}
-.class-tag {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  color: var(--green);
-  text-transform: uppercase;
-  margin-bottom: 14px;
+  text-align: center;
 }
 .page-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 36px;
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-family: 'Barlow', sans-serif;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
   color: var(--black);
   margin-bottom: 12px;
 }
@@ -304,7 +299,6 @@ body {
 <body>
 
 <header class="page-header">
-  <div class="class-tag">Roasting Checker</div>
   <h1 class="page-title">Roast Level Checker</h1>
   <p class="page-sub">색도(아그트론) 또는 손실률을 입력하면 로스팅 정도를 바로 알려드립니다.</p>
 </header>
@@ -661,17 +655,16 @@ fillSlider(aS);
 fillSlider(lS);
 </script>
 <style>
-body { -webkit-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none; }
 img  { -webkit-user-drag: none; user-drag: none; -webkit-touch-callout: none; }
 </style>
 <script>
-document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
-document.addEventListener('dragstart',   function(e) { e.preventDefault(); });
-document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart', function(e) {
+  if (e.target.tagName === 'IMG' || e.target.tagName === 'svg' || e.target.closest('svg')) e.preventDefault();
+});
 </script>
 
 <!-- ── Copyright Footer ───────────────────────── -->
-<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#868685;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
+<footer style="text-align:center;padding:32px 20px 28px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#636463;letter-spacing:0.12em;text-transform:uppercase;border-top:1px solid #d4d7cf;margin-top:64px;">
   Made by <strong style="color:#163300;font-weight:600;letter-spacing:0.08em;">Jung Sang Ju</strong> &nbsp;·&nbsp; © 2025 Jung Sang Ju &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; 무단 복제 금지
 </footer>
 </body>
