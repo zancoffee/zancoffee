@@ -298,10 +298,12 @@
     width: 100%;
     max-width: 100%;
   }
-  .layout-grid > .card {
+  .layout-grid .card {
     min-width: 0;
     max-width: 100%;
   }
+  /* [TEST] 인쇄 페이지 래퍼: 화면에서는 투명(grid 그대로 통과) */
+  .print-page { display: contents; }
   /* Explicit grid placement: water chart spans rows 2-3 to align Section 3+4 */
   .card-01    { grid-area: 1 / 1; }
   .card-02    { grid-area: 1 / 2; }
@@ -314,7 +316,7 @@
   .card-07    { grid-area: 5 / 2; }
 
   @media screen and (max-width: 680px) {
-    .layout-grid > .card { grid-area: auto !important; }
+    .layout-grid .card { grid-area: auto !important; }
   }
 
 
@@ -1135,123 +1137,83 @@
      @supports (-webkit-touch-callout: none) = iOS Safari에서만 참
      JS 의존 없이 CSS 파싱 시점에 평가 → 인쇄 시에도 안정적 적용
      ══════════════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════════
+     📱 [TEST] iOS Safari 인쇄 — 데스크톱과 완전 동일 포맷
+     기존 iOS 전용 수동 위치 보정(top 오프셋 / max-height 등)을 모두 제거.
+     이 블록을 비워두면 위쪽 @media print(데스크톱) 규칙을 그대로 상속받아
+     모바일에서도 PC와 동일한 강제 페이지 분할 로직으로 인쇄됨.
+     ══════════════════════════════════════════════════════════════ */
   @supports (-webkit-touch-callout: none) {
     @media print {
+      /* (의도적으로 비움 — 아래 통합 페이지 규칙 사용) */
+    }
+  }
 
-      /* ─── 1. 인쇄 영역 가로 폭 ─── */
-      html, body {
-        width: 720px !important;
-        max-width: 720px !important;
-        min-width: 720px !important;
-      }
+  /* ══════════════════════════════════════════════════════════════
+     🖨 [TEST] 통합 페이지 인쇄 레이아웃 (PC · iOS 완전 동일)
+     - 카드들을 .print-page(pp1/pp2) 두 묶음으로 그룹화
+     - 각 묶음을 물리적 A4 1페이지 안에 통째로 배치 → 페이지 내부에서
+       브라우저가 쪼갤 필요가 없어 iOS Safari에서도 차트가 안 잘림
+     - 자동 페이지 분할 추측에 의존하지 않으므로 헤더 높이가 바뀌어도 안정적
+     ══════════════════════════════════════════════════════════════ */
+  @media print {
+    /* 래퍼를 실제 박스로 전환 (화면에서는 display:contents) */
+    .layout-grid { display: block !important; }
+    .print-page {
+      display: grid !important;
+      grid-template-columns: minmax(0,1fr) minmax(0,1fr) !important;
+      gap: 14px !important;
+      align-items: start !important;
+      width: 100% !important;
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
+    }
+    /* 페이지1 다음에 페이지 넘김 */
+    .print-page.pp1 {
+      break-after: page !important;
+      page-break-after: always !important;
+      -webkit-column-break-after: always !important;
+      /* row1=auto(01·02), row2·row3=균등 → 카드3·카드4 같은 높이,
+         합친 높이(+gap)가 row2~3을 span하는 water 카드 높이와 일치 */
+      grid-template-rows: auto 1fr 1fr !important;
+    }
+    /* 카드3·4·water를 행에 꽉 차게 늘려 높이 균등/일치시킴 */
+    .print-page.pp1 > .card-03,
+    .print-page.pp1 > .card-04,
+    .print-page.pp1 > .card-water {
+      align-self: stretch !important;
+      height: 100% !important;
+    }
+    /* 페이지2 카드 행 재배치 (전역 grid-area 4~5행 → 1~2행) */
+    .print-page.pp2 > .card-05     { grid-area: 1 / 1 !important; }
+    .print-page.pp2 > .card-flavor { grid-area: 1 / 2 !important; }
+    .print-page.pp2 > .card-06     { grid-area: 2 / 1 !important; }
+    .print-page.pp2 > .card-07     { grid-area: 2 / 2 !important; }
+    /* 같은 행 카드 높이 균등: 카드5=플레이버, 카드6=카드7 */
+    .print-page.pp2 > .card {
+      align-self: stretch !important;
+      height: 100% !important;
+    }
 
-      /* ─── 2. 헤더 ─── */
-      header > .header-inner {
-        padding: 12px 0 !important;
-      }
+    /* 기존 데스크톱 강제 분할/최소높이 규칙 무력화 */
+    .card-05, .card-flavor {
+      break-before: auto !important;
+      page-break-before: auto !important;
+      -webkit-column-break-before: auto !important;
+    }
+    .card-water {
+      break-after: auto !important;
+      page-break-after: auto !important;
+      -webkit-column-break-after: auto !important;
+    }
+    .card-04, .card-05 { min-height: 0 !important; }
 
-      /* ─── 3. 히어로 ─── */
-      .hero {
-        margin-bottom: 20px !important;
-        padding-bottom: 16px !important;
-      }
-      .hero-title {
-        font-size: 32px !important;
-        line-height: 1.05 !important;
-      }
-      .hero-title .sub {
-        font-size: 13px !important;
-        margin-top: 10px !important;
-      }
-
-      /* ─── 4. 카드 overflow 해제 (차트 위로 이동 가능하게) ─── */
-      .card-water,
-      .card-flavor {
-        overflow: visible !important;
-      }
-
-      /* ─── 5. break-inside 제약 해제 ─── */
-      #waterCanvas,
-      #radarCanvas,
-      .card-water,
-      .card-flavor,
-      .card-water .card-inner,
-      .card-flavor .card-inner,
-      .radar-layout {
-        break-inside: auto !important;
-        page-break-inside: auto !important;
-        -webkit-column-break-inside: auto !important;
-      }
-
-      /* ─── 6. 페이지 분할 강제 해제 (모든 카드 한 흐름으로 → CSS 적용 안정화) ─── */
-      .layout-grid > .card-water {
-        page-break-after: auto !important;
-        break-after: auto !important;
-        -webkit-column-break-after: auto !important;
-      }
-      .layout-grid > .card-05,
-      .layout-grid > .card-flavor {
-        page-break-before: auto !important;
-        break-before: auto !important;
-        -webkit-column-break-before: auto !important;
-      }
-
-
-
-      /* ─── 8. card-06 게이지 위치 ─── */
-      .card-06 .gauge-wrap {
-        position: relative !important;
-        top: -20px !important;   /* ← 게이지 위치 */
-      }
-
-      /* ─── 사용자 자유 영역 (여기에 추가하세요) ─── */
-
-/* SCA WATER CHART 카드 크기 줄이기 */
-.card-water {
-  max-height: 545px !important;   /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
-}
-
-/* FLAVOR PROFILE 카드 크기 줄이기 */
-.card-flavor {
-  max-height: 432px !important;   /* ← 카드 최대 높이 (작게 하려면 이 값 줄임) */
-}
-
-html.ios-device .layout-grid > .card-water {
-  page-break-after: auto !important;   /* always → auto */
-}
-
-html.ios-device #waterCanvas {
-  position: relative !important;
-  top: -275px !important;   /* 음수면 위로 */
-}
-
-html.ios-device .layout-grid > .card-04 {
-  min-height: 0 !important;        /* 데스크톱 min-height 해제 */
-  max-height: 200px !important;    /* 원하는 크기 */
-  overflow: hidden !important;
-}
-
-/* card-04를 위로 당겨서 card-03 바로 아래에 붙이기 (iOS) */
-html.ios-device .card-04 {
-  position: relative !important;
-  top: -70px !important;   /* ← 음수면 위로 (값 조정) */
-}
-
-/* card-04 콘텐츠 위쪽 정렬 강제 */
-.card-04 {
-  align-self: start !important;
-}
-.card-04 .card-inner {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: stretch !important;
-}
-/* card-06 BEVERAGE TDS 게이지 위로 당기기 (iOS) */
-html.ios-device .card-06 .gauge-wrap {
-  position: relative !important;
-  top: -40px !important;   /* ← 자유롭게 조정 */
-}
+    /* 개별 카드는 절대 쪼개지지 않게 (페이지 안에 다 들어가므로 안전) */
+    .print-page .card, .print-page canvas {
+      break-inside: avoid !important;
+      page-break-inside: avoid !important;
+      -webkit-column-break-inside: avoid !important;
     }
   }
 
@@ -1297,6 +1259,8 @@ html.ios-device .card-06 .gauge-wrap {
 
   <!-- 01. 파트너사 정보 -->
   <div class="layout-grid">
+    <!-- [TEST] 인쇄 페이지 1 (rows 1-3): 01,02,03,04,water -->
+    <div class="print-page pp1">
     <div class="card card-01">
       <div class="card-inner">
         <div class="sec-heading">
@@ -1407,9 +1371,12 @@ html.ios-device .card-06 .gauge-wrap {
           <span class="sec-title">SCA Water Chart</span>
         </div>
         <canvas id="waterCanvas" width="400" height="600" style="border-radius:8px;"></canvas>
-        
+
       </div>
     </div>
+    </div><!-- /pp1 -->
+    <!-- [TEST] 인쇄 페이지 2 (rows 4-5): 05,flavor,06,07 -->
+    <div class="print-page pp2">
     <div class="card card-05">
       <div class="card-inner">
         <div class="sec-heading">
@@ -1544,6 +1511,7 @@ html.ios-device .card-06 .gauge-wrap {
           </div>
         </div>
       </div>
+    </div><!-- /pp2 -->
   </div>
 
 
