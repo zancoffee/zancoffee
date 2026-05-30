@@ -87,6 +87,16 @@
     margin: 0;
   }
 
+  /* ── PAPER TEXTURE (index와 동일한 수채화 종이결 — 배경에만, 아주 미세) ── */
+  body {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.22' numOctaves='3' seed='3' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='white' surfaceScale='0.5' diffuseConstant='1' result='l'%3E%3CfeDistantLight azimuth='235' elevation='52'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.7' intercept='-0.56'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.22' numOctaves='3' seed='3' stitchTiles='stitch' result='t'/%3E%3CfeDiffuseLighting in='t' lighting-color='white' surfaceScale='0.5' diffuseConstant='1' result='l'%3E%3CfeDistantLight azimuth='235' elevation='52'/%3E%3C/feDiffuseLighting%3E%3CfeColorMatrix in='l' type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 0 0 0 1'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.4' intercept='-0.096'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+    background-size: 260px 260px, 260px 260px;
+    background-repeat: repeat, repeat;
+    background-attachment: fixed, fixed;
+  }
+
   /* ── HEADER ── */
   header {
     background: var(--black);
